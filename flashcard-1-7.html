@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard Soumatome N3 – Hari 1–7</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap');
+
+  :root {
+    --sun: #FFD93D;
+    --sun-dark: #F4A700;
+    --sun-light: #FFF3B0;
+    --sky: #6BCB77;
+    --sky-dark: #3BA84A;
+    --sky-light: #D4F5D9;
+    --white: #FFFDF0;
+    --dark: #1A2A1A;
+    --card-radius: 24px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  #header {
+    background: var(--sun);
+    border-bottom: 4px solid var(--sun-dark);
+    padding: 18px 20px 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #header::before { content:'🌞'; position:absolute;top:-8px;left:8px;font-size:72px;opacity:.12; }
+  #header::after  { content:'🌿'; position:absolute;bottom:-8px;right:8px;font-size:72px;opacity:.12; }
+  #header h1 {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: clamp(16px,4.5vw,24px);
+    font-weight: 900; color: var(--dark); line-height: 1.3;
+  }
+  #header p { font-size:12px; font-weight:700; color:#4a3a00; margin-top:4px; }
+
+  /* ===== START SCREEN ===== */
+  #start-screen {
+    max-width: 460px; margin: 36px auto; padding: 0 20px; text-align: center;
+  }
+  .info-card {
+    background: var(--sky); border: 3px solid var(--sky-dark);
+    border-radius: 20px; padding: 24px 20px; margin-bottom: 22px;
+  }
+  .info-card h2 { font-size:20px; font-weight:900; margin-bottom:10px; }
+  .info-card p  { font-size:13px; font-weight:600; line-height:1.7; }
+
+  .opt-label { font-weight:800; font-size:14px; margin-bottom:8px; display:block; color:var(--dark); }
+
+  .row-btns { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:18px; }
+  .tog-btn {
+    padding:9px 16px; border:3px solid var(--sun-dark); border-radius:50px;
+    background:var(--white); font-family:'Nunito',sans-serif;
+    font-size:13px; font-weight:800; cursor:pointer; transition:all .15s;
+  }
+  .tog-btn.active, .tog-btn:hover { background:var(--sun); border-color:var(--sun-dark); }
+  .tog-btn.sky { border-color:var(--sky-dark); }
+  .tog-btn.sky.active, .tog-btn.sky:hover { background:var(--sky); border-color:var(--sky-dark); }
+
+  #btn-start-flash {
+    display:inline-block; padding:13px 38px;
+    background:linear-gradient(135deg,var(--sun),var(--sky));
+    border:3px solid var(--sun-dark); border-radius:50px;
+    font-family:'Nunito',sans-serif; font-size:17px; font-weight:900;
+    cursor:pointer; box-shadow:0 4px 0 var(--sun-dark); transition:transform .1s;
+  }
+  #btn-start-flash:hover { transform:translateY(-2px); }
+  #btn-start-flash:active { transform:translateY(2px); box-shadow:none; }
+
+  /* ===== FLASHCARD SCREEN ===== */
+  #flash-screen { display:none; max-width:520px; margin:0 auto; padding:16px 20px 32px; }
+
+  /* Top bar */
+  .top-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .prog-label { font-size:12px; font-weight:800; color:var(--sky-dark); }
+  .prog-bar-wrap {
+    flex:1; height:10px; background:#e0e0d0; border-radius:50px;
+    margin:0 12px; overflow:hidden; border:2px solid var(--sun-dark);
+  }
+  .prog-bar-fill {
+    height:100%;
+    background:linear-gradient(90deg,var(--sun),var(--sky));
+    border-radius:50px; transition:width .4s ease;
+  }
+
+  /* Card container with flip */
+  .card-scene {
+    perspective: 1000px;
+    width:100%; margin:16px 0;
+    height: clamp(220px, 45vw, 300px);
+  }
+  .card-inner {
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.4,0,.2,1);
+    cursor:pointer;
+  }
+  .card-inner.flipped { transform:rotateY(180deg); }
+
+  .card-face {
+    position:absolute; width:100%; height:100%;
+    backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    border-radius:var(--card-radius);
+    display:flex; flex-direction:column;
+    justify-content:center; align-items:center;
+    gap:8px; padding:24px 20px;
+    text-align:center;
+  }
+
+  /* Front = sunny yellow */
+  .card-front {
+    background:var(--sun);
+    border:3px solid var(--sun-dark);
+    box-shadow:0 6px 0 var(--sun-dark), 0 10px 24px rgba(244,167,0,.2);
+  }
+  .card-front .face-label {
+    font-size:11px; font-weight:800; text-transform:uppercase;
+    letter-spacing:1.2px; color:var(--sun-dark);
+  }
+  .card-front .face-word {
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-size:clamp(26px,7vw,42px); font-weight:900; color:var(--dark); line-height:1.2;
+  }
+  .card-front .face-read { font-size:14px; color:#6a5000; font-weight:700; }
+  .card-front .tap-hint {
+    font-size:11px; color:#8a7000; font-weight:700;
+    position:absolute; bottom:14px;
+  }
+
+  /* Back = green */
+  .card-back {
+    background:var(--sky);
+    border:3px solid var(--sky-dark);
+    box-shadow:0 6px 0 var(--sky-dark), 0 10px 24px rgba(59,168,74,.2);
+    transform:rotateY(180deg);
+  }
+  .card-back .face-label {
+    font-size:11px; font-weight:800; text-transform:uppercase;
+    letter-spacing:1.2px; color:var(--sky-dark);
+  }
+  .card-back .face-word {
+    font-size:clamp(18px,5vw,28px); font-weight:900; color:var(--dark); line-height:1.4;
+  }
+  .card-back .tap-hint {
+    font-size:11px; color:#2a7a30; font-weight:700;
+    position:absolute; bottom:14px;
+  }
+
+  /* Nav buttons */
+  .nav-row { display:flex; gap:10px; margin-top:4px; }
+  .nav-btn {
+    flex:1; padding:12px;
+    border-radius:50px; border:3px solid var(--sky-dark);
+    background:var(--white); font-family:'Nunito',sans-serif;
+    font-size:15px; font-weight:900; cursor:pointer;
+    transition:all .15s; box-shadow:0 3px 0 var(--sky-dark);
+  }
+  .nav-btn:hover { background:var(--sky); transform:translateY(-2px); }
+  .nav-btn:active { transform:translateY(2px); box-shadow:none; }
+  .nav-btn:disabled { opacity:.35; cursor:default; transform:none; box-shadow:0 3px 0 var(--sky-dark); }
+  .nav-btn.sun-btn { border-color:var(--sun-dark); box-shadow:0 3px 0 var(--sun-dark); }
+  .nav-btn.sun-btn:hover { background:var(--sun); }
+
+  /* Know / Don't know */
+  .know-row { display:flex; gap:10px; margin-top:10px; }
+  .know-btn {
+    flex:1; padding:11px;
+    border-radius:50px; border:3px solid; font-family:'Nunito',sans-serif;
+    font-size:14px; font-weight:800; cursor:pointer; transition:all .15s;
+  }
+  .know-btn.yes {
+    background:var(--sky-light); border-color:var(--sky-dark); color:var(--sky-dark);
+    box-shadow:0 3px 0 var(--sky-dark);
+  }
+  .know-btn.yes:hover { background:var(--sky); color:var(--dark); transform:translateY(-2px); }
+  .know-btn.no {
+    background:#fde8e8; border-color:#e05555; color:#c0392b;
+    box-shadow:0 3px 0 #e05555;
+  }
+  .know-btn.no:hover { background:#ffb3b3; transform:translateY(-2px); }
+
+  /* Stats bar */
+  .stats-bar {
+    display:flex; gap:10px; margin-top:12px;
+    background:var(--sun-light); border:2px solid var(--sun-dark);
+    border-radius:16px; padding:10px 14px;
+  }
+  .stat-item { flex:1; text-align:center; }
+  .stat-num { font-size:20px; font-weight:900; }
+  .stat-lbl { font-size:10px; font-weight:800; color:#6a5000; margin-top:1px; }
+  .stat-num.green { color:var(--sky-dark); }
+  .stat-num.red   { color:#e05555; }
+  .stat-num.gray  { color:#999; }
+
+  /* Shuffle/restart mini btn */
+  .action-row { display:flex; gap:8px; margin-top:10px; }
+  .mini-btn {
+    flex:1; padding:9px; border-radius:50px;
+    border:2px solid var(--sun-dark); background:var(--white);
+    font-family:'Nunito',sans-serif; font-size:12px; font-weight:800;
+    cursor:pointer; transition:all .15s;
+  }
+  .mini-btn:hover { background:var(--sun); }
+
+  /* Done screen */
+  #done-screen {
+    display:none; max-width:460px; margin:40px auto; padding:0 20px; text-align:center;
+  }
+  .done-card {
+    background:var(--sun); border:3px solid var(--sun-dark);
+    border-radius:24px; padding:32px 24px; margin-bottom:20px;
+  }
+  .done-emoji { font-size:60px; margin-bottom:10px; }
+  .done-score { font-size:48px; font-weight:900; color:var(--dark); }
+  .done-lbl   { font-size:13px; font-weight:700; color:#5a3a00; margin-top:4px; }
+  .done-stars { font-size:36px; margin:14px 0; }
+  .done-msg   { font-size:15px; font-weight:800; }
+
+  .review-box {
+    background:#fffbe6; border:2px solid var(--sun-dark);
+    border-radius:16px; padding:16px; margin-bottom:16px;
+    text-align:left; max-height:320px; overflow-y:auto;
+  }
+  .review-box h3 { font-size:14px; font-weight:900; color:var(--sky-dark); margin-bottom:12px; }
+  .review-item {
+    border-bottom:1px solid #e8e0c0; padding:7px 0; font-size:13px;
+  }
+  .review-item:last-child { border-bottom:none; }
+  .ri-jp  { font-weight:800; color:var(--dark); }
+  .ri-id  { color:var(--sky-dark); font-weight:700; }
+
+  #btn-restart-flash {
+    display:inline-block; padding:13px 38px;
+    background:linear-gradient(135deg,var(--sun),var(--sky));
+    border:3px solid var(--sun-dark); border-radius:50px;
+    font-family:'Nunito',sans-serif; font-size:17px; font-weight:900;
+    cursor:pointer; box-shadow:0 4px 0 var(--sun-dark); transition:transform .1s;
+  }
+  #btn-restart-flash:hover { transform:translateY(-2px); }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h1>🌿 Flashcard Soumatome N3 🌞<br>Hari 1 s/d 7</h1>
+  <p>225 kartu · Tap untuk balik · Lacak yang sudah hafal!</p>
+</div>
+
+<!-- ===== START SCREEN ===== -->
+<div id="start-screen">
+  <div class="info-card">
+    <h2>🃏 Cara Pakai</h2>
+    <p>Tap kartu untuk melihat artinya.<br>
+    Tandai <strong>✅ Hafal</strong> atau <strong>❌ Belum</strong> untuk tracking.<br>
+    Kartu yang belum hafal bisa diulang!</p>
+  </div>
+
+  <span class="opt-label">🔤 Tampilan Depan Kartu</span>
+  <div class="row-btns">
+    <button class="tog-btn active" id="face-jp" onclick="setFace('jp')">🇯🇵 JP di depan</button>
+    <button class="tog-btn" id="face-id" onclick="setFace('id')">🇮🇩 Indo di depan</button>
+  </div>
+
+  <span class="opt-label">🔀 Urutan Kartu</span>
+  <div class="row-btns">
+    <button class="tog-btn sky active" id="order-shuffle" onclick="setOrder('shuffle')">🔀 Acak</button>
+    <button class="tog-btn sky" id="order-seq" onclick="setOrder('seq')">📋 Berurutan</button>
+  </div>
+
+  <br>
+  <button id="btn-start-flash" onclick="startFlash()">▶ Mulai Flashcard!</button>
+</div>
+
+<!-- ===== FLASH SCREEN ===== -->
+<div id="flash-screen">
+  <div class="top-bar">
+    <span class="prog-label" id="fl-prog-txt">1 / 225</span>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-fill" id="fl-prog-fill" style="width:0%"></div>
+    </div>
+    <span class="prog-label" id="fl-remain">225 sisa</span>
+  </div>
+
+  <div class="card-scene" onclick="flipCard()">
+    <div class="card-inner" id="card-inner">
+      <div class="card-face card-front">
+        <span class="face-label" id="front-label">Bahasa Jepang</span>
+        <div class="face-word" id="front-word">—</div>
+        <div class="face-read" id="front-read"></div>
+        <span class="tap-hint">👆 Tap untuk lihat artinya</span>
+      </div>
+      <div class="card-face card-back">
+        <span class="face-label" id="back-label">Arti (Indonesia)</span>
+        <div class="face-word" id="back-word">—</div>
+        <span class="tap-hint">👆 Tap untuk balik</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="know-row">
+    <button class="know-btn no"  onclick="markCard(false)">❌ Belum Hafal</button>
+    <button class="know-btn yes" onclick="markCard(true)">✅ Sudah Hafal</button>
+  </div>
+
+  <div class="nav-row" style="margin-top:10px;">
+    <button class="nav-btn sun-btn" id="btn-prev" onclick="prevCard()">← Sebelumnya</button>
+    <button class="nav-btn" id="btn-next-fl" onclick="nextCard()">Berikutnya →</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num" id="stat-total">225</div>
+      <div class="stat-lbl">Total</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num green" id="stat-know">0</div>
+      <div class="stat-lbl">✅ Hafal</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num red" id="stat-nope">0</div>
+      <div class="stat-lbl">❌ Belum</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num gray" id="stat-unseen">225</div>
+      <div class="stat-lbl">Belum Dilihat</div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="mini-btn" onclick="reviewWrong()" id="btn-review-wrong">🔁 Ulangi yang Belum Hafal</button>
+    <button class="mini-btn" onclick="reshuffleAll()">🔀 Acak Ulang Semua</button>
+    <button class="mini-btn" onclick="backToStart()">🏠 Menu</button>
+  </div>
+</div>
+
+<!-- ===== DONE SCREEN ===== -->
+<div id="done-screen">
+  <div class="done-card">
+    <div class="done-emoji" id="done-emoji">🎉</div>
+    <div class="done-score" id="done-score">0/225</div>
+    <div class="done-lbl">Sudah Hafal</div>
+    <div class="done-stars" id="done-stars">⭐⭐⭐</div>
+    <div class="done-msg" id="done-msg">Mantap!</div>
+  </div>
+  <div class="review-box" id="review-wrong-box" style="display:none">
+    <h3>❌ Yang Belum Hafal</h3>
+    <div id="review-wrong-list"></div>
+  </div>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <button id="btn-restart-flash" onclick="reviewWrongFromDone()" id="btn-redo-wrong" style="font-size:14px;padding:12px 24px;">🔁 Ulangi yang Belum</button>
+    <button id="btn-restart-flash" onclick="backToStart()" style="font-size:14px;padding:12px 24px;">🏠 Menu Utama</button>
+  </div>
+</div>
+
+<script>
+// ==================== VOCAB DATA ====================
+const vocab = [
+  // HARI 1: Kitchen
+  {jp:"冷蔵庫",read:"れいぞうこ",id:"kulkas"},
+  {jp:"電子レンジ",read:"でんしレンジ",id:"microwave"},
+  {jp:"ガスレンジ／ガスコンロ",read:"",id:"kompor"},
+  {jp:"湯のみ",read:"ゆのみ",id:"gelas air/teh"},
+  {jp:"茶わん",read:"ちゃわん",id:"mangkuk kecil"},
+  {jp:"ワイングラス",read:"",id:"gelas wine"},
+  {jp:"コーヒーカップ",read:"",id:"cangkir kopi"},
+  {jp:"ガラスのコップ",read:"",id:"gelas kaca"},
+  {jp:"レバー",read:"",id:"tuas (putaran) keran"},
+  {jp:"流し",read:"ながし",id:"sink / bak wastafel"},
+  // HARI 1: Living Room
+  {jp:"窓ガラス",read:"まどガラス",id:"kaca jendela"},
+  {jp:"雨戸",read:"あまど",id:"pintu penghalang air hujan"},
+  {jp:"網戸",read:"あみど",id:"pintu penghalang serangga"},
+  {jp:"床",read:"ゆか",id:"lantai"},
+  {jp:"天井",read:"てんじょう",id:"atap/langit-langit"},
+  {jp:"エアコン",read:"",id:"air conditioner"},
+  {jp:"ヒーター",read:"",id:"penghangat"},
+  {jp:"コンセント",read:"",id:"stop kontak"},
+  {jp:"じゅうたん／カーペット",read:"",id:"karpet"},
+  {jp:"コード",read:"",id:"kabel"},
+  // HARI 1: Frasa
+  {jp:"水道の蛇口をひねる",read:"すいどうのじゃぐちをひねる",id:"memutar air keran"},
+  {jp:"水が凍る",read:"みずがこおる",id:"airnya membeku"},
+  {jp:"氷になる",read:"こおりになる",id:"menjadi es"},
+  {jp:"冷凍して保存する",read:"れいとうしてほぞんする",id:"menyimpan dengan membekukannya"},
+  {jp:"残り物を温める",read:"のこりものをあたためる",id:"menghangatkan makanan yang tersisa"},
+  {jp:"ビールを冷やす",read:"ビールをひやす",id:"mendinginkan bir"},
+  {jp:"ビールが冷えている",read:"ビールがひえている",id:"birnya dingin"},
+  {jp:"エアコンのリモコン",read:"",id:"remot AC"},
+  {jp:"スイッチ",read:"",id:"tombol sakelar"},
+  {jp:"電源を入れる",read:"でんげんをいれる",id:"menyalakan (listrik)"},
+  {jp:"電源を切る",read:"でんげんをきる",id:"mematikan (listrik)"},
+  {jp:"じゅうたんを敷く",read:"じゅうたんをしく",id:"menggelar karpet"},
+  {jp:"部屋を暖める",read:"へやをあたためる",id:"menghangatkan ruangan"},
+  {jp:"暖房をつける",read:"だんぼうをつける",id:"menyalakan penghangat"},
+  {jp:"冷房（クーラー）が効いている",read:"れいぼうがきいている",id:"dinginnya terasa"},
+  {jp:"日当たりがいい",read:"ひあたりがいい",id:"terkena sinar matahari"},
+  {jp:"日当たりが悪い",read:"ひあたりがわるい",id:"tidak terkena sinar matahari"},
+  // HARI 2: Bahan & Takaran
+  {jp:"大さじ",read:"おおさじ",id:"takaran sendok makan"},
+  {jp:"小さじ",read:"こさじ",id:"takaran sendok teh"},
+  {jp:"１カップ",read:"",id:"satu gelas"},
+  {jp:"１リットル",read:"",id:"satu liter"},
+  {jp:"はかり",read:"",id:"timbangan"},
+  {jp:"包丁",read:"ほうちょう",id:"pisau"},
+  {jp:"まな板",read:"まないた",id:"talenan"},
+  {jp:"酒",read:"さけ",id:"sake"},
+  {jp:"酢",read:"す",id:"cuka"},
+  {jp:"調味料",read:"ちょうみりょう",id:"bumbu"},
+  {jp:"サラダ油",read:"サラダゆ",id:"minyak goreng"},
+  {jp:"天ぷら油",read:"てんぷらあぶら",id:"minyak goreng tempura"},
+  // HARI 2: Frasa
+  {jp:"夕食のおかず",read:"ゆうしょくのおかず",id:"lauk makan malam"},
+  {jp:"栄養のバランスを考える",read:"えいようのバランスをかんがえる",id:"memikirkan keseimbangan nutrisi"},
+  {jp:"カロリーが高い食品",read:"カロリーがたかいしょくひん",id:"bahan makanan berkalori tinggi"},
+  {jp:"はかりで量る",read:"はかりではかる",id:"mengukur dengan timbangan"},
+  {jp:"塩を少々入れる",read:"しおをしょうしょういれる",id:"memasukkan sedikit garam"},
+  {jp:"皮をむく",read:"かわをむく",id:"mengupas kulit"},
+  {jp:"材料を刻む",read:"ざいりょうをきざむ",id:"memotong kecil-kecil / mencincang"},
+  {jp:"大きめに切る",read:"おおきめにきる",id:"memotong agak besar"},
+  {jp:"３センチ幅に切る",read:"３センチはばにきる",id:"memotong dengan lebar 3 cm"},
+  {jp:"みそ汁がぬるくなる",read:"みそしるがぬるくなる",id:"miso soup-nya menjadi kurang hangat"},
+  {jp:"ラップでくるむ",read:"",id:"membungkus dengan plastik wrap"},
+  {jp:"アルミホイル",read:"",id:"aluminium foil"},
+  {jp:"ラップをかぶせる／かける",read:"",id:"menutupi dengan plastik wrap"},
+  // HARI 3: Peralatan Masak
+  {jp:"なべ",read:"",id:"panci"},
+  {jp:"ふた",read:"",id:"tutup"},
+  {jp:"おたま",read:"",id:"centongan"},
+  {jp:"フライパン",read:"",id:"wajan"},
+  {jp:"フライ返し",read:"フライがえし",id:"spatula"},
+  {jp:"炊飯器",read:"すいはんき",id:"rice cooker"},
+  {jp:"しゃもじ",read:"",id:"sendok nasi"},
+  // HARI 3: Frasa Memasak
+  {jp:"(お)湯を沸かす",read:"おゆをわかす",id:"memasak air"},
+  {jp:"(お)湯が沸く",read:"おゆがわく",id:"airnya mendidih"},
+  {jp:"(お)湯を冷ます",read:"おゆをさます",id:"mendinginkan air"},
+  {jp:"(お)湯が冷める",read:"おゆがさめる",id:"airnya mendingin"},
+  {jp:"なべを火にかける",read:"なべをひにかける",id:"meletakkan panci di atas api"},
+  {jp:"ご飯を炊く",read:"ごはんをたく",id:"menanak nasi"},
+  {jp:"油を熱する",read:"あぶらをねっする",id:"memanaskan minyak (di wajan)"},
+  {jp:"油で揚げる",read:"あぶらであげる",id:"menggoreng dengan minyak"},
+  {jp:"煮る",read:"にる",id:"merebus (+ bumbu)"},
+  {jp:"ゆでる",read:"",id:"merebus (hanya air)"},
+  {jp:"蒸す",read:"むす",id:"mengukus"},
+  {jp:"いためる",read:"",id:"menumis"},
+  {jp:"混ぜる",read:"まぜる",id:"mencampur"},
+  {jp:"こげる",read:"",id:"gosong"},
+  {jp:"ひっくり返す／裏返す",read:"うらがえす",id:"membalikan"},
+  {jp:"味をつける",read:"あじをつける",id:"memberi rasa"},
+  {jp:"塩を加える",read:"しおをくわえる",id:"menambahkan garam"},
+  {jp:"こしょうを振る",read:"こしょうをふる",id:"menaburi lada"},
+  {jp:"味見をする",read:"あじみをする",id:"mencicipi rasa"},
+  {jp:"味が濃い",read:"あじがこい",id:"rasanya pekat"},
+  {jp:"味が薄い",read:"あじがうすい",id:"rasanya hambar"},
+  {jp:"からい",read:"",id:"pedas"},
+  {jp:"塩からい",read:"しおからい",id:"asin"},
+  {jp:"酸っぱい",read:"すっぱい",id:"asam"},
+  {jp:"できあがる／できあがり",read:"",id:"selesai (makanan)"},
+  // HARI 4: Alat Kebersihan
+  {jp:"エプロン",read:"",id:"apron/celemek"},
+  {jp:"ほうき",read:"",id:"sapu"},
+  {jp:"ちりとり",read:"",id:"pengki"},
+  {jp:"ぞうきん",read:"",id:"kain lap"},
+  {jp:"バケツ",read:"",id:"ember"},
+  // HARI 4: Frasa Kebersihan
+  {jp:"エプロンをする／かける／つける",read:"",id:"memakai apron"},
+  {jp:"ソファーをどける",read:"",id:"meminggirkan/memindahkan sofa"},
+  {jp:"（～が）どく",read:"",id:"minggir"},
+  {jp:"部屋を散らかす",read:"へやをちらかす",id:"membuat ruangan berantakan"},
+  {jp:"散らかる",read:"ちらかる",id:"berantakan"},
+  {jp:"部屋を片付ける",read:"へやをかたづける",id:"merapikan ruangan"},
+  {jp:"片付く",read:"かたづく",id:"rapi"},
+  {jp:"ジュースをこぼす",read:"",id:"menumpahkan jus"},
+  {jp:"こぼれる",read:"",id:"tumpah"},
+  {jp:"ほこりがつもる",read:"",id:"debu menumpuk (dari atas)"},
+  {jp:"ほこりがたまる",read:"",id:"debu menumpuk (dari banyak arah)"},
+  {jp:"ほこりを取る",read:"ほこりをとる",id:"mengambil debu (membersihkan)"},
+  {jp:"掃除機をかける",read:"そうじきをかける",id:"membersihkan dengan vacuum cleaner"},
+  {jp:"ほうきで掃く",read:"ほうきではく",id:"menyapu dengan sapu"},
+  {jp:"水をくむ",read:"みずをくむ",id:"mengambil air (dengan tangan/ember)"},
+  {jp:"ぞうきんをしぼる",read:"",id:"memeras kain lap"},
+  {jp:"ぬらす",read:"",id:"membasahi"},
+  {jp:"床をふく",read:"ゆかをふく",id:"mengelap lantai"},
+  {jp:"ふきんで食器をふく",read:"ふきんでしょっきをふく",id:"mengelap alat makan dengan kain lap"},
+  {jp:"台ふきんでテーブルをふく",read:"だいふきんでテーブルをふく",id:"mengelap meja dengan lap meja"},
+  {jp:"家具をみがく",read:"かぐをみがく",id:"menggosok/memoles furnitur"},
+  {jp:"ブラシでこする",read:"",id:"menggosok dengan sikat"},
+  // HARI 5: Mencuci
+  {jp:"洗濯物がたまる",read:"せんたくものがたまる",id:"cucian menumpuk"},
+  {jp:"ためる",read:"",id:"menumpukkan"},
+  {jp:"ぬれている",read:"",id:"basah"},
+  {jp:"湿っている",read:"しめっている",id:"lembab (belum kering)"},
+  {jp:"ほす",read:"",id:"menjemur"},
+  {jp:"乾く",read:"かわく",id:"kering"},
+  {jp:"洗濯機で乾かす",read:"せんたくきでかわかす",id:"mengeringkan (dengan mesin cuci)"},
+  {jp:"真っ白に仕上がる",read:"まっしろにしあがる",id:"menjadi putih bersih"},
+  {jp:"たたむ",read:"",id:"melipat"},
+  // HARI 5: Sampah & Lain-lain
+  {jp:"服を汚す",read:"ふくをよごす",id:"mengotori pakaian"},
+  {jp:"汚れ",read:"よごれ",id:"kotoran"},
+  {jp:"そでが真っ黒に汚れる",read:"そでがまっくろによごれる",id:"lengan bajunya kotor hitam pekat"},
+  {jp:"洗剤を入れる",read:"せんざいをいれる",id:"memasukkan deterjen"},
+  {jp:"スーツをクリーニングに出す",read:"",id:"mencuci jas di laundry"},
+  {jp:"コインランドリーで洗濯をする",read:"",id:"mencuci di koin laundry"},
+  {jp:"タオルを干す",read:"タオルをほす",id:"menjemur handuk"},
+  {jp:"服をつるす",read:"ふくをつるす",id:"menggantung baju"},
+  {jp:"ワイシャツにアイロンをかける",read:"",id:"menyeterika baju"},
+  {jp:"しわを伸ばす",read:"しわをのばす",id:"merapikan baju yang kusut"},
+  {jp:"しわが伸びる",read:"しわがのびる",id:"menjadi kusut"},
+  {jp:"ウールのセーターが縮む",read:"ちぢむ",id:"sweater bahan wool mengkerut"},
+  {jp:"ジーンズの色が落ちる",read:"いろがおちる",id:"warna jeans luntur"},
+  {jp:"ゴミを分けるのは面倒くさい",read:"めんどうだ",id:"memisahkan sampah itu merepotkan"},
+  {jp:"スリッパをそろえる",read:"",id:"merapikan sandal (sejajar)"},
+  {jp:"物置にしまう",read:"ものおきにしまう",id:"menyimpan di tempat penyimpanan"},
+  {jp:"生ゴミ",read:"なまゴミ",id:"sampah dapur"},
+  {jp:"燃えるゴミ",read:"もえるゴミ",id:"sampah yang bisa dibakar"},
+  {jp:"燃えないゴミ",read:"もえないゴミ",id:"sampah yang tidak bisa dibakar"},
+  // HARI 6: Hewan
+  {jp:"吠える",read:"ほえる",id:"menggonggong"},
+  {jp:"しっぽをふる",read:"",id:"mengibaskan ekor"},
+  {jp:"人になれる",read:"ひとになれる",id:"menjadi jinak"},
+  {jp:"うなる",read:"",id:"menggeram"},
+  {jp:"穴を掘る",read:"あなをほる",id:"menggali lubang"},
+  {jp:"穴を埋める",read:"あなをうめる",id:"mengisi lubang"},
+  {jp:"犬を飼う",read:"いぬをかう",id:"memelihara anjing"},
+  {jp:"散歩に連れて行く",read:"さんぽにつれていく",id:"mengajak pergi jalan-jalan"},
+  {jp:"犬にえさをやる",read:"あたえる",id:"memberi makan ke anjing"},
+  // HARI 6: Anak-anak
+  {jp:"かわいらしい",read:"",id:"lucu, imut"},
+  {jp:"かわいそうな",read:"",id:"kasihan"},
+  {jp:"行儀がいい",read:"ぎょうぎがいい",id:"berperilaku baik"},
+  {jp:"利口な／かしこい",read:"りこうな",id:"cerdas, cerdik"},
+  {jp:"人懐っこい",read:"ひとなつっこい",id:"ramah (mudah akrab)"},
+  {jp:"わがままな",read:"",id:"egois"},
+  {jp:"生意気な",read:"なまいきな",id:"nakal, seenaknya, sok"},
+  {jp:"生意気な態度",read:"なまいきなたいど",id:"bersikap seenaknya"},
+  {jp:"甘やかす",read:"あまやかす",id:"memanjakan"},
+  {jp:"かわいがる",read:"",id:"menyayangi"},
+  {jp:"おんぶする",read:"",id:"menggendong (di punggung)"},
+  {jp:"抱っこする",read:"だっこする",id:"menggendong (di lengan)"},
+  {jp:"育児／子育て",read:"いくじ／こそだて",id:"mendidik anak"},
+  {jp:"えらい",read:"",id:"hebat"},
+  {jp:"幼児",read:"ようじ",id:"anak kecil"},
+  {jp:"子どもが成長する",read:"せいちょうする",id:"anak tumbuh (besar)"},
+  {jp:"わがままに育つ",read:"そだつ",id:"tumbuh besar jadi anak yang egois"},
+  {jp:"頭をなでる",read:"あたまをなでる",id:"membelai kepala"},
+  {jp:"お尻をたたく",read:"おしりをたたく",id:"memukul pantat"},
+  {jp:"いたずらをする",read:"",id:"melakukan hal iseng"},
+  {jp:"いたずらな",read:"",id:"iseng, nakal"},
+  {jp:"手をつなぐ",read:"てをつなぐ",id:"menggandeng tangan"},
+  {jp:"はなす",read:"",id:"melepaskan"},
+  {jp:"子どもが迷子になる",read:"まいごになる",id:"anak tersesat/nyasar"},
+  {jp:"子どもが母親の後をついていく",read:"ははおやのあとをついていく",id:"anak mengikuti ibunya"},
+  // HARI 7: Kalender & Waktu
+  {jp:"元日／元旦",read:"がんじつ／がんたん",id:"1 Januari"},
+  {jp:"上旬／初旬",read:"じょうじゅん／しょじゅん",id:"awal bulan (tgl 1-10)"},
+  {jp:"中旬",read:"ちゅうじゅん",id:"tengah bulan (tgl 11-20)"},
+  {jp:"下旬",read:"げじゅん",id:"akhir bulan (tgl 21-31)"},
+  {jp:"月末",read:"げつまつ",id:"akhir bulan (tgl 28-31)"},
+  {jp:"平日",read:"へいじつ",id:"hari biasa (weekdays)"},
+  {jp:"祝日／祭日",read:"しゅくじつ／さいじつ",id:"hari libur nasional"},
+  {jp:"さきおととい",read:"",id:"3 hari yang lalu"},
+  {jp:"一昨日",read:"おととい",id:"kemarin lusa"},
+  {jp:"昨日",read:"きのう",id:"kemarin"},
+  {jp:"今日",read:"きょう",id:"hari ini"},
+  {jp:"明日",read:"あした",id:"besok"},
+  {jp:"あさって",read:"",id:"besok lusa"},
+  {jp:"しあさって",read:"",id:"3 hari ke depan"},
+  {jp:"昨年",read:"さくねん",id:"tahun lalu"},
+  {jp:"一昨年",read:"おととし",id:"2 tahun yang lalu"},
+  {jp:"再来年",read:"さいらいねん",id:"2 tahun ke depan"},
+  {jp:"先々月",read:"せんせんげつ",id:"2 bulan lalu"},
+  {jp:"先々週",read:"せんせんしゅう",id:"2 minggu lalu"},
+  {jp:"再来月",read:"さいらいげつ",id:"2 bulan ke depan"},
+  {jp:"再来週",read:"さいらいしゅう",id:"2 minggu ke depan"},
+  {jp:"先日",read:"せんじつ",id:"beberapa hari lalu"},
+  {jp:"年末年始",read:"ねんまつねんし",id:"akhir & awal tahun"},
+  {jp:"年の暮れ",read:"としのくれ",id:"akhir tahun"},
+  // HARI 7: Rencana & Travel
+  {jp:"予定",read:"よてい",id:"rencana"},
+  {jp:"日にち",read:"ひにち",id:"hari & tanggal"},
+  {jp:"日程",read:"にってい",id:"jadwal"},
+  {jp:"スケジュール",read:"",id:"jadwal (schedule)"},
+  {jp:"調整する",read:"ちょうせいする",id:"menyesuaikan"},
+  {jp:"変更する",read:"へんこうする",id:"mengganti"},
+  {jp:"ずらす",read:"",id:"menggeser"},
+  {jp:"休暇を取る",read:"きゅうかをとる",id:"mengambil cuti"},
+  {jp:"予約を取り消す／キャンセルする",read:"よやくをとりけす",id:"membatalkan reservasi"},
+  {jp:"旅行会社に申し込む",read:"りょこうがいしゃにもうしこむ",id:"mendaftar ke agen perjalanan"},
+  {jp:"荷物をつめる",read:"にもつをつめる",id:"packing barang"},
+  {jp:"海外旅行",read:"かいがいりょこう",id:"wisata internasional"},
+  {jp:"国内旅行",read:"こくないりょこう",id:"wisata domestik"},
+  {jp:"2泊3日で温泉に行く",read:"2はく3にでおんせんにいく",id:"pergi ke onsen selama 3 hari 2 malam"},
+  {jp:"日帰りで温泉に行く",read:"ひがえりでおんせんにいく",id:"pergi ke onsen seharian (PP)"},
+  {jp:"旅館に宿泊する",read:"りょかんにしゅくはくする",id:"menginap di ryokan"},
+];
+
+// ==================== STATE ====================
+let faceMode = 'jp';   // 'jp' | 'id'
+let orderMode = 'shuffle';
+let deck = [];
+let current = 0;
+let knowSet = new Set();
+let nopeSet = new Set();
+let isFlipped = false;
+let activeIndexes = [];  // indexes into vocab[]
+
+function setFace(m) {
+  faceMode = m;
+  document.querySelectorAll('#face-jp,#face-id').forEach(b=>b.classList.remove('active'));
+  document.getElementById('face-'+m).classList.add('active');
+}
+function setOrder(m) {
+  orderMode = m;
+  document.querySelectorAll('#order-shuffle,#order-seq').forEach(b=>b.classList.remove('active'));
+  document.getElementById('order-'+m).classList.add('active');
+}
+
+function shuffle(arr) {
+  let a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function startFlash() {
+  knowSet.clear(); nopeSet.clear();
+  activeIndexes = vocab.map((_,i)=>i);
+  if(orderMode==='shuffle') activeIndexes=shuffle(activeIndexes);
+  deck = activeIndexes;
+  current = 0;
+  document.getElementById('start-screen').style.display='none';
+  document.getElementById('done-screen').style.display='none';
+  document.getElementById('flash-screen').style.display='block';
+  renderCard();
+}
+
+function renderCard() {
+  const isFlipState = false;
+  document.getElementById('card-inner').classList.remove('flipped');
+  isFlipped = false;
+
+  const idx = deck[current];
+  const item = vocab[idx];
+
+  // Progress
+  const pct = (current / deck.length) * 100;
+  document.getElementById('fl-prog-fill').style.width = pct+'%';
+  document.getElementById('fl-prog-txt').textContent = `${current+1} / ${deck.length}`;
+  document.getElementById('fl-remain').textContent = `${deck.length - current - 1} sisa`;
+
+  // Front
+  if(faceMode==='jp') {
+    document.getElementById('front-label').textContent = '日本語';
+    document.getElementById('front-word').textContent = item.jp;
+    document.getElementById('front-read').textContent = item.read ? `（${item.read}）` : '';
+    document.getElementById('back-label').textContent = 'Artinya (Indonesia)';
+    document.getElementById('back-word').textContent = item.id;
+  } else {
+    document.getElementById('front-label').textContent = 'Bahasa Indonesia';
+    document.getElementById('front-word').textContent = item.id;
+    document.getElementById('front-read').textContent = '';
+    document.getElementById('back-label').textContent = '日本語';
+    document.getElementById('back-word').innerHTML = item.jp + (item.read ? `<br><span style="font-size:14px;font-weight:600;opacity:.75">（${item.read}）</span>` : '');
+  }
+
+  // Nav buttons
+  document.getElementById('btn-prev').disabled = (current === 0);
+  document.getElementById('btn-next-fl').disabled = (current === deck.length - 1);
+
+  updateStats();
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('card-inner').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard() {
+  if(current < deck.length - 1) { current++; renderCard(); }
+  else { showDone(); }
+}
+function prevCard() {
+  if(current > 0) { current--; renderCard(); }
+}
+
+function markCard(know) {
+  const idx = deck[current];
+  if(know) { knowSet.add(idx); nopeSet.delete(idx); }
+  else      { nopeSet.add(idx); knowSet.delete(idx); }
+  updateStats();
+  // auto advance
+  if(current < deck.length - 1) { current++; renderCard(); }
+  else { showDone(); }
+}
+
+function updateStats() {
+  document.getElementById('stat-total').textContent   = vocab.length;
+  document.getElementById('stat-know').textContent    = knowSet.size;
+  document.getElementById('stat-nope').textContent    = nopeSet.size;
+  const seen = knowSet.size + nopeSet.size;
+  document.getElementById('stat-unseen').textContent  = vocab.length - seen;
+}
+
+function reviewWrong() {
+  if(nopeSet.size === 0) { alert('Tidak ada kartu yang perlu diulang! Semua sudah hafal 🎉'); return; }
+  deck = orderMode==='shuffle' ? shuffle([...nopeSet]) : [...nopeSet];
+  current = 0;
+  document.getElementById('done-screen').style.display='none';
+  document.getElementById('flash-screen').style.display='block';
+  renderCard();
+}
+
+function reviewWrongFromDone() { reviewWrong(); }
+
+function reshuffleAll() {
+  knowSet.clear(); nopeSet.clear();
+  deck = shuffle(vocab.map((_,i)=>i));
+  current = 0;
+  renderCard();
+}
+
+function backToStart() {
+  document.getElementById('flash-screen').style.display='none';
+  document.getElementById('done-screen').style.display='none';
+  document.getElementById('start-screen').style.display='block';
+}
+
+function showDone() {
+  document.getElementById('flash-screen').style.display='none';
+  document.getElementById('done-screen').style.display='block';
+
+  const total = vocab.length;
+  const know = knowSet.size;
+  const pct = know / total;
+
+  document.getElementById('done-score').textContent = `${know}/${total}`;
+
+  let emoji,stars,msg;
+  if(pct>=0.95){emoji='🏆';stars='⭐⭐⭐⭐⭐';msg='Luar biasa! Hampir semua hafal!';}
+  else if(pct>=0.80){emoji='🎉';stars='⭐⭐⭐⭐';msg='Bagus banget! Tinggal sedikit lagi!';}
+  else if(pct>=0.60){emoji='😊';stars='⭐⭐⭐';msg='Lumayan! Terus berlatih ya!';}
+  else if(pct>=0.40){emoji='😅';stars='⭐⭐';msg='Masih perlu banyak latihan!';}
+  else{emoji='😓';stars='⭐';msg='Semangat! Ulangi terus ya!';}
+
+  document.getElementById('done-emoji').textContent=emoji;
+  document.getElementById('done-stars').textContent=stars;
+  document.getElementById('done-msg').textContent=msg;
+
+  // Wrong review
+  if(nopeSet.size>0){
+    const box=document.getElementById('review-wrong-box');
+    box.style.display='block';
+    const list=document.getElementById('review-wrong-list');
+    const nopeArr = [...nopeSet];
+    list.innerHTML = nopeArr.map(idx=>{
+      const v=vocab[idx];
+      return `<div class="review-item">
+        <div class="ri-jp">${v.jp}${v.read?' （'+v.read+'）':''}</div>
+        <div class="ri-id">→ ${v.id}</div>
+      </div>`;
+    }).join('');
+  }
+
+  updateStats();
+}
+</script>
+</body>
+</html>
