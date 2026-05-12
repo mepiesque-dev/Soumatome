@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Kotoba — Hari 22–28</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --coral:   #FF6B6B;
+  --mint:    #2EC4B6;
+  --coral-lt:#FFE8E8;
+  --mint-lt: #E0F7F5;
+  --coral-dk:#CC4444;
+  --mint-dk: #1A9E93;
+  --white:   #FFFFFF;
+  --dark:    #1C2B2B;
+  --gray:    #6B8080;
+  --correct: #2EC4B6;
+  --wrong:   #FF6B6B;
+  --r: 18px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Nunito',sans-serif;
+  background: linear-gradient(160deg,#FFF5F5 0%,#F0FFFE 100%);
+  min-height:100vh;
+  padding:16px;
+}
+
+/* ── dots bg pattern ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle,#FF6B6B22 1.5px,transparent 1.5px),
+                   radial-gradient(circle,#2EC4B622 1.5px,transparent 1.5px);
+  background-size:32px 32px,32px 32px;
+  background-position:0 0,16px 16px;
+  pointer-events:none;z-index:0;
+}
+
+.screen{display:none;position:relative;z-index:1;}
+.screen.active{display:block;}
+
+/* ══════════════ START ══════════════ */
+#startScreen{max-width:460px;margin:20px auto;}
+
+.brand{text-align:center;margin-bottom:20px;}
+.brand-icon{font-size:3rem;display:block;margin-bottom:4px;}
+.brand h1{
+  font-family:'Baloo 2',cursive;font-size:1.9rem;font-weight:800;
+  background:linear-gradient(135deg,var(--coral),var(--mint));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.1;
+}
+.brand p{color:var(--gray);font-size:.88rem;font-weight:700;margin-top:4px;}
+
+.card{
+  background:var(--white);border-radius:24px;padding:28px 22px;
+  box-shadow:0 8px 32px rgba(255,107,107,.12),0 2px 8px rgba(46,196,182,.1);
+}
+
+.section-label{
+  font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--coral);margin-bottom:10px;
+}
+
+/* mode */
+.mode-row{display:flex;gap:8px;margin-bottom:20px;}
+.mode-btn{
+  flex:1;padding:13px 6px;border:2.5px solid #eee;border-radius:14px;
+  background:#fafafa;cursor:pointer;font-family:'Nunito',sans-serif;
+  font-weight:700;font-size:.85rem;color:var(--dark);transition:all .2s;
+  line-height:1.3;text-align:center;
+}
+.mode-btn.sel{background:var(--coral);border-color:var(--coral);color:#fff;}
+
+/* count */
+.count-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.cnt-btn{
+  flex:1;min-width:70px;padding:10px 6px;border:2.5px solid #eee;
+  border-radius:12px;background:#fafafa;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.85rem;
+  color:var(--dark);transition:all .2s;text-align:center;
+}
+.cnt-btn.sel{background:var(--mint);border-color:var(--mint);color:#fff;}
+
+.start-btn{
+  width:100%;padding:15px;border:none;border-radius:16px;
+  background:linear-gradient(135deg,var(--coral) 0%,var(--mint) 100%);
+  color:#fff;font-family:'Baloo 2',cursive;font-size:1.25rem;font-weight:700;
+  cursor:pointer;box-shadow:0 6px 20px rgba(255,107,107,.3);
+  transition:transform .15s,box-shadow .15s;
+}
+.start-btn:active{transform:scale(.97);}
+
+.stat-chips{display:flex;gap:8px;margin-top:16px;}
+.chip{
+  flex:1;padding:8px 4px;border-radius:10px;text-align:center;
+  font-size:.78rem;font-weight:800;
+}
+.chip-coral{background:var(--coral-lt);color:var(--coral-dk);}
+.chip-mint {background:var(--mint-lt); color:var(--mint-dk);}
+
+/* ══════════════ QUIZ ══════════════ */
+#quizScreen{max-width:500px;margin:0 auto;}
+
+/* topbar */
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.score-pill{
+  padding:6px 14px;border-radius:99px;font-weight:800;font-size:.85rem;
+  white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+.s-coral{background:var(--coral-lt);color:var(--coral-dk);}
+.s-mint {background:var(--mint-lt); color:var(--mint-dk);}
+.prog-wrap{flex:1;}
+.prog-track{background:#e8f0ef;border-radius:99px;height:10px;overflow:hidden;}
+.prog-fill{
+  height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--coral),var(--mint));
+  transition:width .4s cubic-bezier(.4,0,.2,1);
+}
+.prog-txt{font-size:.72rem;font-weight:800;color:var(--gray);text-align:right;margin-top:2px;}
+
+/* question card */
+.q-card{
+  background:var(--white);border-radius:22px;
+  padding:26px 20px 20px;margin-bottom:12px;
+  box-shadow:0 6px 24px rgba(255,107,107,.1);
+  border-top:4px solid var(--coral);
+  animation:slideIn .3s ease;
+}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.q-day{
+  display:inline-block;padding:3px 10px;border-radius:99px;
+  background:var(--mint-lt);color:var(--mint-dk);
+  font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:12px;
+}
+.q-main{
+  font-size:1.55rem;font-weight:800;color:var(--dark);
+  text-align:center;line-height:1.3;
+}
+.q-read{font-size:.9rem;color:var(--gray);text-align:center;margin-top:5px;font-weight:600;}
+
+/* options */
+.opts{display:flex;flex-direction:column;gap:9px;margin-bottom:10px;}
+.opt{
+  padding:13px 16px;border:2.5px solid #E8F0EF;border-radius:14px;
+  background:#FAFEFE;cursor:pointer;font-family:'Nunito',sans-serif;
+  font-weight:700;font-size:.9rem;color:var(--dark);text-align:left;
+  transition:all .18s;line-height:1.4;
+}
+.opt:hover:not(:disabled){
+  border-color:var(--coral);background:var(--coral-lt);
+  transform:translateX(4px);
+}
+.opt.correct{background:var(--mint-lt);border-color:var(--mint);color:var(--mint-dk);}
+.opt.wrong  {background:var(--coral-lt);border-color:var(--coral);color:var(--coral-dk);}
+.opt:disabled{cursor:default;}
+
+/* feedback */
+.feedback{
+  padding:11px 16px;border-radius:12px;font-weight:800;font-size:.88rem;
+  text-align:center;margin-bottom:10px;display:none;animation:pop .2s ease;
+}
+@keyframes pop{from{transform:scale(.95)}to{transform:scale(1)}}
+.feedback.show{display:block;}
+.fb-ok{background:var(--mint-lt);color:var(--mint-dk);}
+.fb-ng{background:var(--coral-lt);color:var(--coral-dk);}
+
+.next-btn{
+  width:100%;padding:13px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,var(--mint),var(--coral));
+  color:#fff;font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:700;
+  cursor:pointer;display:none;transition:opacity .2s;
+}
+.next-btn.show{display:block;}
+
+/* ══════════════ RESULT ══════════════ */
+#resultScreen{max-width:460px;margin:20px auto;}
+.res-card{
+  background:var(--white);border-radius:24px;padding:32px 22px;
+  box-shadow:0 8px 32px rgba(46,196,182,.15);
+  text-align:center;
+}
+.res-emoji{font-size:3.5rem;margin-bottom:8px;}
+.res-title{font-family:'Baloo 2',cursive;font-size:1.8rem;font-weight:800;color:var(--dark);}
+.res-pct{
+  font-size:3.2rem;font-weight:800;margin:10px 0;
+  background:linear-gradient(135deg,var(--coral),var(--mint));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.res-stars{font-size:1.8rem;margin-bottom:8px;}
+.res-msg{color:var(--gray);font-size:.92rem;font-weight:700;margin-bottom:20px;}
+
+.wrong-section{text-align:left;margin-bottom:18px;max-height:320px;overflow-y:auto;}
+.wrong-section h3{
+  font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--coral);margin-bottom:10px;
+}
+.wrong-item{
+  background:var(--coral-lt);border-radius:12px;padding:10px 14px;
+  margin-bottom:7px;font-size:.84rem;color:#883030;line-height:1.6;
+}
+.wrong-item b{color:var(--dark);}
+
+.res-btns{display:flex;gap:10px;}
+.res-btn{
+  flex:1;padding:13px;border:none;border-radius:14px;
+  font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;
+  cursor:pointer;transition:transform .15s;
+}
+.res-btn:active{transform:scale(.97);}
+.btn-retry{background:linear-gradient(135deg,var(--coral),#ff9f43);color:#fff;}
+.btn-home {background:linear-gradient(135deg,var(--mint),#0096c7);color:#fff;}
+</style>
+</head>
+<body>
+
+<!-- ══════ START ══════ -->
+<div id="startScreen" class="screen active">
+  <div class="brand">
+    <span class="brand-icon">💼</span>
+    <h1>Kotoba Quiz<br>Hari 22–28</h1>
+    <p>Kerja · Komputer · Email · Keluarga · Salam · Sifat · Kesehatan</p>
+  </div>
+  <div class="card">
+    <div class="section-label">Mode Soal</div>
+    <div class="mode-row">
+      <button class="mode-btn sel" onclick="setMode('jp-id',this)">🇯🇵→🇮🇩<br><small>JP ke Indonesia</small></button>
+      <button class="mode-btn" onclick="setMode('id-jp',this)">🇮🇩→🇯🇵<br><small>Indonesia ke JP</small></button>
+    </div>
+
+    <div class="section-label">Jumlah Soal</div>
+    <div class="count-row">
+      <button class="cnt-btn" onclick="setCount(10,this)">10</button>
+      <button class="cnt-btn" onclick="setCount(20,this)">20</button>
+      <button class="cnt-btn" onclick="setCount(30,this)">30</button>
+      <button class="cnt-btn" onclick="setCount(50,this)">50</button>
+      <button class="cnt-btn sel" onclick="setCount(204,this)">Semua</button>
+    </div>
+
+    <button class="start-btn" onclick="startQuiz()">▶ Mulai Latihan!</button>
+
+    <div class="stat-chips">
+      <div class="chip chip-coral">📚 204 Kotoba</div>
+      <div class="chip chip-mint">🗓 Hari 22–28</div>
+      <div class="chip chip-coral">🎯 4 Pilihan</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ QUIZ ══════ -->
+<div id="quizScreen" class="screen">
+  <div class="topbar">
+    <div class="score-pill s-coral">✅ <span id="sVal">0</span></div>
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
+      <div class="prog-txt" id="pTxt">0 / 0</div>
+    </div>
+    <div class="score-pill s-mint">❌ <span id="wVal">0</span></div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-day" id="qDay"></div>
+    <div class="q-main" id="qMain"></div>
+    <div class="q-read" id="qRead"></div>
+  </div>
+
+  <div class="opts" id="optsBox"></div>
+  <div class="feedback" id="fbBar"></div>
+  <button class="next-btn" id="nxtBtn" onclick="next()">Lanjut →</button>
+</div>
+
+<!-- ══════ RESULT ══════ -->
+<div id="resultScreen" class="screen">
+  <div class="res-card">
+    <div class="res-emoji" id="rEmoji"></div>
+    <div class="res-title">Hasil Quiz</div>
+    <div class="res-pct" id="rPct"></div>
+    <div class="res-stars" id="rStars"></div>
+    <div class="res-msg" id="rMsg"></div>
+    <div class="wrong-section" id="wrongSec"></div>
+    <div class="res-btns">
+      <button class="res-btn btn-retry" onclick="startQuiz()">🔄 Ulangi</button>
+      <button class="res-btn btn-home"  onclick="goHome()">🏠 Menu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// VOCAB DATA — 204 kata (Hari 22–28)
+// ════════════════════════════════════════
+const V = [
+  // ── HARI 22 · Jenis Pekerjaan (10) ──
+  {d:"Hari 22 · Pekerjaan",jp:"レストランでアルバイト",r:"れすとらんでのあるばいと",id:"kerja part-time di restoran"},
+  {d:"Hari 22 · Pekerjaan",jp:"工場でパート",r:"こうじょうでぱーと",id:"kerja part-time di pabrik"},
+  {d:"Hari 22 · Pekerjaan",jp:"コンビニの店員",r:"こんびにのてんいん",id:"pegawai toko (konbini)"},
+  {d:"Hari 22 · Pekerjaan",jp:"英会話講師",r:"えいかいわこうし",id:"pengajar kelas percakapan bahasa Inggris"},
+  {d:"Hari 22 · Pekerjaan",jp:"翻訳の仕事",r:"ほんやくのしごと",id:"bekerja sebagai translator"},
+  {d:"Hari 22 · Pekerjaan",jp:"翻訳する",r:"ほんやくする",id:"menerjemahkan (tulisan)"},
+  {d:"Hari 22 · Pekerjaan",jp:"通訳の仕事",r:"つうやくのしごと",id:"bekerja sebagai interpreter"},
+  {d:"Hari 22 · Pekerjaan",jp:"通訳する",r:"つうやくする",id:"menerjemahkan (lisan)"},
+  {d:"Hari 22 · Pekerjaan",jp:"事務の手伝い",r:"じむのてつだい",id:"bantu urusan kantor"},
+  {d:"Hari 22 · Pekerjaan",jp:"ホームヘルパー",r:"ほーむへるぱー",id:"membantu urusan rumah"},
+  // ── HARI 22 · Kondisi Kerja (22) ──
+  {d:"Hari 22 · Kondisi Kerja",jp:"仕事を探す",r:"しごとをさがす",id:"mencari pekerjaan"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"履歴書を書く",r:"りれきしょをかく",id:"menulis CV lamaran"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"面接をする",r:"めんせつをする",id:"melakukan wawancara"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"ホテルの従業員",r:"ほてるのじゅうぎょういん",id:"pegawai hotel"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"仕事仲間",r:"しごとなかま",id:"rekan kerja"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"給料",r:"きゅうりょう",id:"gaji"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"時給 1200円",r:"じきゅう 1200えん",id:"gaji per jam 1200 yen"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"ボーナス",r:"ぼーなす",id:"bonus"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"交通費が出る",r:"こうつうひがでる",id:"dapat biaya transport"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"勤務時間",r:"きんむじかん",id:"jam kerja"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"やとう",r:"やとう",id:"mempekerjakan"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"やとわれる",r:"やとわれる",id:"dipekerjakan"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"きつい仕事",r:"きつい（＝つらい）しごと",id:"pekerjaan yang berat / keras"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"お金をかせぐ",r:"おかねをかせぐ",id:"mencari uang"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"お金をもうける",r:"おかねをもうける",id:"menghasilkan banyak uang"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"お金がもうかる",r:"おかねがもうかる",id:"untung / dapat banyak uang"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"仕事を済ます／済ませる",r:"しごとをすます／すませる",id:"menyelesaikan pekerjaan"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"仕事をなまける",r:"しごとをなまける",id:"malas-malasan bekerja"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"なまけ者",r:"なまけもの",id:"pemalas"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"働き者",r:"はたらきもの",id:"pekerja keras"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"首になる",r:"くびになる",id:"dipecat / diberhentikan"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"やめさせられる",r:"やめさせられる",id:"diminta berhenti"},
+
+  // ── HARI 23 · Komputer (21) ──
+  {d:"Hari 23 · Komputer",jp:"初めてパソコンをさわる",r:"はじめてぱそこんをさわる",id:"pertama kali memakai komputer"},
+  {d:"Hari 23 · Komputer",jp:"初心者",r:"しょしんしゃ",id:"pemula"},
+  {d:"Hari 23 · Komputer",jp:"入門講座を受ける",r:"にゅうもんこうざをうける",id:"mengikuti kursus pengantar / dasar"},
+  {d:"Hari 23 · Komputer",jp:"パソコンに慣れる",r:"ぱそこんになれる",id:"terbiasa dengan komputer"},
+  {d:"Hari 23 · Komputer",jp:"新製品",r:"しんせいひん",id:"produk baru"},
+  {d:"Hari 23 · Komputer",jp:"新品",r:"しんぴん",id:"barang yang masih baru"},
+  {d:"Hari 23 · Komputer",jp:"中古",r:"ちゅうこ",id:"barang bekas"},
+  {d:"Hari 23 · Komputer",jp:"画面を見る",r:"がめんをみる",id:"melihat layar / monitor"},
+  {d:"Hari 23 · Komputer",jp:"ソフトウェアをインストールする",r:"そふとうえあをいんすとーるする",id:"menginstall software"},
+  {d:"Hari 23 · Komputer",jp:"スタートボタンをクリックする",r:"すたーとぼたんをくりっくする",id:"mengklik tombol start"},
+  {d:"Hari 23 · Komputer",jp:"ファイルを開く",r:"ふぁいるをひらく",id:"membuka file"},
+  {d:"Hari 23 · Komputer",jp:"閉じる",r:"とじる",id:"menutup (file/jendela)"},
+  {d:"Hari 23 · Komputer",jp:"年賀状を作る",r:"ねんがじょうをつくる",id:"membuat kartu ucapan tahun baru"},
+  {d:"Hari 23 · Komputer",jp:"インターネットにつなぐ",r:"いんたーねっとにつなぐ",id:"menghubungkan ke internet"},
+  {d:"Hari 23 · Komputer",jp:"世界中とつながる",r:"せかいじゅうとつながる",id:"terhubung dengan seluruh dunia"},
+  {d:"Hari 23 · Komputer",jp:"情報を得る",r:"じょうほうをえる",id:"mendapatkan informasi"},
+  {d:"Hari 23 · Komputer",jp:"オークションに参加する",r:"おーくしょんにさんかする",id:"berpartisipasi dalam lelang"},
+  {d:"Hari 23 · Komputer",jp:"オークションに品物を出す",r:"おーくしょんにしなものをだす",id:"melelang suatu barang"},
+  {d:"Hari 23 · Komputer",jp:"出品する",r:"しゅっぴんする",id:"mendisplay / menampilkan barang (lelang)"},
+  {d:"Hari 23 · Komputer",jp:"ホームページを作る",r:"ほーむぺーじをつくる",id:"membuat halaman di internet"},
+  {d:"Hari 23 · Komputer",jp:"ブログを始める",r:"ぶろぐをはじめる",id:"memulai / menulis blog"},
+
+  // ── HARI 24 · Email (22) ──
+  {d:"Hari 24 · Email",jp:"入力する",r:"にゅうりょくする",id:"menginput"},
+  {d:"Hari 24 · Email",jp:"ローマ字で入力する",r:"ろーまじでにゅうりょくする",id:"input dengan romaji"},
+  {d:"Hari 24 · Email",jp:"漢字に変換する",r:"かんじにへんかんする",id:"mengganti ke kanji"},
+  {d:"Hari 24 · Email",jp:"挿入する",r:"そうにゅうする",id:"memasukkan / menyisipkan"},
+  {d:"Hari 24 · Email",jp:"削除する",r:"さくじょする",id:"menghapus"},
+  {d:"Hari 24 · Email",jp:"受信する",r:"じゅしんする",id:"menerima (email)"},
+  {d:"Hari 24 · Email",jp:"送信する",r:"そうしんする",id:"mengirim (email)"},
+  {d:"Hari 24 · Email",jp:"返信する",r:"へんしんする",id:"membalas (email)"},
+  {d:"Hari 24 · Email",jp:"転送する",r:"てんそうする",id:"meneruskan / forward (email)"},
+  {d:"Hari 24 · Email",jp:"新規作成する",r:"しんきさくせいする",id:"membuat (email) baru"},
+  {d:"Hari 24 · Email",jp:"まとめて送る",r:"まとめておくる",id:"mengirim jadi satu"},
+  {d:"Hari 24 · Email",jp:"整理する",r:"せいりする",id:"mengatur / merapikan"},
+  {d:"Hari 24 · Email",jp:"チェックする",r:"ちぇっくする",id:"mengecek"},
+  {d:"Hari 24 · Email",jp:"あて先",r:"あてさき",id:"tujuan pengiriman (email)"},
+  {d:"Hari 24 · Email",jp:"差出人",r:"さしだしにん",id:"pengirim (email)"},
+  {d:"Hari 24 · Email",jp:"件名",r:"けんめい",id:"judul / subjek email"},
+  {d:"Hari 24 · Email",jp:"メールのやり取りをする",r:"めーるのやりとりをする",id:"saling mengirimkan email"},
+  {d:"Hari 24 · Email",jp:"写真を添付する",r:"しゃしんをてんぷする",id:"melampirkan foto (attachment)"},
+  {d:"Hari 24 · Email",jp:"改行する",r:"かいぎょうする",id:"membuat baris baru (enter)"},
+  {d:"Hari 24 · Email",jp:"送信が完了する",r:"そうしんがかんりょうする",id:"pengiriman telah selesai"},
+  {d:"Hari 24 · Email",jp:"アドレス帳",r:"あどれすちょう",id:"buku alamat (kontak email)"},
+  {d:"Hari 24 · Email",jp:"送信者のアドレスを登録する",r:"そうしんしゃの（めーる）あどれすをとうろくする",id:"mendaftarkan alamat pengirim"},
+
+  // ── HARI 25 · Keluarga (16) ──
+  {d:"Hari 25 · Keluarga",jp:"長男",r:"ちょうなん",id:"putra sulung"},
+  {d:"Hari 25 · Keluarga",jp:"長女",r:"ちょうじょ",id:"putri sulung"},
+  {d:"Hari 25 · Keluarga",jp:"次男",r:"じなん",id:"anak laki-laki kedua"},
+  {d:"Hari 25 · Keluarga",jp:"次女",r:"じじょ",id:"anak perempuan kedua"},
+  {d:"Hari 25 · Keluarga",jp:"三男",r:"さんなん",id:"anak laki-laki ketiga"},
+  {d:"Hari 25 · Keluarga",jp:"末っ子",r:"すえっこ",id:"anak bungsu"},
+  {d:"Hari 25 · Keluarga",jp:"おじ",r:"おじ",id:"paman / om"},
+  {d:"Hari 25 · Keluarga",jp:"おば",r:"おば",id:"bibi / tante"},
+  {d:"Hari 25 · Keluarga",jp:"親せき",r:"しんせき",id:"saudara (kerabat)"},
+  {d:"Hari 25 · Keluarga",jp:"孫",r:"まご",id:"cucu"},
+  {d:"Hari 25 · Keluarga",jp:"おい",r:"おい",id:"keponakan laki-laki"},
+  {d:"Hari 25 · Keluarga",jp:"めい",r:"めい",id:"keponakan perempuan"},
+  {d:"Hari 25 · Keluarga",jp:"いとこ",r:"いとこ",id:"sepupu"},
+  {d:"Hari 25 · Keluarga",jp:"一人っ子",r:"ひとりっこ",id:"anak tunggal"},
+  {d:"Hari 25 · Keluarga",jp:"一人息子",r:"ひとりむすこ",id:"anak tunggal laki-laki"},
+  {d:"Hari 25 · Keluarga",jp:"一人娘",r:"ひとりむすめ",id:"anak tunggal perempuan"},
+  // ── HARI 25 · Pekerjaan & Status (11) ──
+  {d:"Hari 25 · Status Kerja",jp:"職場の同僚",r:"しょくばのどうりょう",id:"rekan kerja (di tempat kerja)"},
+  {d:"Hari 25 · Status Kerja",jp:"職場の上司",r:"しょくばのじょうし",id:"atasan di tempat kerja"},
+  {d:"Hari 25 · Status Kerja",jp:"職場の部下",r:"しょくばのぶか",id:"bawahan di tempat kerja"},
+  {d:"Hari 25 · Status Kerja",jp:"会社の先輩",r:"かいしゃのせんぱい",id:"senior di perusahaan"},
+  {d:"Hari 25 · Status Kerja",jp:"会社の後輩",r:"かいしゃのこうはい",id:"junior di perusahaan"},
+  {d:"Hari 25 · Status Kerja",jp:"部長",r:"ぶちょう",id:"general manager"},
+  {d:"Hari 25 · Status Kerja",jp:"課長",r:"かちょう",id:"manager"},
+  {d:"Hari 25 · Status Kerja",jp:"会社員",r:"かいしゃいん",id:"pegawai kantor"},
+  {d:"Hari 25 · Status Kerja",jp:"サラリーマン",r:"さらりーまん",id:"karyawan kantor"},
+  {d:"Hari 25 · Status Kerja",jp:"主婦",r:"しゅふ",id:"ibu rumah tangga"},
+  {d:"Hari 25 · Status Kerja",jp:"教師",r:"きょうし",id:"pengajar"},
+  // ── HARI 25 · Pendidikan (4) ──
+  {d:"Hari 25 · Pendidikan",jp:"大学生",r:"だいがくせい",id:"mahasiswa"},
+  {d:"Hari 25 · Pendidikan",jp:"高校生",r:"こうこうせい",id:"siswa SMA"},
+  {d:"Hari 25 · Pendidikan",jp:"中学生",r:"ちゅうがくせい",id:"siswa SMP"},
+  {d:"Hari 25 · Pendidikan",jp:"小学生",r:"しょうがくせい",id:"siswa SD"},
+  // ── HARI 25 · Ekspresi (4) ──
+  {d:"Hari 25 · Ekspresi",jp:"6人兄弟の末っ子",r:"ろくにんきょうだいのすえっこ",id:"anak bungsu dari 6 bersaudara"},
+  {d:"Hari 25 · Ekspresi",jp:"3人姉妹のいちばん上",r:"さんにんしまいのいちばんうえ",id:"anak sulung dari 3 bersaudara perempuan"},
+  {d:"Hari 25 · Ekspresi",jp:"兄弟",r:"きょうだい",id:"saudara (laki-laki maupun perempuan)"},
+  {d:"Hari 25 · Ekspresi",jp:"姉妹",r:"しまい",id:"saudara perempuan saja"},
+
+  // ── HARI 26 · Salam (24) ──
+  {d:"Hari 26 · Salam",jp:"お国はどちらですか",r:"おくにはどちらですか",id:"negara kamu mana?"},
+  {d:"Hari 26 · Salam",jp:"お生まれはどちらですか",r:"おうまれはどちらですか",id:"lahirnya di mana?"},
+  {d:"Hari 26 · Salam",jp:"どちらのご出身ですか",r:"どちらのごしゅっしんですか",id:"berasal dari mana?"},
+  {d:"Hari 26 · Salam",jp:"イギリス出身です",r:"いぎりすしゅっしんです",id:"berasal dari Inggris"},
+  {d:"Hari 26 · Salam",jp:"お住まいはどちらですか",r:"おすまいはどちらですか",id:"tinggalnya di mana?"},
+  {d:"Hari 26 · Salam",jp:"この近くです",r:"このちかくです",id:"di dekat sini"},
+  {d:"Hari 26 · Salam",jp:"先日は、ありがとうございました",r:"せんじつは、ありがとうございました",id:"terima kasih atas... beberapa hari yang lalu"},
+  {d:"Hari 26 · Salam",jp:"とんでもないです。こちらこそ",r:"とんでもないです。こちらこそ",id:"tidak apa-apa / sama-sama"},
+  {d:"Hari 26 · Salam",jp:"どうぞお上がりください",r:"どうぞおあがりください",id:"silahkan masuk"},
+  {d:"Hari 26 · Salam",jp:"おじゃまします",r:"おじゃまします",id:"permisi (saat masuk rumah orang)"},
+  {d:"Hari 26 · Salam",jp:"こちらでおかけになってお待ちください",r:"こちらでおかけになっておまちください",id:"silahkan duduk menunggu di sini"},
+  {d:"Hari 26 · Salam",jp:"お茶をお持ちします",r:"おちゃをおもちします",id:"saya akan bawakan teh"},
+  {d:"Hari 26 · Salam",jp:"どうぞおかまいなく",r:"どうぞおかまいなく",id:"tidak usah repot-repot"},
+  {d:"Hari 26 · Salam",jp:"どうぞお召し上がりください",r:"どうぞおめしあがりください",id:"silahkan dimakan / diminum"},
+  {d:"Hari 26 · Salam",jp:"では、遠慮なくいただきます",r:"では、えんりょなくいただきます",id:"baik, saya terima (menerima tawaran)"},
+  {d:"Hari 26 · Salam",jp:"ご無沙汰しています。お元気でいらっしゃいますか",r:"ごぶさたしています。おげんきでいらっしゃいますか",id:"lama tidak bertemu, apa kabar?"},
+  {d:"Hari 26 · Salam",jp:"ええ、おかげさまで",r:"ええ、おかげさまで",id:"baik, berkat doa Anda"},
+  {d:"Hari 26 · Salam",jp:"田中さんのご主人、亡くなったそうですよ",r:"たなかさんのごしゅじん、なくなったそうですよ",id:"suami Tanaka-san katanya meninggal"},
+  {d:"Hari 26 · Salam",jp:"そうですか。お気の毒に",r:"そうですか。おきのどくに",id:"oh begitu... kasihan (turut berduka)"},
+  {d:"Hari 26 · Salam",jp:"お目にかかるのを楽しみにしています",r:"おめにかかるのをたのしみにしています",id:"saya menantikan hari kita bertemu"},
+  {d:"Hari 26 · Salam",jp:"お先に失礼します",r:"おさきにしつれいします",id:"saya pamit terlebih dahulu"},
+  {d:"Hari 26 · Salam",jp:"ご苦労さま／お疲れさま",r:"ごくろうさま／おつかれさま",id:"terima kasih atas kerja keras hari ini"},
+  {d:"Hari 26 · Salam",jp:"お先に",r:"おさきに",id:"saya duluan (pulang)"},
+  {d:"Hari 26 · Salam",jp:"お疲れさまでした",r:"おつかれさまでした",id:"terima kasih atas kerja keras hari ini (formal)"},
+
+  // ── HARI 27 · Sifat Positif (18) ──
+  {d:"Hari 27 · Sifat Positif",jp:"かしこい",r:"かしこい",id:"pintar"},
+  {d:"Hari 27 · Sifat Positif",jp:"礼儀正しい",r:"れいぎただしい",id:"sopan"},
+  {d:"Hari 27 · Sifat Positif",jp:"正直な",r:"しょうじきな",id:"jujur / tidak bohong"},
+  {d:"Hari 27 · Sifat Positif",jp:"正直に言うと",r:"しょうじきにいうと",id:"sejujurnya"},
+  {d:"Hari 27 · Sifat Positif",jp:"素直な",r:"すなおな",id:"jujur / apa adanya"},
+  {d:"Hari 27 · Sifat Positif",jp:"純粋な",r:"じゅんすいな",id:"polos / murni"},
+  {d:"Hari 27 · Sifat Positif",jp:"純粋な気持ち",r:"じゅんすいきもち",id:"perasaan murni"},
+  {d:"Hari 27 · Sifat Positif",jp:"かっこいい",r:"かっこいい",id:"penampilan keren / cakep"},
+  {d:"Hari 27 · Sifat Positif",jp:"勇気のある",r:"ゆうきのある",id:"berani"},
+  {d:"Hari 27 · Sifat Positif",jp:"ユーモアのある",r:"ゆーもあのある",id:"humoris"},
+  {d:"Hari 27 · Sifat Positif",jp:"積極的な",r:"せっきょくてきな",id:"agresif / aktif"},
+  {d:"Hari 27 · Sifat Positif",jp:"落ち着いている",r:"おちついている",id:"tenang / kalem"},
+  {d:"Hari 27 · Sifat Positif",jp:"おとなしい",r:"おとなしい",id:"nurut / pendiam"},
+  {d:"Hari 27 · Sifat Positif",jp:"まじめな",r:"まじめな",id:"sungguh-sungguh / serius"},
+  {d:"Hari 27 · Sifat Positif",jp:"のんきな",r:"のんきな",id:"santai / kalem"},
+  {d:"Hari 27 · Sifat Positif",jp:"ハンサムな",r:"はんさむな",id:"tampan"},
+  {d:"Hari 27 · Sifat Positif",jp:"美人",r:"びじん",id:"cantik"},
+  {d:"Hari 27 · Sifat Positif",jp:"スマートな",r:"すまーとな",id:"slim / stylish / cekatan"},
+  // ── HARI 27 · Sifat Negatif (18) ──
+  {d:"Hari 27 · Sifat Negatif",jp:"かっこ悪い",r:"かっこわるい",id:"penampilan buruk"},
+  {d:"Hari 27 · Sifat Negatif",jp:"消極的な",r:"しょうきょくてきな",id:"pasif"},
+  {d:"Hari 27 · Sifat Negatif",jp:"意地悪な",r:"いじわるな",id:"suka iseng (jahat)"},
+  {d:"Hari 27 · Sifat Negatif",jp:"意地悪をする",r:"いじわるをする",id:"berbuat iseng / jahat"},
+  {d:"Hari 27 · Sifat Negatif",jp:"うそをつく",r:"うそをつく",id:"berbohong"},
+  {d:"Hari 27 · Sifat Negatif",jp:"うそつき",r:"うそつき",id:"pembohong"},
+  {d:"Hari 27 · Sifat Negatif",jp:"ずるい",r:"ずるい",id:"licik / curang"},
+  {d:"Hari 27 · Sifat Negatif",jp:"ずうずうしい",r:"ずうずうしい",id:"kurang ajar / tidak tahu malu"},
+  {d:"Hari 27 · Sifat Negatif",jp:"しつこい",r:"しつこい",id:"ngeyel / tidak mau menyerah"},
+  {d:"Hari 27 · Sifat Negatif",jp:"しつこく注意する",r:"しつこくちゅういする",id:"memperingatkan terus-menerus"},
+  {d:"Hari 27 · Sifat Negatif",jp:"だらしない",r:"だらしない",id:"ceroboh / tidak teratur"},
+  {d:"Hari 27 · Sifat Negatif",jp:"けちな",r:"けちな",id:"pelit"},
+  {d:"Hari 27 · Sifat Negatif",jp:"無責任な",r:"むせきにんな",id:"tidak bertanggung jawab"},
+  {d:"Hari 27 · Sifat Negatif",jp:"いいかげんな",r:"いいかげんな",id:"tidak tanggung jawab / sembarangan"},
+  {d:"Hari 27 · Sifat Negatif",jp:"いいかげんなことを言う",r:"いいかげんなことをいう",id:"mengatakan hal yang tidak bertanggung jawab"},
+  {d:"Hari 27 · Sifat Negatif",jp:"いいかげんにしろ！",r:"いいかげんにしろ！",id:"sudah, cukup! hentikan!"},
+
+  // ── HARI 28 · Gejala Sakit (16) ──
+  {d:"Hari 28 · Gejala Sakit",jp:"体の調子／具合が悪い",r:"からだのちょうし／ぐあいがわるい",id:"kondisi badan sedang buruk"},
+  {d:"Hari 28 · Gejala Sakit",jp:"めまいがする",r:"めまいがする",id:"pusing (kliyengan)"},
+  {d:"Hari 28 · Gejala Sakit",jp:"頭痛がする",r:"ずつうがする",id:"sakit kepala"},
+  {d:"Hari 28 · Gejala Sakit",jp:"胃が痛い",r:"いがいたい",id:"lambung / perut terasa sakit"},
+  {d:"Hari 28 · Gejala Sakit",jp:"腰が痛い",r:"こしがいたい",id:"sakit pinggang"},
+  {d:"Hari 28 · Gejala Sakit",jp:"息が苦しい",r:"いきがくるしい",id:"sesak nafas"},
+  {d:"Hari 28 · Gejala Sakit",jp:"苦しむ",r:"くるしむ",id:"menderita"},
+  {d:"Hari 28 · Gejala Sakit",jp:"鼻がつまる",r:"はながつまる",id:"hidung tersumbat"},
+  {d:"Hari 28 · Gejala Sakit",jp:"鼻をかむ",r:"はなをかむ",id:"membuang ingus"},
+  {d:"Hari 28 · Gejala Sakit",jp:"吐き気がする",r:"はきけがする",id:"mual / ingin muntah"},
+  {d:"Hari 28 · Gejala Sakit",jp:"吐く",r:"はく",id:"muntah"},
+  {d:"Hari 28 · Gejala Sakit",jp:"気分が悪い／気持ち（が）悪い",r:"きぶんがわるい／きもち（が）わるい",id:"merasa tidak enak badan"},
+  {d:"Hari 28 · Gejala Sakit",jp:"目がかゆい",r:"めがかゆい",id:"mata terasa gatal"},
+  {d:"Hari 28 · Gejala Sakit",jp:"目をこする／かく",r:"めをこする／かく",id:"mengucek mata"},
+  {d:"Hari 28 · Gejala Sakit",jp:"風邪を引いてつらい",r:"かぜをひいてつらい",id:"terasa menyakitkan karena kena flu"},
+  {d:"Hari 28 · Gejala Sakit",jp:"アレルギーがある",r:"あれるぎーがある",id:"mempunyai alergi"},
+  // ── HARI 28 · Pemeriksaan & Pengobatan (18) ──
+  {d:"Hari 28 · Pengobatan",jp:"患者「お世話になりました。」",r:"かんじゃ「おせわになりました。」",id:"(pasien) terima kasih atas bantuannya selama ini"},
+  {d:"Hari 28 · Pengobatan",jp:"看護師「お大事に。」",r:"かんごし「おだいじに。」",id:"(perawat) semoga lekas sembuh"},
+  {d:"Hari 28 · Pengobatan",jp:"専門の医師にみてもらう",r:"せんもんのいしにみてもらう",id:"diperiksa oleh dokter spesialis"},
+  {d:"Hari 28 · Pengobatan",jp:"医師の診察を受ける",r:"いしのしんさつをうける",id:"periksa ke dokter"},
+  {d:"Hari 28 · Pengobatan",jp:"歯医者にかかる",r:"はいしゃにかかる",id:"pergi ke dokter gigi"},
+  {d:"Hari 28 · Pengobatan",jp:"インフルエンザにかかる",r:"いんふるえんざにかかる",id:"terkena influenza"},
+  {d:"Hari 28 · Pengobatan",jp:"病気の症状",r:"びょうきのしょうじょう",id:"gejala penyakit"},
+  {d:"Hari 28 · Pengobatan",jp:"注射をしてもらう",r:"ちゅうしゃをしてもらう",id:"disuntik"},
+  {d:"Hari 28 · Pengobatan",jp:"手術を受ける",r:"しゅじゅつをうける",id:"dioperasi"},
+  {d:"Hari 28 · Pengobatan",jp:"痛みをがまんする",r:"いたみをがまんする",id:"menahan rasa sakit"},
+  {d:"Hari 28 · Pengobatan",jp:"花粉症になる",r:"かふんしょうになる",id:"terkena kafunsho (alergi serbuk sari)"},
+  {d:"Hari 28 · Pengobatan",jp:"うがいをする",r:"うがいをする",id:"kumur-kumur"},
+  {d:"Hari 28 · Pengobatan",jp:"けがを治す",r:"けがをなおす",id:"menyembuhkan luka"},
+  {d:"Hari 28 · Pengobatan",jp:"手の傷",r:"てのきず",id:"luka di tangan"},
+  {d:"Hari 28 · Pengobatan",jp:"やけどをする",r:"やけどをする",id:"terkena luka bakar"},
+  {d:"Hari 28 · Pengobatan",jp:"大したことがない",r:"たいしたことがない",id:"bukan masalah berarti / tidak parah"},
+  {d:"Hari 28 · Pengobatan",jp:"ましになる",r:"ましになる",id:"mendingan (kondisinya)"},
+  {d:"Hari 28 · Pengobatan",jp:"（お）見舞いに行く",r:"（お）みまいにいく",id:"pergi menjenguk (orang sakit)"},
+];
+
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+let mode = 'jp-id';
+let count = 204;
+let qs = [];
+let cur = 0;
+let score = 0;
+let wrongs = [];
+let answered = false;
+
+function setMode(m, btn) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function setCount(n, btn) {
+  count = n;
+  document.querySelectorAll('.cnt-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildQuestions() {
+  const pool = shuffle([...V]);
+  return pool.slice(0, Math.min(count, V.length)).map(item => {
+    const others = V.filter(v => v !== item);
+    const distractors = shuffle(others).slice(0, 3);
+    return { item, opts: shuffle([item, ...distractors]) };
+  });
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+  qs = buildQuestions();
+  cur = 0; score = 0; wrongs = [];
+  showScreen('quizScreen');
+  render();
+}
+
+function render() {
+  answered = false;
+  const { item, opts } = qs[cur];
+  const total = qs.length;
+
+  // progress
+  document.getElementById('pFill').style.width = (cur / total * 100) + '%';
+  document.getElementById('pTxt').textContent = `${cur + 1} / ${total}`;
+  document.getElementById('sVal').textContent = score;
+  document.getElementById('wVal').textContent = wrongs.length;
+
+  // question
+  document.getElementById('qDay').textContent = item.d;
+  if (mode === 'jp-id') {
+    document.getElementById('qMain').textContent = item.jp;
+    document.getElementById('qRead').textContent = item.r;
+  } else {
+    document.getElementById('qMain').textContent = item.id;
+    document.getElementById('qRead').textContent = '';
+  }
+
+  // options
+  const box = document.getElementById('optsBox');
+  box.innerHTML = '';
+  opts.forEach(opt => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    if (mode === 'jp-id') {
+      b.textContent = opt.id;
+    } else {
+      b.innerHTML = `${opt.jp} <span style="font-weight:600;color:#7aada8;font-size:.8em">(${opt.r})</span>`;
+    }
+    b.onclick = () => check(opt, item);
+    box.appendChild(b);
+  });
+
+  // reset feedback
+  const fb = document.getElementById('fbBar');
+  fb.className = 'feedback';
+  fb.textContent = '';
+  document.getElementById('nxtBtn').className = 'next-btn';
+}
+
+function check(chosen, correct) {
+  if (answered) return;
+  answered = true;
+
+  document.querySelectorAll('.opt').forEach(b => {
+    b.disabled = true;
+    const isCorrect = b.textContent.includes(correct.id) || b.textContent.includes(correct.jp);
+    const isChosen  = b.textContent.includes(chosen.id)  || b.textContent.includes(chosen.jp);
+    if (isCorrect) b.classList.add('correct');
+    if (isChosen && chosen !== correct) b.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('fbBar');
+  if (chosen === correct) {
+    score++;
+    fb.textContent = '✅ Benar!';
+    fb.className = 'feedback show fb-ok';
+  } else {
+    wrongs.push({ correct, chosen });
+    const ans = mode === 'jp-id' ? correct.id : `${correct.jp} (${correct.r})`;
+    fb.textContent = `❌ Jawaban: ${ans}`;
+    fb.className = 'feedback show fb-ng';
+  }
+  document.getElementById('nxtBtn').className = 'next-btn show';
+}
+
+function next() {
+  cur++;
+  if (cur >= qs.length) { showResult(); return; }
+  render();
+}
+
+function showResult() {
+  showScreen('resultScreen');
+  const total = qs.length;
+  const pct = Math.round(score / total * 100);
+
+  let emoji='🎉', stars='⭐⭐⭐⭐⭐', msg='Luar biasa! Nilai sempurna!';
+  if (pct < 40)      { emoji='😢'; stars='⭐';         msg='Jangan menyerah, ayo belajar lagi!'; }
+  else if (pct < 60) { emoji='😅'; stars='⭐⭐';       msg='Lumayan! Masih bisa lebih baik!'; }
+  else if (pct < 75) { emoji='🙂'; stars='⭐⭐⭐';     msg='Bagus! Terus semangat!'; }
+  else if (pct < 90) { emoji='😊'; stars='⭐⭐⭐⭐';   msg='Keren banget! Hampir sempurna!'; }
+
+  document.getElementById('rEmoji').textContent = emoji;
+  document.getElementById('rPct').textContent   = `${score} / ${total}  (${pct}%)`;
+  document.getElementById('rStars').textContent = stars;
+  document.getElementById('rMsg').textContent   = msg;
+
+  const ws = document.getElementById('wrongSec');
+  if (!wrongs.length) { ws.innerHTML = ''; return; }
+
+  ws.innerHTML = `<h3>Perlu Diulang (${wrongs.length} kata)</h3>` +
+    wrongs.map(w => {
+      const qLabel  = mode === 'jp-id' ? w.correct.jp : w.correct.id;
+      const correct = mode === 'jp-id' ? w.correct.id : `${w.correct.jp} (${w.correct.r})`;
+      const chosen  = mode === 'jp-id' ? w.chosen.id  : w.chosen.jp;
+      return `<div class="wrong-item">
+        <b>${qLabel}</b><br>
+        ✅ ${correct}<br>
+        ❌ Kamu pilih: ${chosen}
+      </div>`;
+    }).join('');
+}
+
+function goHome() { showScreen('startScreen'); }
+</script>
+</body>
+</html>
