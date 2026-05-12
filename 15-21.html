@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Pilihan Ganda — Hari 15–21</title>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@400;700&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink-dark:  #d63384;
+  --pink-mid:   #e91e8c;
+  --pink-light: #fce4f0;
+  --pink-pale:  #fff0f7;
+  --pink-border:#f0b8d8;
+  --pink-soft:  #f8d0e8;
+  --white:      #ffffff;
+  --ink:        #3d1a2e;
+  --muted:      #b07090;
+  --green:      #22c97a;
+  --green-bg:   #e8faf3;
+  --red:        #e53e6d;
+  --red-bg:     #fde8ef;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--pink-pale);
+  min-height: 100vh;
+  color: var(--ink);
+}
+
+/* ── PETAL DECO ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 10%, rgba(214,51,132,.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 90% 90%, rgba(168,85,160,.07) 0%, transparent 70%);
+}
+
+/* ══ START SCREEN ══ */
+#startScreen {
+  position: relative; z-index: 10;
+  max-width: 500px; margin: 0 auto;
+  padding: 40px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+
+.logo-wrap { text-align: center; margin-bottom: 28px; }
+.logo-icon { font-size: 3rem; display: block; margin-bottom: 8px; }
+.logo-title {
+  font-family: 'Kaisei Tokumin', serif;
+  font-size: 2rem; color: var(--pink-dark);
+  line-height: 1.1;
+}
+.logo-sub { font-size: .9rem; color: var(--muted); font-weight: 600; margin-top: 6px; }
+
+.start-card {
+  background: var(--white);
+  border-radius: 28px;
+  padding: 32px 28px;
+  width: 100%;
+  box-shadow: 0 8px 40px rgba(214,51,132,.12), 0 2px 8px rgba(214,51,132,.06);
+  border: 1.5px solid var(--pink-border);
+}
+
+.section-label {
+  font-size: .72rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--pink-dark); margin-bottom: 10px;
+}
+
+/* Filter hari */
+.hari-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  margin-bottom: 24px;
+}
+.hari-btn {
+  padding: 10px 6px; border: 2px solid var(--pink-border);
+  border-radius: 12px; background: var(--pink-pale);
+  font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 700;
+  color: var(--muted); cursor: pointer; transition: all .18s;
+  text-align: center; line-height: 1.3;
+}
+.hari-btn:hover { border-color: var(--pink-dark); color: var(--pink-dark); background: var(--pink-light); }
+.hari-btn.sel { background: var(--pink-dark); border-color: var(--pink-dark); color: #fff; }
+
+/* Mode arah soal */
+.mode-row { display: flex; gap: 10px; margin-bottom: 24px; }
+.mode-btn {
+  flex: 1; padding: 12px 8px; border: 2px solid var(--pink-border);
+  border-radius: 14px; background: var(--pink-pale);
+  font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .85rem;
+  color: var(--muted); cursor: pointer; transition: all .2s; text-align: center;
+}
+.mode-btn:hover { border-color: var(--pink-dark); color: var(--pink-dark); }
+.mode-btn.sel { background: var(--pink-dark); border-color: var(--pink-dark); color: #fff; }
+
+/* Jumlah soal */
+.count-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+.count-btn {
+  padding: 8px 18px; border: 2px solid var(--pink-border);
+  border-radius: 10px; background: var(--pink-pale);
+  font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .82rem;
+  color: var(--muted); cursor: pointer; transition: all .18s;
+}
+.count-btn:hover { border-color: var(--pink-dark); color: var(--pink-dark); }
+.count-btn.sel { background: var(--pink-dark); border-color: var(--pink-dark); color: #fff; }
+
+.start-btn {
+  width: 100%; padding: 16px; border: none; border-radius: 16px;
+  background: linear-gradient(135deg, var(--pink-dark), #a855a0);
+  color: #fff; font-family: 'Kaisei Tokumin', serif; font-size: 1.25rem;
+  cursor: pointer; letter-spacing: .02em;
+  box-shadow: 0 6px 24px rgba(214,51,132,.3);
+  transition: transform .15s, box-shadow .15s;
+}
+.start-btn:active { transform: scale(.97); }
+
+/* ══ QUIZ SCREEN ══ */
+#quizScreen { display: none; position: relative; z-index: 10; max-width: 560px; margin: 0 auto; padding: 20px 16px; }
+
+/* top bar */
+.top-bar {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.score-pill {
+  background: var(--white); border: 1.5px solid var(--pink-border);
+  border-radius: 99px; padding: 6px 14px;
+  font-weight: 800; font-size: .85rem; color: var(--pink-dark);
+  white-space: nowrap; box-shadow: 0 2px 8px rgba(214,51,132,.1);
+}
+.prog-wrap { flex: 1; }
+.prog-track { height: 8px; background: var(--pink-soft); border-radius: 99px; overflow: hidden; }
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink-dark), #a855a0);
+  border-radius: 99px; transition: width .4s ease;
+}
+.prog-lbl { font-size: .72rem; font-weight: 700; color: var(--muted); text-align: right; margin-top: 3px; }
+
+/* question card */
+.q-card {
+  background: var(--white); border-radius: 20px;
+  padding: 28px 24px 22px;
+  border: 1.5px solid var(--pink-border);
+  box-shadow: 0 6px 28px rgba(214,51,132,.1);
+  margin-bottom: 14px;
+}
+.q-tag {
+  display: inline-block; padding: 3px 12px;
+  background: var(--pink-light); border-radius: 99px;
+  font-size: .68rem; font-weight: 800; color: var(--pink-dark);
+  letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px;
+}
+.q-text {
+  font-family: 'Kaisei Tokumin', serif;
+  font-size: 1.85rem; font-weight: 700;
+  color: var(--ink); text-align: center; line-height: 1.25;
+}
+.q-read { font-size: .9rem; color: var(--muted); text-align: center; margin-top: 8px; font-weight: 500; }
+
+/* options */
+.options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+.opt {
+  padding: 14px 18px; border: 2px solid var(--pink-border);
+  border-radius: 14px; background: var(--white);
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  font-size: .92rem; color: var(--ink); cursor: pointer;
+  text-align: left; transition: all .15s; line-height: 1.4;
+  display: flex; align-items: center; gap: 10px;
+}
+.opt:hover:not(:disabled) { border-color: var(--pink-dark); background: var(--pink-light); color: var(--pink-dark); transform: translateX(3px); }
+.opt .opt-key {
+  min-width: 26px; height: 26px; border-radius: 50%;
+  background: var(--pink-soft); color: var(--pink-dark);
+  font-size: .78rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.opt.correct { background: var(--green-bg); border-color: var(--green); color: #0a6640; }
+.opt.correct .opt-key { background: var(--green); color: #fff; }
+.opt.wrong { background: var(--red-bg); border-color: var(--red); color: #7a1030; }
+.opt.wrong .opt-key { background: var(--red); color: #fff; }
+.opt:disabled { cursor: default; transform: none; }
+
+/* feedback */
+.feedback {
+  padding: 11px 18px; border-radius: 12px;
+  font-weight: 700; font-size: .88rem; text-align: center;
+  margin-bottom: 10px; display: none;
+}
+.feedback.show { display: block; }
+.feedback.ok { background: var(--green-bg); color: #0a6640; border: 1.5px solid var(--green); }
+.feedback.ng { background: var(--red-bg); color: #7a1030; border: 1.5px solid var(--red); }
+
+.next-btn {
+  width: 100%; padding: 13px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, var(--pink-dark), #a855a0);
+  color: #fff; font-family: 'Kaisei Tokumin', serif; font-size: 1.05rem;
+  cursor: pointer; display: none;
+  box-shadow: 0 4px 16px rgba(214,51,132,.25);
+  transition: opacity .2s;
+}
+.next-btn.show { display: block; }
+
+/* ══ RESULT SCREEN ══ */
+#resultScreen {
+  display: none; position: relative; z-index: 10;
+  max-width: 500px; margin: 0 auto; padding: 40px 16px;
+  text-align: center;
+}
+.result-card {
+  background: var(--white); border-radius: 28px;
+  padding: 36px 28px;
+  border: 1.5px solid var(--pink-border);
+  box-shadow: 0 8px 40px rgba(214,51,132,.12);
+}
+.res-emoji { font-size: 3.8rem; margin-bottom: 10px; }
+.res-title { font-family: 'Kaisei Tokumin', serif; font-size: 2rem; color: var(--pink-dark); margin-bottom: 8px; }
+.res-score { font-size: 3rem; font-weight: 800; color: var(--ink); margin: 8px 0; }
+.res-pct { font-size: 1rem; color: var(--muted); margin-bottom: 6px; }
+.res-stars { font-size: 2rem; margin-bottom: 14px; }
+.res-msg { color: var(--muted); font-size: .92rem; margin-bottom: 24px; }
+
+/* wrong list */
+.wrong-wrap { text-align: left; margin-bottom: 24px; max-height: 300px; overflow-y: auto; }
+.wrong-head { font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--red); margin-bottom: 10px; }
+.wrong-item {
+  background: var(--red-bg); border-radius: 12px;
+  padding: 10px 14px; margin-bottom: 8px;
+  font-size: .85rem; color: #5a0e24; line-height: 1.5;
+  border: 1px solid #f8bfce;
+}
+.wrong-item strong { color: var(--ink); }
+
+.res-actions { display: flex; gap: 10px; }
+.act-btn {
+  flex: 1; padding: 13px; border: none; border-radius: 14px;
+  font-family: 'Kaisei Tokumin', serif; font-size: 1rem; cursor: pointer; transition: transform .15s;
+}
+.act-btn:active { transform: scale(.97); }
+.act-retry { background: linear-gradient(135deg, var(--pink-dark), #a855a0); color: #fff; }
+.act-home  { background: var(--pink-light); color: var(--pink-dark); border: 2px solid var(--pink-border); }
+
+/* Scrollbar */
+.wrong-wrap::-webkit-scrollbar { width: 6px; }
+.wrong-wrap::-webkit-scrollbar-track { background: var(--pink-pale); border-radius: 99px; }
+.wrong-wrap::-webkit-scrollbar-thumb { background: var(--pink-border); border-radius: 99px; }
+
+@media (max-width: 480px) {
+  .q-text { font-size: 1.45rem; }
+  .hari-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ START ═══════════════ -->
+<div id="startScreen">
+  <div class="logo-wrap">
+    <span class="logo-icon">🌸</span>
+    <div class="logo-title">Quiz Kotoba</div>
+    <div class="logo-sub">Hari 15–21 · 228 Kosakata</div>
+  </div>
+
+  <div class="start-card">
+    <div class="section-label">Pilih Hari</div>
+    <div class="hari-grid">
+      <button class="hari-btn sel" onclick="toggleHari('all',this)">Semua<br><small>228 kata</small></button>
+      <button class="hari-btn" onclick="toggleHari('15',this)">Hari 15<br><small>Belanja</small></button>
+      <button class="hari-btn" onclick="toggleHari('16',this)">Hari 16<br><small>Makan</small></button>
+      <button class="hari-btn" onclick="toggleHari('17',this)">Hari 17<br><small>Minum</small></button>
+      <button class="hari-btn" onclick="toggleHari('18',this)">Hari 18<br><small>Bayar</small></button>
+      <button class="hari-btn" onclick="toggleHari('19',this)">Hari 19<br><small>Sekolah 1</small></button>
+      <button class="hari-btn" onclick="toggleHari('20',this)">Hari 20<br><small>Sekolah 2</small></button>
+      <button class="hari-btn" onclick="toggleHari('21',this)">Hari 21<br><small>Sekolah 3</small></button>
+    </div>
+
+    <div class="section-label">Mode Soal</div>
+    <div class="mode-row">
+      <button class="mode-btn sel" onclick="selectMode('jp-id',this)">🇯🇵 → 🇮🇩<br><small>JP ke Indonesia</small></button>
+      <button class="mode-btn" onclick="selectMode('id-jp',this)">🇮🇩 → 🇯🇵<br><small>Indonesia ke JP</small></button>
+    </div>
+
+    <div class="section-label">Jumlah Soal</div>
+    <div class="count-row">
+      <button class="count-btn" onclick="selectCount(10,this)">10</button>
+      <button class="count-btn" onclick="selectCount(20,this)">20</button>
+      <button class="count-btn" onclick="selectCount(30,this)">30</button>
+      <button class="count-btn" onclick="selectCount(50,this)">50</button>
+      <button class="count-btn sel" onclick="selectCount(999,this)">Semua</button>
+    </div>
+
+    <button class="start-btn" onclick="startQuiz()">🌸 Mulai Quiz!</button>
+  </div>
+</div>
+
+<!-- ═══════════════ QUIZ ═══════════════ -->
+<div id="quizScreen">
+  <div class="top-bar">
+    <div class="score-pill">✅ <span id="scoreVal">0</span> &nbsp;❌ <span id="wrongVal">0</span></div>
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <div class="prog-lbl" id="progLbl">1 / 1</div>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-tag" id="qTag"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="q-read" id="qRead"></div>
+  </div>
+
+  <div class="options" id="optionsBox"></div>
+  <div class="feedback" id="feedbackBar"></div>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Lanjut →</button>
+</div>
+
+<!-- ═══════════════ RESULT ═══════════════ -->
+<div id="resultScreen">
+  <div class="result-card">
+    <div class="res-emoji" id="resEmoji"></div>
+    <div class="res-title">Hasil Quiz</div>
+    <div class="res-score" id="resScore"></div>
+    <div class="res-pct" id="resPct"></div>
+    <div class="res-stars" id="resStars"></div>
+    <div class="res-msg" id="resMsg"></div>
+    <div class="wrong-wrap" id="wrongList"></div>
+    <div class="res-actions">
+      <button class="act-btn act-retry" onclick="startQuiz()">🔄 Ulangi</button>
+      <button class="act-btn act-home" onclick="goHome()">🏠 Menu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════
+// DATA — 228 kosakata Hari 15–21
+// ══════════════════════════════
+const ALL_VOCAB = [
+  // HARI 15
+  {day:"Hari 15 · Belanja", jp:"そでなし", read:"そでなし", id:"Tanpa lengan"},
+  {day:"Hari 15 · Belanja", jp:"半そで", read:"はんそで", id:"Lengan pendek"},
+  {day:"Hari 15 · Belanja", jp:"長そで", read:"ながそで", id:"Lengan panjang"},
+  {day:"Hari 15 · Belanja", jp:"無地", read:"むじ", id:"Polos"},
+  {day:"Hari 15 · Belanja", jp:"柄 / 模様", read:"がら / もよう", id:"Corak"},
+  {day:"Hari 15 · Belanja", jp:"しま", read:"しま", id:"Garis-garis"},
+  {day:"Hari 15 · Belanja", jp:"水玉", read:"みずたま", id:"Polkadot"},
+  {day:"Hari 15 · Belanja", jp:"花柄", read:"はながら", id:"Corak bunga"},
+  {day:"Hari 15 · Belanja", jp:"気に入る", read:"きにいる", id:"Menyukai"},
+  {day:"Hari 15 · Belanja", jp:"お気に入り", read:"おきにいり", id:"Kesukaan, favorit"},
+  {day:"Hari 15 · Belanja", jp:"好む", read:"このむ", id:"Menyukai"},
+  {day:"Hari 15 · Belanja", jp:"好み", read:"このみ", id:"Kesukaan"},
+  {day:"Hari 15 · Belanja", jp:"似合う", read:"にあう", id:"Cocok"},
+  {day:"Hari 15 · Belanja", jp:"目立つ色", read:"めだついろ", id:"Warna mencolok"},
+  {day:"Hari 15 · Belanja", jp:"はでな", read:"はでな", id:"Mencolok"},
+  {day:"Hari 15 · Belanja", jp:"地味な", read:"じみな", id:"Sederhana"},
+  {day:"Hari 15 · Belanja", jp:"人気のあるデザイン", read:"にんきのあるデザイン", id:"Desain populer, banyak disukai"},
+  {day:"Hari 15 · Belanja", jp:"はやっている", read:"はやっている", id:"Lagi nge-tren"},
+  {day:"Hari 15 · Belanja", jp:"はやり / 流行", read:"はやり / りゅうこう", id:"Nge-tren"},
+  {day:"Hari 15 · Belanja", jp:"サイズを確かめる", read:"サイズをたしかめる", id:"Memastikan ukuran"},
+  {day:"Hari 15 · Belanja", jp:"サイズを確認する", read:"サイズをかくにんする", id:"Memastikan ukuran"},
+  {day:"Hari 15 · Belanja", jp:"サイズが合う", read:"サイズがあう", id:"Ukurannya cocok"},
+  {day:"Hari 15 · Belanja", jp:"ゆるい", read:"ゆるい", id:"Kendor, tidak pas"},
+  {day:"Hari 15 · Belanja", jp:"きつい", read:"きつい", id:"Ketat"},
+  {day:"Hari 15 · Belanja", jp:"品物をかごに入れる", read:"しなものをかごにいれる", id:"Memasukkan barang ke keranjang"},
+  {day:"Hari 15 · Belanja", jp:"セール / バーゲンで買う", read:"セール / バーゲンでかう", id:"Membeli barang promo"},
+  {day:"Hari 15 · Belanja", jp:"デパートの特売品", read:"デパートのとくばいひん", id:"Barang promo di department store"},
+  {day:"Hari 15 · Belanja", jp:"30パーセントオフ", read:"さんじゅうパーセントオフ", id:"Diskon 30%"},
+  {day:"Hari 15 · Belanja", jp:"3割引き", read:"さんわりびき", id:"Diskon 30%"},
+  {day:"Hari 15 · Belanja", jp:"売り切れる", read:"うりきれる", id:"Habis terjual"},
+  {day:"Hari 15 · Belanja", jp:"売り切れ", read:"うりきれ", id:"Habis terjual (Kata Benda)"},
+  {day:"Hari 15 · Belanja", jp:"本物のダイヤモンド", read:"ほんもののダイヤモンド", id:"Berlian asli"},
+  {day:"Hari 15 · Belanja", jp:"偽物", read:"にせもの", id:"Barang palsu"},
+  {day:"Hari 15 · Belanja", jp:"得をする", read:"とくをする", id:"Mendapat untung"},
+  {day:"Hari 15 · Belanja", jp:"損をする", read:"そんをする", id:"Menderita kerugian"},
+  // HARI 16
+  {day:"Hari 16 · Makan", jp:"家族そろって", read:"かぞくそろって", id:"Bersama dengan semua anggota keluarga"},
+  {day:"Hari 16 · Makan", jp:"家族全員で", read:"かぞくぜんいんで", id:"Bersama seluruh keluarga"},
+  {day:"Hari 16 · Makan", jp:"子どもを連れる", read:"こどもをつれる", id:"Mengajak anak"},
+  {day:"Hari 16 · Makan", jp:"子ども連れ", read:"こどもづれ", id:"Orang tua dengan anak"},
+  {day:"Hari 16 · Makan", jp:"腹がへる", read:"はらがへる", id:"Lapar"},
+  {day:"Hari 16 · Makan", jp:"おなかがへる", read:"おなかがへる", id:"Lapar"},
+  {day:"Hari 16 · Makan", jp:"すいている", read:"すいている", id:"Lapar (perut kosong)"},
+  {day:"Hari 16 · Makan", jp:"外食をする", read:"がいしょくをする", id:"Makan di luar"},
+  {day:"Hari 16 · Makan", jp:"お昼を食べる", read:"おひるをたべる", id:"Makan siang"},
+  {day:"Hari 16 · Makan", jp:"昼食をとる", read:"ちゅうしょくをとる", id:"Makan siang"},
+  {day:"Hari 16 · Makan", jp:"ランチ", read:"ランチ", id:"Makan siang"},
+  {day:"Hari 16 · Makan", jp:"雰囲気のいい店", read:"ふんいきのいいみせ", id:"Toko dengan suasana yang bagus/nyaman"},
+  {day:"Hari 16 · Makan", jp:"満席", read:"まんせき", id:"Penuh (semua kursi terisi)"},
+  {day:"Hari 16 · Makan", jp:"列に並ぶ", read:"れつにならぶ", id:"Mengantri"},
+  {day:"Hari 16 · Makan", jp:"行列ができる", read:"ぎょうれつができる", id:"Timbul antrian"},
+  {day:"Hari 16 · Makan", jp:"禁煙席", read:"きんえんせき", id:"Kursi dilarang merokok"},
+  {day:"Hari 16 · Makan", jp:"喫煙席", read:"きつえんせき", id:"Kursi boleh merokok"},
+  {day:"Hari 16 · Makan", jp:"ウエートレスにお勧めを聞く", read:"ウエートレスにおすすめをきく", id:"Menanyakan rekomendasi ke pelayan"},
+  {day:"Hari 16 · Makan", jp:"量が多い", read:"りょうがおおい", id:"Porsi banyak"},
+  {day:"Hari 16 · Makan", jp:"少ない", read:"すくない", id:"Sedikit"},
+  {day:"Hari 16 · Makan", jp:"注文が決まる", read:"ちゅうもんがきまる", id:"Pesanan (telah) ditentukan"},
+  {day:"Hari 16 · Makan", jp:"注文する", read:"ちゅうもんする", id:"Memesan"},
+  {day:"Hari 16 · Makan", jp:"注文を取る / 受け取る", read:"ちゅうもんをとる / うけとる", id:"Menerima pesanan"},
+  {day:"Hari 16 · Makan", jp:"デザートを追加する", read:"デザートをついかする", id:"Menambah dessert"},
+  {day:"Hari 16 · Makan", jp:"コーヒーのおかわり", read:"コーヒーのおかわり", id:"Menambah kopi (refill)"},
+  {day:"Hari 16 · Makan", jp:"無料 / ただ", read:"むりょう / ただ", id:"Gratis"},
+  {day:"Hari 16 · Makan", jp:"食器を下げる", read:"しょっきをさげる", id:"Mengambil peralatan makan (selesai makan)"},
+  {day:"Hari 16 · Makan", jp:"料理を残す", read:"りょうりをのこす", id:"Menyisakan makanan"},
+  {day:"Hari 16 · Makan", jp:"もったいない", read:"もったいない", id:"Sayang, mubadzir"},
+  {day:"Hari 16 · Makan", jp:"「何名様ですか。」", read:"なんめいさまですか", id:"\"Berapa orang?\""},
+  {day:"Hari 16 · Makan", jp:"「2人です。」", read:"ふたりです", id:"\"2 orang.\""},
+  {day:"Hari 16 · Makan", jp:"申し訳ありません。", read:"もうしわけありません", id:"Mohon maaf."},
+  {day:"Hari 16 · Makan", jp:"もう少々お待ちください。", read:"もうしょうしょうおまちください", id:"Mohon tunggu sebentar."},
+  {day:"Hari 16 · Makan", jp:"お待たせいたしました。", read:"おまたせいたしました", id:"Mohon maaf telah membuat Anda menunggu."},
+  {day:"Hari 16 · Makan", jp:"お待ちどおさま", read:"おまちどおさま", id:"Terima kasih telah bersedia menunggu."},
+  // HARI 17
+  {day:"Hari 17 · Minum", jp:"宴会を開く", read:"えんかいをひらく", id:"Mengadakan pesta"},
+  {day:"Hari 17 · Minum", jp:"飲み会", read:"のみかい", id:"Pesta minum-minum"},
+  {day:"Hari 17 · Minum", jp:"送別会", read:"そうべつかい", id:"Pesta perpisahan"},
+  {day:"Hari 17 · Minum", jp:"歓迎会", read:"かんげいかい", id:"Pesta selamat datang"},
+  {day:"Hari 17 · Minum", jp:"飲み放題", read:"のみほうだい", id:"Minum sepuasnya"},
+  {day:"Hari 17 · Minum", jp:"食べ放題", read:"たべほうだい", id:"Makan sepuasnya"},
+  {day:"Hari 17 · Minum", jp:"（お）酒を注ぐ", read:"（お）さけをそそぐ", id:"Menuangkan sake"},
+  {day:"Hari 17 · Minum", jp:"（お）湯を注ぐ", read:"（お）ゆをそそぐ", id:"Menuangkan air hangat"},
+  {day:"Hari 17 · Minum", jp:"乾杯する", read:"かんぱいする", id:"Toast / Mulai minum bersama"},
+  {day:"Hari 17 · Minum", jp:"盛り上がる", read:"もりあがる", id:"Seru, ramai, heboh"},
+  {day:"Hari 17 · Minum", jp:"土が盛り上がる", read:"つちがもりあがる", id:"Tanahnya naik"},
+  {day:"Hari 17 · Minum", jp:"こぼす", read:"こぼす", id:"Menumpahkan"},
+  {day:"Hari 17 · Minum", jp:"こぼれる", read:"こぼれる", id:"Tumpah"},
+  {day:"Hari 17 · Minum", jp:"ビールを一気に飲む", read:"ビールをいっきにのむ", id:"Minum bir sekali teguk sampai habis"},
+  {day:"Hari 17 · Minum", jp:"ウィスキーの水割り", read:"ウィスキーのみずわり", id:"Whisky campur air"},
+  {day:"Hari 17 · Minum", jp:"（お）つまみのチーズ", read:"（お）つまみのチーズ", id:"Cemilan keju"},
+  {day:"Hari 17 · Minum", jp:"よっぱらう", read:"よっぱらう", id:"Mabuk"},
+  {day:"Hari 17 · Minum", jp:"よっぱらい", read:"よっぱらい", id:"Pemabuk"},
+  {day:"Hari 17 · Minum", jp:"ビールの泡", read:"びーるのあわ", id:"Busa bir"},
+  {day:"Hari 17 · Minum", jp:"あばれる", read:"あばれる", id:"Bikin onar / hilang kontrol"},
+  {day:"Hari 17 · Minum", jp:"あふれる", read:"あふれる", id:"Meluap"},
+  {day:"Hari 17 · Minum", jp:"やかましい", read:"やかましい", id:"Berisik"},
+  {day:"Hari 17 · Minum", jp:"（お）酒によう", read:"（お）さけによう", id:"Mabuk sake"},
+  {day:"Hari 17 · Minum", jp:"そうぞうしい", read:"そうぞうしい", id:"Berisik, bising"},
+  {day:"Hari 17 · Minum", jp:"さわがしい", read:"さわがしい", id:"Gaduh"},
+  {day:"Hari 17 · Minum", jp:"さわぐ", read:"さわぐ", id:"Membuat gaduh"},
+  {day:"Hari 17 · Minum", jp:"たばこの煙", read:"たばこのけむり", id:"Asap rokok"},
+  {day:"Hari 17 · Minum", jp:"煙い / 煙たい", read:"けむい / けむたい", id:"Berasap"},
+  {day:"Hari 17 · Minum", jp:"グラスを割る", read:"グラスをわる", id:"Memecahkan gelas"},
+  {day:"Hari 17 · Minum", jp:"グラスが割れる", read:"グラスがわれる", id:"Gelasnya pecah"},
+  {day:"Hari 17 · Minum", jp:"ビールびんを倒す", read:"ビールびんをたおす", id:"Menjatuhkan botol bir"},
+  {day:"Hari 17 · Minum", jp:"ビールびんが倒れる", read:"ビールびんがたおれる", id:"Botol birnya jatuh"},
+  {day:"Hari 17 · Minum", jp:"ほかの客に迷惑をかける", read:"ほかのきゃくにめいわくをかける", id:"Mengganggu customer lain"},
+  {day:"Hari 17 · Minum", jp:"迷惑がかかる", read:"めいわくがかかる", id:"Terganggu"},
+  // HARI 18
+  {day:"Hari 18 · Bayar", jp:"レジ", read:"レジ", id:"Kasir"},
+  {day:"Hari 18 · Bayar", jp:"おごる", read:"おごる", id:"Mentraktir"},
+  {day:"Hari 18 · Bayar", jp:"おごり", read:"おごり", id:"Traktir"},
+  {day:"Hari 18 · Bayar", jp:"現金で払う", read:"げんきんではらう", id:"Bayar dengan uang tunai"},
+  {day:"Hari 18 · Bayar", jp:"割り勘にする", read:"わりかんにする", id:"Split bill / bagi tagihan"},
+  {day:"Hari 18 · Bayar", jp:"勘定を済ませる", read:"かんじょうをすませる", id:"Melunasi tagihan"},
+  {day:"Hari 18 · Bayar", jp:"別々に払う", read:"べつべつにはらう", id:"Bayar sendiri-sendiri"},
+  {day:"Hari 18 · Bayar", jp:"クレジットカードで払う", read:"クレジットカードではらう", id:"Bayar dengan kartu kredit"},
+  {day:"Hari 18 · Bayar", jp:"カードの有効期限を確認する", read:"カードのゆうこうきげんをかくにんする", id:"Memastikan masa berlaku kartu"},
+  {day:"Hari 18 · Bayar", jp:"（お）札をくずす", read:"（お）さつをくずす", id:"Menukar uang kertas ke uang kecil"},
+  {day:"Hari 18 · Bayar", jp:"（お）つりをもらう", read:"（お）つりをもらう", id:"Menerima kembalian"},
+  {day:"Hari 18 · Bayar", jp:"領収書をもらう", read:"りょうしゅうしょをもらう", id:"Menerima kuitansi / receipt"},
+  {day:"Hari 18 · Bayar", jp:"レシート", read:"レシート", id:"Receipt"},
+  {day:"Hari 18 · Bayar", jp:"ぜいたくをする", read:"ぜいたくをする", id:"Berfoya-foya / hidup mewah"},
+  {day:"Hari 18 · Bayar", jp:"むだづかいをする", read:"むだづかいをする", id:"Membuang-buang uang"},
+  {day:"Hari 18 · Bayar", jp:"請求書が届く", read:"せいきゅうしょがとどく", id:"Tagihan datang"},
+  {day:"Hari 18 · Bayar", jp:"費用がかかる", read:"ひようがかかる", id:"Memakan biaya"},
+  {day:"Hari 18 · Bayar", jp:"お金が足りる", read:"おかねがたりる", id:"Uangnya cukup"},
+  {day:"Hari 18 · Bayar", jp:"足りない", read:"たりない", id:"Tidak cukup"},
+  {day:"Hari 18 · Bayar", jp:"食費を節約する", read:"しょくひをせつやくする", id:"Menghemat uang makan"},
+  {day:"Hari 18 · Bayar", jp:"今月の生活費が不足する", read:"こんげつのせいかつひがふそくする", id:"Biaya hidup bulan ini kurang"},
+  {day:"Hari 18 · Bayar", jp:"交通費", read:"こうつうひ", id:"Biaya transportasi"},
+  {day:"Hari 18 · Bayar", jp:"むだを省く", read:"むだをはぶく", id:"Mengurangi pemborosan"},
+  {day:"Hari 18 · Bayar", jp:"むだをなくす", read:"むだをなくす", id:"Menghilangkan yang tidak perlu"},
+  {day:"Hari 18 · Bayar", jp:"貧乏になる", read:"びんぼうになる", id:"Menjadi miskin"},
+  {day:"Hari 18 · Bayar", jp:"お金持ちになる", read:"おかねもちになる", id:"Menjadi kaya"},
+  {day:"Hari 18 · Bayar", jp:"貧しい生活", read:"まずしいせいかつ", id:"Hidup miskin"},
+  {day:"Hari 18 · Bayar", jp:"借金をする", read:"しゃっきんをする", id:"Berhutang"},
+  // HARI 19
+  {day:"Hari 19 · Sekolah 1", jp:"教科 / 科目", read:"きょうか / かもく", id:"Mata pelajaran"},
+  {day:"Hari 19 · Sekolah 1", jp:"得意な", read:"とくいな", id:"Jago / Kuat di bidang..."},
+  {day:"Hari 19 · Sekolah 1", jp:"苦手な", read:"にがてな", id:"Lemah di bidang..."},
+  {day:"Hari 19 · Sekolah 1", jp:"国語", read:"こくご", id:"Bahasa Nasional (Jepang)"},
+  {day:"Hari 19 · Sekolah 1", jp:"算数", read:"さんすう", id:"Matematika dasar"},
+  {day:"Hari 19 · Sekolah 1", jp:"理科", read:"りか", id:"IPA"},
+  {day:"Hari 19 · Sekolah 1", jp:"社会", read:"しゃかい", id:"IPS"},
+  {day:"Hari 19 · Sekolah 1", jp:"体育", read:"たいいく", id:"Olahraga"},
+  {day:"Hari 19 · Sekolah 1", jp:"入学する", read:"にゅうがくする", id:"Masuk sekolah"},
+  {day:"Hari 19 · Sekolah 1", jp:"私立高校", read:"しりつこうこう", id:"SMA Swasta"},
+  {day:"Hari 19 · Sekolah 1", jp:"公立高校", read:"こうりつこうこう", id:"SMA Negeri"},
+  {day:"Hari 19 · Sekolah 1", jp:"国立大学", read:"こくりつだいがく", id:"Universitas Negeri"},
+  {day:"Hari 19 · Sekolah 1", jp:"昼休みに～を食べる", read:"ひるやすみに～をたべる", id:"Makan ... di jam istirahat"},
+  {day:"Hari 19 · Sekolah 1", jp:"お弁当", read:"おべんとう", id:"Bekal (Bento)"},
+  {day:"Hari 19 · Sekolah 1", jp:"給食", read:"きゅうしょく", id:"Makan siang dari sekolah"},
+  {day:"Hari 19 · Sekolah 1", jp:"時間割", read:"じかんわり", id:"Jadwal pelajaran"},
+  {day:"Hari 19 · Sekolah 1", jp:"入学式", read:"にゅうがくしき", id:"Upacara penerimaan siswa baru"},
+  {day:"Hari 19 · Sekolah 1", jp:"卒業式", read:"そつぎょうしき", id:"Upacara kelulusan"},
+  {day:"Hari 19 · Sekolah 1", jp:"出席する", read:"しゅっせきする", id:"Menghadiri / Hadir"},
+  {day:"Hari 19 · Sekolah 1", jp:"欠席する", read:"けっせきする", id:"Absen / Tidak hadir"},
+  {day:"Hari 19 · Sekolah 1", jp:"バスで通学する", read:"バスでつうがくする", id:"Pergi ke sekolah naik bus"},
+  {day:"Hari 19 · Sekolah 1", jp:"通勤する", read:"つうきんする", id:"Pergi bekerja (PP)"},
+  {day:"Hari 19 · Sekolah 1", jp:"1/2/3学期", read:"1/2/3がっき", id:"Semester 1/2/3"},
+  {day:"Hari 19 · Sekolah 1", jp:"今学期", read:"こんがっき", id:"Semester ini"},
+  {day:"Hari 19 · Sekolah 1", jp:"前期", read:"ぜんき", id:"Semester awal / sebelumnya"},
+  {day:"Hari 19 · Sekolah 1", jp:"後期", read:"こうき", id:"Semester akhir / setelahnya"},
+  {day:"Hari 19 · Sekolah 1", jp:"同じ学年", read:"おなじがくねん", id:"Tingkatan kelas yang sama"},
+  {day:"Hari 19 · Sekolah 1", jp:"自習する", read:"じしゅうする", id:"Belajar mandiri"},
+  {day:"Hari 19 · Sekolah 1", jp:"えんぴつをけずる", read:"えんぴつをけずる", id:"Meraut pensil"},
+  {day:"Hari 19 · Sekolah 1", jp:"物差し / 定規で測る", read:"ものさし / じょうぎではかる", id:"Mengukur dengan penggaris"},
+  {day:"Hari 19 · Sekolah 1", jp:"合計を出す", read:"ごうけいをだす", id:"Menghitung total"},
+  // HARI 20
+  {day:"Hari 20 · Sekolah 2", jp:"～を受験する", read:"じゅけんする", id:"Menempuh ujian (masuk sekolah/univ)"},
+  {day:"Hari 20 · Sekolah 2", jp:"学部", read:"がくぶ", id:"Fakultas"},
+  {day:"Hari 20 · Sekolah 2", jp:"文学部", read:"ぶんがくぶ", id:"Fakultas Sastra"},
+  {day:"Hari 20 · Sekolah 2", jp:"経済学部", read:"けいざいがくぶ", id:"Fakultas Ekonomi"},
+  {day:"Hari 20 · Sekolah 2", jp:"法学部", read:"ほうがくぶ", id:"Fakultas Hukum"},
+  {day:"Hari 20 · Sekolah 2", jp:"理工学部", read:"りこうがくぶ", id:"Fakultas Sains dan Teknologi"},
+  {day:"Hari 20 · Sekolah 2", jp:"医学部", read:"いがくぶ", id:"Fakultas Kedokteran"},
+  {day:"Hari 20 · Sekolah 2", jp:"～を専攻する", read:"せんこうする", id:"Mengambil jurusan (fokus belajar)"},
+  {day:"Hari 20 · Sekolah 2", jp:"学科", read:"がっか", id:"Jurusan"},
+  {day:"Hari 20 · Sekolah 2", jp:"経済学", read:"けいざいがく", id:"Ilmu Ekonomi"},
+  {day:"Hari 20 · Sekolah 2", jp:"政治学", read:"せいじがく", id:"Ilmu Politik"},
+  {day:"Hari 20 · Sekolah 2", jp:"心理学", read:"しんりがく", id:"Ilmu Psikologi"},
+  {day:"Hari 20 · Sekolah 2", jp:"言語学", read:"げんごがく", id:"Ilmu Bahasa"},
+  {day:"Hari 20 · Sekolah 2", jp:"物理学", read:"ぶつりがく", id:"Ilmu Fisika"},
+  {day:"Hari 20 · Sekolah 2", jp:"～をとる", read:"～をとる", id:"Mengambil (SKS/Seminar)"},
+  {day:"Hari 20 · Sekolah 2", jp:"ゼミ", read:"ゼミ", id:"Seminar"},
+  {day:"Hari 20 · Sekolah 2", jp:"単位", read:"たんい", id:"Kredit (SKS)"},
+  {day:"Hari 20 · Sekolah 2", jp:"～を受ける", read:"～をうける", id:"Mengikuti (Kuliah)"},
+  {day:"Hari 20 · Sekolah 2", jp:"講義", read:"こうぎ", id:"Kuliah (ceramah dosen)"},
+  {day:"Hari 20 · Sekolah 2", jp:"補習", read:"ほしゅう", id:"Pelajaran tambahan"},
+  {day:"Hari 20 · Sekolah 2", jp:"補講", read:"ほこう", id:"Kuliah tambahan"},
+  {day:"Hari 20 · Sekolah 2", jp:"進学を希望する", read:"しんがくをきぼうする", id:"Berharap lanjut sekolah/kuliah"},
+  {day:"Hari 20 · Sekolah 2", jp:"合格発表を見に行く", read:"ごうかくはっぴょうをみにいく", id:"Melihat pengumuman kelulusan"},
+  {day:"Hari 20 · Sekolah 2", jp:"合格する / 受かる", read:"ごうかくする / うかる", id:"Lulus / Lolos"},
+  {day:"Hari 20 · Sekolah 2", jp:"不合格になる / 落ちる", read:"ふごうかくなる / おちる", id:"Gagal ujian"},
+  {day:"Hari 20 · Sekolah 2", jp:"授業料 / 学費を払う", read:"じゅぎょうりょう / がくひをはらう", id:"Bayar uang sekolah/kuliah"},
+  {day:"Hari 20 · Sekolah 2", jp:"奨学金をもらう", read:"しょうがくきんをもらう", id:"Dapat beasiswa"},
+  {day:"Hari 20 · Sekolah 2", jp:"大学教授", read:"だいがくきょうじゅ", id:"Profesor universitas"},
+  {day:"Hari 20 · Sekolah 2", jp:"学者", read:"がくしゃ", id:"Ilmuwan"},
+  {day:"Hari 20 · Sekolah 2", jp:"講義に間に合う", read:"こうぎにまにあう", id:"Sempat ikut kuliah (tidak telat)"},
+  {day:"Hari 20 · Sekolah 2", jp:"講義に遅れる / 遅刻する", read:"こうぎにおくれる / ちこくする", id:"Terlambat kuliah"},
+  {day:"Hari 20 · Sekolah 2", jp:"成績がいい", read:"せいせきがいい", id:"Nilai bagus"},
+  {day:"Hari 20 · Sekolah 2", jp:"成績が悪い", read:"せいせきがわるい", id:"Nilai buruk"},
+  {day:"Hari 20 · Sekolah 2", jp:"授業中に居眠りをする", read:"じゅぎょうちゅうにいねむりをする", id:"Tidur saat jam pelajaran"},
+  {day:"Hari 20 · Sekolah 2", jp:"授業をサボる", read:"じゅぎょうをサボる", id:"Membolos"},
+  {day:"Hari 20 · Sekolah 2", jp:"単位を落とす", read:"たんいをおとす", id:"Gagal dapat SKS / Gagal mata kuliah"},
+  {day:"Hari 20 · Sekolah 2", jp:"休学する", read:"きゅうがくする", id:"Cuti sekolah/kuliah"},
+  {day:"Hari 20 · Sekolah 2", jp:"留学する", read:"りゅうがくする", id:"Belajar ke luar negeri"},
+  // HARI 21
+  {day:"Hari 21 · Sekolah 3", jp:"記入する", read:"きにゅうする", id:"Mengisi (formulir/jawaban)"},
+  {day:"Hari 21 · Sekolah 3", jp:"見直す", read:"みなおす", id:"Mengecek kembali"},
+  {day:"Hari 21 · Sekolah 3", jp:"間違う / 間違える", read:"まちがう / まちがえる", id:"Salah"},
+  {day:"Hari 21 · Sekolah 3", jp:"書き直す", read:"かきなおす", id:"Menulis ulang"},
+  {day:"Hari 21 · Sekolah 3", jp:"まとめる", read:"まとめる", id:"Merangkum / Menyusun"},
+  {day:"Hari 21 · Sekolah 3", jp:"仕上げる", read:"しあげる", id:"Menyelesaikan"},
+  {day:"Hari 21 · Sekolah 3", jp:"提出する", read:"ていしゅつする", id:"Mengumpulkan (tugas/laporan)"},
+  {day:"Hari 21 · Sekolah 3", jp:"担当の先生", read:"たんとうのせんせい", id:"Guru penanggung jawab / Wali kelas"},
+  {day:"Hari 21 · Sekolah 3", jp:"先生に教わる", read:"せんせいにおそわる", id:"Diajar oleh guru"},
+  {day:"Hari 21 · Sekolah 3", jp:"何度もくり返す", read:"なんどもくりかえす", id:"Mengulang berkali-kali"},
+  {day:"Hari 21 · Sekolah 3", jp:"暗記する", read:"あんきする", id:"Menghafal di luar kepala"},
+  {day:"Hari 21 · Sekolah 3", jp:"試験で問われる", read:"しけんでとわれる", id:"Ditanyakan dalam ujian"},
+  {day:"Hari 21 · Sekolah 3", jp:"問い", read:"とい", id:"Pertanyaan"},
+  {day:"Hari 21 · Sekolah 3", jp:"落ち着いて考える", read:"おちついてかんがえる", id:"Berpikir dengan tenang"},
+  {day:"Hari 21 · Sekolah 3", jp:"聞き直す", read:"ききなおす", id:"Menanyakan kembali"},
+  {day:"Hari 21 · Sekolah 3", jp:"言い直す", read:"いいなおす", id:"Mengatakan kembali / Memperbaiki ucapan"},
+  {day:"Hari 21 · Sekolah 3", jp:"聞き取る", read:"ききとる", id:"Menyimak / Menangkap ucapan orang"},
+  {day:"Hari 21 · Sekolah 3", jp:"聞き取り", read:"ききとり", id:"Listening / Pemahaman mendengarkan"},
+  {day:"Hari 21 · Sekolah 3", jp:"書き取る", read:"かきとる", id:"Mendikte / Menulis yang didengar"},
+  {day:"Hari 21 · Sekolah 3", jp:"書き取り", read:"かきとり", id:"Dictation / Menulis dikte"},
+  {day:"Hari 21 · Sekolah 3", jp:"ついている", read:"ついている", id:"Beruntung"},
+  {day:"Hari 21 · Sekolah 3", jp:"ついていない", read:"ついていない", id:"Sial / Tidak beruntung"},
+  {day:"Hari 21 · Sekolah 3", jp:"試験が済む", read:"しけんがすむ", id:"Ujian selesai"},
+];
+
+// ══════════════════════════════
+// STATE
+// ══════════════════════════════
+let mode = 'jp-id';
+let hariFilter = 'all';
+let totalCount = 999;
+let questions = [];
+let current = 0;
+let score = 0;
+let wrongItems = [];
+let answered = false;
+const KEYS = ['A','B','C','D'];
+
+// ══════════════════════════════
+// UI SELECTORS
+// ══════════════════════════════
+function toggleHari(h, btn) {
+  hariFilter = h;
+  document.querySelectorAll('.hari-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function selectMode(m, btn) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function selectCount(n, btn) {
+  totalCount = n;
+  document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+// ══════════════════════════════
+// SHUFFLE
+// ══════════════════════════════
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ══════════════════════════════
+// BUILD QUESTIONS
+// ══════════════════════════════
+function buildQuestions() {
+  // Filter vocab
+  let pool = hariFilter === 'all'
+    ? [...ALL_VOCAB]
+    : ALL_VOCAB.filter(v => v.day.includes('Hari ' + hariFilter));
+
+  // Guarantee every kata appears at least once as the correct answer
+  const shuffledPool = shuffle(pool);
+  const limit = Math.min(totalCount, shuffledPool.length);
+  const chosen = shuffledPool.slice(0, limit);
+
+  return chosen.map(item => {
+    const others = ALL_VOCAB.filter(v => v !== item);
+    const wrongs = shuffle(others).slice(0, 3);
+    const opts = shuffle([item, ...wrongs]);
+    return { item, opts };
+  });
+}
+
+// ══════════════════════════════
+// SCREENS
+// ══════════════════════════════
+function show(id) {
+  ['startScreen','quizScreen','resultScreen'].forEach(s => {
+    document.getElementById(s).style.display = 'none';
+  });
+  document.getElementById(id).style.display = id === 'startScreen' ? 'flex' : 'block';
+}
+
+function startQuiz() {
+  questions = buildQuestions();
+  current = 0; score = 0; wrongItems = []; answered = false;
+  show('quizScreen');
+  renderQ();
+}
+
+function goHome() { show('startScreen'); }
+
+// ══════════════════════════════
+// RENDER QUESTION
+// ══════════════════════════════
+function renderQ() {
+  answered = false;
+  const { item, opts } = questions[current];
+  const total = questions.length;
+
+  // progress
+  document.getElementById('progFill').style.width = ((current) / total * 100) + '%';
+  document.getElementById('progLbl').textContent = `${current + 1} / ${total}`;
+  document.getElementById('scoreVal').textContent = score;
+  document.getElementById('wrongVal').textContent = wrongItems.length;
+
+  // question
+  document.getElementById('qTag').textContent = item.day;
+  if (mode === 'jp-id') {
+    document.getElementById('qText').textContent = item.jp;
+    document.getElementById('qRead').textContent = item.read;
+  } else {
+    document.getElementById('qText').textContent = item.id;
+    document.getElementById('qRead').textContent = '';
+  }
+
+  // options
+  const box = document.getElementById('optionsBox');
+  box.innerHTML = '';
+  opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="opt-key">${KEYS[i]}</span>`;
+    if (mode === 'jp-id') {
+      btn.innerHTML += `<span>${opt.id}</span>`;
+    } else {
+      btn.innerHTML += `<span>${opt.jp} <span style="font-weight:400;color:#b07090;font-size:.82em">(${opt.read})</span></span>`;
+    }
+    btn.onclick = () => checkAnswer(opt, item);
+    box.appendChild(btn);
+  });
+
+  // reset feedback
+  const fb = document.getElementById('feedbackBar');
+  fb.className = 'feedback'; fb.textContent = '';
+  document.getElementById('nextBtn').className = 'next-btn';
+}
+
+// ══════════════════════════════
+// CHECK ANSWER
+// ══════════════════════════════
+function checkAnswer(chosen, correct) {
+  if (answered) return;
+  answered = true;
+
+  const btns = document.querySelectorAll('.opt');
+  btns.forEach(btn => {
+    btn.disabled = true;
+    const txt = btn.textContent;
+    if (txt.includes(correct.id) || txt.includes(correct.jp)) btn.classList.add('correct');
+  });
+
+  const fb = document.getElementById('feedbackBar');
+  if (chosen === correct) {
+    score++;
+    fb.textContent = '✅ Benar! Bagus sekali!';
+    fb.className = 'feedback show ok';
+  } else {
+    wrongItems.push({ correct, chosen });
+    fb.className = 'feedback show ng';
+    fb.textContent = mode === 'jp-id'
+      ? `❌ Jawaban: ${correct.id}`
+      : `❌ Jawaban: ${correct.jp} (${correct.read})`;
+    btns.forEach(btn => {
+      if (btn.textContent.includes(chosen.id) || btn.textContent.includes(chosen.jp)) btn.classList.add('wrong');
+    });
+  }
+  document.getElementById('nextBtn').className = 'next-btn show';
+}
+
+// ══════════════════════════════
+// NEXT / RESULT
+// ══════════════════════════════
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) { showResult(); return; }
+  renderQ();
+}
+
+function showResult() {
+  show('resultScreen');
+  const total = questions.length;
+  const pct = Math.round(score / total * 100);
+  let emoji='🎉', stars='⭐⭐⭐⭐⭐', msg='Sempurna! Kamu luar biasa! 🌸';
+  if (pct < 40)      { emoji='😢'; stars='⭐'; msg='Yuk belajar lagi! Semangat ya! 💪'; }
+  else if (pct < 60) { emoji='😅'; stars='⭐⭐'; msg='Lumayan! Masih bisa lebih baik! 🌸'; }
+  else if (pct < 75) { emoji='🙂'; stars='⭐⭐⭐'; msg='Cukup bagus! Terus latihan ya!'; }
+  else if (pct < 90) { emoji='😊'; stars='⭐⭐⭐⭐'; msg='Bagus banget! Hampir sempurna!'; }
+
+  document.getElementById('resEmoji').textContent = emoji;
+  document.getElementById('resScore').textContent = `${score} / ${total}`;
+  document.getElementById('resPct').textContent = `Akurasi ${pct}%`;
+  document.getElementById('resStars').textContent = stars;
+  document.getElementById('resMsg').textContent = msg;
+
+  const wl = document.getElementById('wrongList');
+  if (wrongItems.length === 0) { wl.innerHTML = ''; return; }
+  wl.innerHTML = `<div class="wrong-head">Perlu Diulang — ${wrongItems.length} kata</div>` +
+    wrongItems.map(w => `
+      <div class="wrong-item">
+        <strong>${w.correct.jp}</strong> (${w.correct.read})<br>
+        ✅ ${w.correct.id}<br>
+        ❌ Kamu pilih: ${mode === 'jp-id' ? w.chosen.id : w.chosen.jp}
+      </div>`).join('');
+}
+
+// Keyboard shortcut
+document.addEventListener('keydown', e => {
+  if (!answered) {
+    const idx = ['a','b','c','d'].indexOf(e.key.toLowerCase());
+    if (idx >= 0) {
+      const btns = document.querySelectorAll('.opt');
+      if (btns[idx]) btns[idx].click();
+    }
+  } else if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    const nb = document.getElementById('nextBtn');
+    if (nb.classList.contains('show')) nextQuestion();
+  }
+});
+
+// Init
+show('startScreen');
+</script>
+</body>
+</html>
