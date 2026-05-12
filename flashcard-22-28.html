@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard Kotoba — Hari 22–28</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sun: #FFD93D;
+    --sky: #6BCB77;
+    --sun-dk: #E6B800;
+    --sky-dk: #3A9E45;
+    --sun-lt: #FFF8DC;
+    --sky-lt: #EAFAF0;
+    --white: #FFFFFF;
+    --dark: #1A2B1A;
+    --gray: #6B8F6B;
+    --bg: #FFFEF0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 16px;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(circle at 20% 10%, #FFD93D33 0%, transparent 40%),
+      radial-gradient(circle at 80% 90%, #6BCB7733 0%, transparent 40%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── DOTS PATTERN ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle, #FFD93D44 1.5px, transparent 1.5px),
+      radial-gradient(circle, #6BCB7744 1.5px, transparent 1.5px);
+    background-size: 28px 28px, 28px 28px;
+    background-position: 0 0, 14px 14px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; }
+
+  /* ─────── HEADER ─────── */
+  .header {
+    text-align: center;
+    padding: 20px 0 14px;
+  }
+  .header-icon { font-size: 2.8rem; display: block; margin-bottom: 4px; animation: bounce 2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  .header h1 {
+    font-size: 1.7rem; font-weight: 900;
+    background: linear-gradient(135deg, var(--sun-dk) 0%, var(--sky-dk) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    line-height: 1.1;
+  }
+  .header p { color: var(--gray); font-size: .8rem; font-weight: 600; margin-top: 4px; }
+
+  /* ─────── FILTER BAR ─────── */
+  .filter-section {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 20px rgba(106,203,119,.15);
+    border: 2px solid var(--sky-lt);
+  }
+  .filter-label {
+    font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--sky-dk); margin-bottom: 8px;
+  }
+  .filter-chips {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
+  }
+  .chip-btn {
+    padding: 5px 11px; border-radius: 99px; border: 2px solid #e0ead0;
+    background: #fafff4; font-family: 'Poppins', sans-serif;
+    font-size: .73rem; font-weight: 700; color: var(--dark); cursor: pointer;
+    transition: all .18s;
+  }
+  .chip-btn.active { background: var(--sky); border-color: var(--sky); color: #fff; }
+  .chip-btn:hover:not(.active) { border-color: var(--sky); color: var(--sky-dk); }
+
+  /* mode toggle */
+  .mode-row { display: flex; gap: 8px; }
+  .mode-btn {
+    flex: 1; padding: 10px 6px; border-radius: 12px; border: 2px solid #e8e8d0;
+    background: #fafff4; font-family: 'Poppins', sans-serif;
+    font-size: .8rem; font-weight: 700; color: var(--dark); cursor: pointer;
+    transition: all .18s; text-align: center;
+  }
+  .mode-btn.active { background: var(--sun); border-color: var(--sun-dk); color: var(--dark); }
+
+  /* ─────── STATS ─────── */
+  .stats-row {
+    display: flex; gap: 8px; margin-bottom: 14px;
+  }
+  .stat-box {
+    flex: 1; padding: 10px 8px; border-radius: 14px;
+    text-align: center; font-weight: 800; font-size: .78rem;
+  }
+  .stat-sun { background: var(--sun-lt); color: var(--sun-dk); border: 2px solid #ffe066; }
+  .stat-sky { background: var(--sky-lt); color: var(--sky-dk); border: 2px solid #b5e8bc; }
+  .stat-num { font-size: 1.4rem; display: block; font-weight: 900; line-height: 1; }
+
+  /* ─────── PROGRESS ─────── */
+  .progress-bar {
+    background: #e8f0e0; border-radius: 99px; height: 10px;
+    overflow: hidden; margin-bottom: 14px;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--sun-dk), var(--sky));
+    transition: width .4s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ─────── FLASHCARD ─────── */
+  .card-area {
+    perspective: 1200px; margin-bottom: 14px; cursor: pointer;
+  }
+  .card-inner {
+    position: relative; width: 100%; min-height: 230px;
+    transform-style: preserve-3d;
+    transition: transform .55s cubic-bezier(.4,0,.2,1);
+  }
+  .card-inner.flipped { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute; width: 100%;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    border-radius: 24px;
+    padding: 30px 24px 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.1), 0 2px 8px rgba(106,203,119,.15);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 230px;
+  }
+
+  .card-front {
+    background: linear-gradient(145deg, var(--white) 0%, #FFFDF0 100%);
+    border: 3px solid var(--sun);
+    border-top: 6px solid var(--sun-dk);
+  }
+  .card-back {
+    background: linear-gradient(145deg, var(--white) 0%, #F0FFF4 100%);
+    border: 3px solid var(--sky);
+    border-top: 6px solid var(--sky-dk);
+    transform: rotateY(180deg);
+  }
+
+  .card-day {
+    position: absolute; top: 14px; left: 16px;
+    padding: 3px 10px; border-radius: 99px;
+    font-size: .65rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .front-day { background: var(--sun-lt); color: var(--sun-dk); }
+  .back-day  { background: var(--sky-lt); color: var(--sky-dk); }
+
+  .card-hint {
+    position: absolute; top: 14px; right: 16px;
+    font-size: .7rem; font-weight: 700; color: #aaa; opacity: .7;
+  }
+
+  .card-main {
+    font-family: 'Noto Sans JP', 'Poppins', sans-serif;
+    font-size: 1.8rem; font-weight: 700; color: var(--dark);
+    text-align: center; line-height: 1.3; margin-bottom: 8px;
+  }
+  .card-main.latin { font-family: 'Poppins', sans-serif; font-size: 1.4rem; }
+  .card-read {
+    font-size: .85rem; color: var(--gray); text-align: center; font-weight: 600;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .card-ans {
+    font-size: 1.3rem; font-weight: 800; color: var(--sky-dk);
+    text-align: center; line-height: 1.4;
+  }
+  .card-ans-sub {
+    font-size: .8rem; color: var(--gray); margin-top: 5px; text-align: center; font-weight: 600;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .tap-hint {
+    position: absolute; bottom: 14px; right: 16px;
+    font-size: .65rem; color: #bbb; font-weight: 700; display: flex; align-items: center; gap: 3px;
+  }
+
+  /* ─────── BUTTONS ─────── */
+  .action-row {
+    display: flex; gap: 10px; margin-bottom: 14px;
+  }
+  .action-btn {
+    flex: 1; padding: 13px 8px; border-radius: 16px; border: none;
+    font-family: 'Poppins', sans-serif; font-size: .9rem; font-weight: 800;
+    cursor: pointer; transition: all .18s; display: flex; align-items: center;
+    justify-content: center; gap: 5px;
+  }
+  .btn-prev { background: #f0f0e0; color: #888; }
+  .btn-prev:hover:not(:disabled) { background: #e5e5d0; }
+  .btn-next { background: linear-gradient(135deg, var(--sun-dk), var(--sky-dk)); color: #fff;
+    box-shadow: 0 4px 16px rgba(106,203,119,.3); }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(106,203,119,.4); }
+  .btn-next:active { transform: translateY(0); }
+  .action-btn:disabled { opacity: .4; cursor: default; }
+
+  /* ─────── SHUFFLE & RESET ─────── */
+  .util-row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .util-btn {
+    flex: 1; padding: 9px 6px; border-radius: 12px; border: 2px solid #e0e8d0;
+    background: var(--white); font-family: 'Poppins', sans-serif;
+    font-size: .78rem; font-weight: 700; color: var(--dark); cursor: pointer;
+    transition: all .18s; text-align: center;
+  }
+  .util-btn:hover { border-color: var(--sky-dk); color: var(--sky-dk); }
+  .util-btn.sun-btn:hover { border-color: var(--sun-dk); color: var(--sun-dk); }
+
+  /* ─────── COMPLETE ─────── */
+  #completeScreen { display: none; text-align: center; }
+  .complete-card {
+    background: var(--white); border-radius: 24px; padding: 36px 22px;
+    box-shadow: 0 10px 40px rgba(106,203,119,.2);
+    border: 3px solid var(--sky);
+  }
+  .complete-emoji { font-size: 4rem; display: block; margin-bottom: 12px; }
+  .complete-title { font-size: 1.8rem; font-weight: 900; color: var(--dark); margin-bottom: 6px; }
+  .complete-sub { color: var(--gray); font-size: .88rem; font-weight: 600; margin-bottom: 20px; }
+  .complete-btn {
+    padding: 14px 32px; border: none; border-radius: 16px;
+    background: linear-gradient(135deg, var(--sun-dk), var(--sky-dk));
+    color: #fff; font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 800;
+    cursor: pointer; box-shadow: 0 4px 16px rgba(106,203,119,.3);
+  }
+
+  /* ─────── COUNTER ─────── */
+  .counter-txt {
+    text-align: center; font-size: .75rem; font-weight: 700; color: var(--gray);
+    margin-bottom: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <span class="header-icon">🌟</span>
+    <h1>Flashcard Kotoba<br>Hari 22–28</h1>
+    <p>204 kata · Tap kartu untuk balik!</p>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-section">
+    <div class="filter-label">Filter Hari / Topik</div>
+    <div class="filter-chips" id="filterChips"></div>
+    <div class="filter-label" style="margin-top:4px">Mode Tampilan</div>
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeJpId" onclick="setMode('jp-id')">🇯🇵 Depan · 🇮🇩 Belakang</button>
+      <button class="mode-btn" id="modeIdJp" onclick="setMode('id-jp')">🇮🇩 Depan · 🇯🇵 Belakang</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-box stat-sun">
+      <span class="stat-num" id="statCur">1</span>
+      Kartu ke
+    </div>
+    <div class="stat-box stat-sky">
+      <span class="stat-num" id="statTotal">204</span>
+      Total Kata
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar">
+    <div class="progress-fill" id="progFill" style="width:0%"></div>
+  </div>
+  <div class="counter-txt" id="counterTxt">1 / 204</div>
+
+  <!-- FLASHCARD -->
+  <div id="mainApp">
+    <div class="card-area" onclick="flipCard()">
+      <div class="card-inner" id="cardInner">
+        <!-- FRONT -->
+        <div class="card-face card-front">
+          <div class="card-day front-day" id="cardDay">—</div>
+          <div class="card-hint" id="cardHint">Tap untuk lihat arti →</div>
+          <div class="card-main" id="cardMain">...</div>
+          <div class="card-read" id="cardRead"></div>
+          <div class="tap-hint">👆 tap</div>
+        </div>
+        <!-- BACK -->
+        <div class="card-face card-back">
+          <div class="card-day back-day" id="cardDayB">—</div>
+          <div class="card-ans" id="cardAns">...</div>
+          <div class="card-ans-sub" id="cardAnsSub"></div>
+          <div class="tap-hint">👆 tap balik</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="action-row">
+      <button class="action-btn btn-prev" id="btnPrev" onclick="prevCard()">← Prev</button>
+      <button class="action-btn btn-next" id="btnNext" onclick="nextCard()">Next →</button>
+    </div>
+
+    <!-- UTIL -->
+    <div class="util-row">
+      <button class="util-btn sun-btn" onclick="shuffleCards()">🔀 Acak Urutan</button>
+      <button class="util-btn" onclick="resetAll()">🔄 Reset</button>
+    </div>
+  </div>
+
+  <!-- COMPLETE -->
+  <div id="completeScreen">
+    <div class="complete-card">
+      <span class="complete-emoji">🎉</span>
+      <div class="complete-title">Selesai!</div>
+      <div class="complete-sub" id="completeMsg">Semua kartu sudah dipelajari!</div>
+      <button class="complete-btn" onclick="resetAll()">🔄 Ulangi Lagi</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const V = [
+  // ── HARI 22 · Jenis Pekerjaan ──
+  {d:"Hari 22 · Pekerjaan",jp:"レストランでアルバイト",r:"れすとらんでのあるばいと",id:"kerja part-time di restoran"},
+  {d:"Hari 22 · Pekerjaan",jp:"工場でパート",r:"こうじょうでぱーと",id:"kerja part-time di pabrik"},
+  {d:"Hari 22 · Pekerjaan",jp:"コンビニの店員",r:"こんびにのてんいん",id:"pegawai toko (konbini)"},
+  {d:"Hari 22 · Pekerjaan",jp:"英会話講師",r:"えいかいわこうし",id:"pengajar kelas percakapan bahasa Inggris"},
+  {d:"Hari 22 · Pekerjaan",jp:"翻訳の仕事",r:"ほんやくのしごと",id:"bekerja sebagai translator"},
+  {d:"Hari 22 · Pekerjaan",jp:"翻訳する",r:"ほんやくする",id:"menerjemahkan (tulisan)"},
+  {d:"Hari 22 · Pekerjaan",jp:"通訳の仕事",r:"つうやくのしごと",id:"bekerja sebagai interpreter"},
+  {d:"Hari 22 · Pekerjaan",jp:"通訳する",r:"つうやくする",id:"menerjemahkan (lisan)"},
+  {d:"Hari 22 · Pekerjaan",jp:"事務の手伝い",r:"じむのてつだい",id:"bantu urusan kantor"},
+  {d:"Hari 22 · Pekerjaan",jp:"ホームヘルパー",r:"ほーむへるぱー",id:"membantu urusan rumah"},
+  // ── HARI 22 · Kondisi Kerja ──
+  {d:"Hari 22 · Kondisi Kerja",jp:"仕事を探す",r:"しごとをさがす",id:"mencari pekerjaan"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"履歴書を書く",r:"りれきしょをかく",id:"menulis CV lamaran"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"面接をする",r:"めんせつをする",id:"melakukan wawancara"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"ホテルの従業員",r:"ほてるのじゅうぎょういん",id:"pegawai hotel"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"仕事仲間",r:"しごとなかま",id:"rekan kerja"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"給料",r:"きゅうりょう",id:"gaji"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"時給 1200円",r:"じきゅう 1200えん",id:"gaji per jam 1200 yen"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"ボーナス",r:"ぼーなす",id:"bonus"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"交通費が出る",r:"こうつうひがでる",id:"dapat biaya transport"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"勤務時間",r:"きんむじかん",id:"jam kerja"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"やとう",r:"やとう",id:"mempekerjakan"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"やとわれる",r:"やとわれる",id:"dipekerjakan"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"きつい仕事",r:"きつい（＝つらい）しごと",id:"pekerjaan yang berat / keras"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"お金をかせぐ",r:"おかねをかせぐ",id:"mencari uang"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"お金をもうける",r:"おかねをもうける",id:"menghasilkan banyak uang"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"お金がもうかる",r:"おかねがもうかる",id:"untung / dapat banyak uang"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"仕事を済ます／済ませる",r:"しごとをすます／すませる",id:"menyelesaikan pekerjaan"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"仕事をなまける",r:"しごとをなまける",id:"malas-malasan bekerja"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"なまけ者",r:"なまけもの",id:"pemalas"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"働き者",r:"はたらきもの",id:"pekerja keras"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"首になる",r:"くびになる",id:"dipecat / diberhentikan"},
+  {d:"Hari 22 · Kondisi Kerja",jp:"やめさせられる",r:"やめさせられる",id:"diminta berhenti"},
+  // ── HARI 23 · Komputer ──
+  {d:"Hari 23 · Komputer",jp:"初めてパソコンをさわる",r:"はじめてぱそこんをさわる",id:"pertama kali memakai komputer"},
+  {d:"Hari 23 · Komputer",jp:"初心者",r:"しょしんしゃ",id:"pemula"},
+  {d:"Hari 23 · Komputer",jp:"入門講座を受ける",r:"にゅうもんこうざをうける",id:"mengikuti kursus pengantar / dasar"},
+  {d:"Hari 23 · Komputer",jp:"パソコンに慣れる",r:"ぱそこんになれる",id:"terbiasa dengan komputer"},
+  {d:"Hari 23 · Komputer",jp:"新製品",r:"しんせいひん",id:"produk baru"},
+  {d:"Hari 23 · Komputer",jp:"新品",r:"しんぴん",id:"barang yang masih baru"},
+  {d:"Hari 23 · Komputer",jp:"中古",r:"ちゅうこ",id:"barang bekas"},
+  {d:"Hari 23 · Komputer",jp:"画面を見る",r:"がめんをみる",id:"melihat layar / monitor"},
+  {d:"Hari 23 · Komputer",jp:"ソフトウェアをインストールする",r:"そふとうえあをいんすとーるする",id:"menginstall software"},
+  {d:"Hari 23 · Komputer",jp:"スタートボタンをクリックする",r:"すたーとぼたんをくりっくする",id:"mengklik tombol start"},
+  {d:"Hari 23 · Komputer",jp:"ファイルを開く",r:"ふぁいるをひらく",id:"membuka file"},
+  {d:"Hari 23 · Komputer",jp:"閉じる",r:"とじる",id:"menutup (file/jendela)"},
+  {d:"Hari 23 · Komputer",jp:"年賀状を作る",r:"ねんがじょうをつくる",id:"membuat kartu ucapan tahun baru"},
+  {d:"Hari 23 · Komputer",jp:"インターネットにつなぐ",r:"いんたーねっとにつなぐ",id:"menghubungkan ke internet"},
+  {d:"Hari 23 · Komputer",jp:"世界中とつながる",r:"せかいじゅうとつながる",id:"terhubung dengan seluruh dunia"},
+  {d:"Hari 23 · Komputer",jp:"情報を得る",r:"じょうほうをえる",id:"mendapatkan informasi"},
+  {d:"Hari 23 · Komputer",jp:"オークションに参加する",r:"おーくしょんにさんかする",id:"berpartisipasi dalam lelang"},
+  {d:"Hari 23 · Komputer",jp:"オークションに品物を出す",r:"おーくしょんにしなものをだす",id:"melelang suatu barang"},
+  {d:"Hari 23 · Komputer",jp:"出品する",r:"しゅっぴんする",id:"mendisplay / menampilkan barang (lelang)"},
+  {d:"Hari 23 · Komputer",jp:"ホームページを作る",r:"ほーむぺーじをつくる",id:"membuat halaman di internet"},
+  {d:"Hari 23 · Komputer",jp:"ブログを始める",r:"ぶろぐをはじめる",id:"memulai / menulis blog"},
+  // ── HARI 24 · Email ──
+  {d:"Hari 24 · Email",jp:"入力する",r:"にゅうりょくする",id:"menginput"},
+  {d:"Hari 24 · Email",jp:"ローマ字で入力する",r:"ろーまじでにゅうりょくする",id:"input dengan romaji"},
+  {d:"Hari 24 · Email",jp:"漢字に変換する",r:"かんじにへんかんする",id:"mengganti ke kanji"},
+  {d:"Hari 24 · Email",jp:"挿入する",r:"そうにゅうする",id:"memasukkan / menyisipkan"},
+  {d:"Hari 24 · Email",jp:"削除する",r:"さくじょする",id:"menghapus"},
+  {d:"Hari 24 · Email",jp:"受信する",r:"じゅしんする",id:"menerima (email)"},
+  {d:"Hari 24 · Email",jp:"送信する",r:"そうしんする",id:"mengirim (email)"},
+  {d:"Hari 24 · Email",jp:"返信する",r:"へんしんする",id:"membalas (email)"},
+  {d:"Hari 24 · Email",jp:"転送する",r:"てんそうする",id:"meneruskan / forward (email)"},
+  {d:"Hari 24 · Email",jp:"新規作成する",r:"しんきさくせいする",id:"membuat (email) baru"},
+  {d:"Hari 24 · Email",jp:"まとめて送る",r:"まとめておくる",id:"mengirim jadi satu"},
+  {d:"Hari 24 · Email",jp:"整理する",r:"せいりする",id:"mengatur / merapikan"},
+  {d:"Hari 24 · Email",jp:"チェックする",r:"ちぇっくする",id:"mengecek"},
+  {d:"Hari 24 · Email",jp:"あて先",r:"あてさき",id:"tujuan pengiriman (email)"},
+  {d:"Hari 24 · Email",jp:"差出人",r:"さしだしにん",id:"pengirim (email)"},
+  {d:"Hari 24 · Email",jp:"件名",r:"けんめい",id:"judul / subjek email"},
+  {d:"Hari 24 · Email",jp:"メールのやり取りをする",r:"めーるのやりとりをする",id:"saling mengirimkan email"},
+  {d:"Hari 24 · Email",jp:"写真を添付する",r:"しゃしんをてんぷする",id:"melampirkan foto (attachment)"},
+  {d:"Hari 24 · Email",jp:"改行する",r:"かいぎょうする",id:"membuat baris baru (enter)"},
+  {d:"Hari 24 · Email",jp:"送信が完了する",r:"そうしんがかんりょうする",id:"pengiriman telah selesai"},
+  {d:"Hari 24 · Email",jp:"アドレス帳",r:"あどれすちょう",id:"buku alamat (kontak email)"},
+  {d:"Hari 24 · Email",jp:"送信者のアドレスを登録する",r:"そうしんしゃの（めーる）あどれすをとうろくする",id:"mendaftarkan alamat pengirim"},
+  // ── HARI 25 · Keluarga ──
+  {d:"Hari 25 · Keluarga",jp:"長男",r:"ちょうなん",id:"putra sulung"},
+  {d:"Hari 25 · Keluarga",jp:"長女",r:"ちょうじょ",id:"putri sulung"},
+  {d:"Hari 25 · Keluarga",jp:"次男",r:"じなん",id:"anak laki-laki kedua"},
+  {d:"Hari 25 · Keluarga",jp:"次女",r:"じじょ",id:"anak perempuan kedua"},
+  {d:"Hari 25 · Keluarga",jp:"三男",r:"さんなん",id:"anak laki-laki ketiga"},
+  {d:"Hari 25 · Keluarga",jp:"末っ子",r:"すえっこ",id:"anak bungsu"},
+  {d:"Hari 25 · Keluarga",jp:"おじ",r:"おじ",id:"paman / om"},
+  {d:"Hari 25 · Keluarga",jp:"おば",r:"おば",id:"bibi / tante"},
+  {d:"Hari 25 · Keluarga",jp:"親せき",r:"しんせき",id:"saudara (kerabat)"},
+  {d:"Hari 25 · Keluarga",jp:"孫",r:"まご",id:"cucu"},
+  {d:"Hari 25 · Keluarga",jp:"おい",r:"おい",id:"keponakan laki-laki"},
+  {d:"Hari 25 · Keluarga",jp:"めい",r:"めい",id:"keponakan perempuan"},
+  {d:"Hari 25 · Keluarga",jp:"いとこ",r:"いとこ",id:"sepupu"},
+  {d:"Hari 25 · Keluarga",jp:"一人っ子",r:"ひとりっこ",id:"anak tunggal"},
+  {d:"Hari 25 · Keluarga",jp:"一人息子",r:"ひとりむすこ",id:"anak tunggal laki-laki"},
+  {d:"Hari 25 · Keluarga",jp:"一人娘",r:"ひとりむすめ",id:"anak tunggal perempuan"},
+  // ── HARI 25 · Status Kerja ──
+  {d:"Hari 25 · Status Kerja",jp:"職場の同僚",r:"しょくばのどうりょう",id:"rekan kerja (di tempat kerja)"},
+  {d:"Hari 25 · Status Kerja",jp:"職場の上司",r:"しょくばのじょうし",id:"atasan di tempat kerja"},
+  {d:"Hari 25 · Status Kerja",jp:"職場の部下",r:"しょくばのぶか",id:"bawahan di tempat kerja"},
+  {d:"Hari 25 · Status Kerja",jp:"会社の先輩",r:"かいしゃのせんぱい",id:"senior di perusahaan"},
+  {d:"Hari 25 · Status Kerja",jp:"会社の後輩",r:"かいしゃのこうはい",id:"junior di perusahaan"},
+  {d:"Hari 25 · Status Kerja",jp:"部長",r:"ぶちょう",id:"general manager"},
+  {d:"Hari 25 · Status Kerja",jp:"課長",r:"かちょう",id:"manager"},
+  {d:"Hari 25 · Status Kerja",jp:"会社員",r:"かいしゃいん",id:"pegawai kantor"},
+  {d:"Hari 25 · Status Kerja",jp:"サラリーマン",r:"さらりーまん",id:"karyawan kantor"},
+  {d:"Hari 25 · Status Kerja",jp:"主婦",r:"しゅふ",id:"ibu rumah tangga"},
+  {d:"Hari 25 · Status Kerja",jp:"教師",r:"きょうし",id:"pengajar"},
+  // ── HARI 25 · Pendidikan ──
+  {d:"Hari 25 · Pendidikan",jp:"大学生",r:"だいがくせい",id:"mahasiswa"},
+  {d:"Hari 25 · Pendidikan",jp:"高校生",r:"こうこうせい",id:"siswa SMA"},
+  {d:"Hari 25 · Pendidikan",jp:"中学生",r:"ちゅうがくせい",id:"siswa SMP"},
+  {d:"Hari 25 · Pendidikan",jp:"小学生",r:"しょうがくせい",id:"siswa SD"},
+  // ── HARI 25 · Ekspresi ──
+  {d:"Hari 25 · Ekspresi",jp:"6人兄弟の末っ子",r:"ろくにんきょうだいのすえっこ",id:"anak bungsu dari 6 bersaudara"},
+  {d:"Hari 25 · Ekspresi",jp:"3人姉妹のいちばん上",r:"さんにんしまいのいちばんうえ",id:"anak sulung dari 3 bersaudara perempuan"},
+  {d:"Hari 25 · Ekspresi",jp:"兄弟",r:"きょうだい",id:"saudara (laki-laki maupun perempuan)"},
+  {d:"Hari 25 · Ekspresi",jp:"姉妹",r:"しまい",id:"saudara perempuan saja"},
+  // ── HARI 26 · Salam ──
+  {d:"Hari 26 · Salam",jp:"お国はどちらですか",r:"おくにはどちらですか",id:"negara kamu mana?"},
+  {d:"Hari 26 · Salam",jp:"お生まれはどちらですか",r:"おうまれはどちらですか",id:"lahirnya di mana?"},
+  {d:"Hari 26 · Salam",jp:"どちらのご出身ですか",r:"どちらのごしゅっしんですか",id:"berasal dari mana?"},
+  {d:"Hari 26 · Salam",jp:"イギリス出身です",r:"いぎりすしゅっしんです",id:"berasal dari Inggris"},
+  {d:"Hari 26 · Salam",jp:"お住まいはどちらですか",r:"おすまいはどちらですか",id:"tinggalnya di mana?"},
+  {d:"Hari 26 · Salam",jp:"この近くです",r:"このちかくです",id:"di dekat sini"},
+  {d:"Hari 26 · Salam",jp:"先日は、ありがとうございました",r:"せんじつは、ありがとうございました",id:"terima kasih atas... beberapa hari yang lalu"},
+  {d:"Hari 26 · Salam",jp:"とんでもないです。こちらこそ",r:"とんでもないです。こちらこそ",id:"tidak apa-apa / sama-sama"},
+  {d:"Hari 26 · Salam",jp:"どうぞお上がりください",r:"どうぞおあがりください",id:"silahkan masuk"},
+  {d:"Hari 26 · Salam",jp:"おじゃまします",r:"おじゃまします",id:"permisi (saat masuk rumah orang)"},
+  {d:"Hari 26 · Salam",jp:"こちらでおかけになってお待ちください",r:"こちらでおかけになっておまちください",id:"silahkan duduk menunggu di sini"},
+  {d:"Hari 26 · Salam",jp:"お茶をお持ちします",r:"おちゃをおもちします",id:"saya akan bawakan teh"},
+  {d:"Hari 26 · Salam",jp:"どうぞおかまいなく",r:"どうぞおかまいなく",id:"tidak usah repot-repot"},
+  {d:"Hari 26 · Salam",jp:"どうぞお召し上がりください",r:"どうぞおめしあがりください",id:"silahkan dimakan / diminum"},
+  {d:"Hari 26 · Salam",jp:"では、遠慮なくいただきます",r:"では、えんりょなくいただきます",id:"baik, saya terima (menerima tawaran)"},
+  {d:"Hari 26 · Salam",jp:"ご無沙汰しています。お元気でいらっしゃいますか",r:"ごぶさたしています。おげんきでいらっしゃいますか",id:"lama tidak bertemu, apa kabar?"},
+  {d:"Hari 26 · Salam",jp:"ええ、おかげさまで",r:"ええ、おかげさまで",id:"baik, berkat doa Anda"},
+  {d:"Hari 26 · Salam",jp:"田中さんのご主人、亡くなったそうですよ",r:"たなかさんのごしゅじん、なくなったそうですよ",id:"suami Tanaka-san katanya meninggal"},
+  {d:"Hari 26 · Salam",jp:"そうですか。お気の毒に",r:"そうですか。おきのどくに",id:"oh begitu... kasihan (turut berduka)"},
+  {d:"Hari 26 · Salam",jp:"お目にかかるのを楽しみにしています",r:"おめにかかるのをたのしみにしています",id:"saya menantikan hari kita bertemu"},
+  {d:"Hari 26 · Salam",jp:"お先に失礼します",r:"おさきにしつれいします",id:"saya pamit terlebih dahulu"},
+  {d:"Hari 26 · Salam",jp:"ご苦労さま／お疲れさま",r:"ごくろうさま／おつかれさま",id:"terima kasih atas kerja keras hari ini"},
+  {d:"Hari 26 · Salam",jp:"お先に",r:"おさきに",id:"saya duluan (pulang)"},
+  {d:"Hari 26 · Salam",jp:"お疲れさまでした",r:"おつかれさまでした",id:"terima kasih atas kerja keras hari ini (formal)"},
+  // ── HARI 27 · Sifat Positif ──
+  {d:"Hari 27 · Sifat Positif",jp:"かしこい",r:"かしこい",id:"pintar"},
+  {d:"Hari 27 · Sifat Positif",jp:"礼儀正しい",r:"れいぎただしい",id:"sopan"},
+  {d:"Hari 27 · Sifat Positif",jp:"正直な",r:"しょうじきな",id:"jujur / tidak bohong"},
+  {d:"Hari 27 · Sifat Positif",jp:"正直に言うと",r:"しょうじきにいうと",id:"sejujurnya"},
+  {d:"Hari 27 · Sifat Positif",jp:"素直な",r:"すなおな",id:"jujur / apa adanya"},
+  {d:"Hari 27 · Sifat Positif",jp:"純粋な",r:"じゅんすいな",id:"polos / murni"},
+  {d:"Hari 27 · Sifat Positif",jp:"純粋な気持ち",r:"じゅんすいきもち",id:"perasaan murni"},
+  {d:"Hari 27 · Sifat Positif",jp:"かっこいい",r:"かっこいい",id:"penampilan keren / cakep"},
+  {d:"Hari 27 · Sifat Positif",jp:"勇気のある",r:"ゆうきのある",id:"berani"},
+  {d:"Hari 27 · Sifat Positif",jp:"ユーモアのある",r:"ゆーもあのある",id:"humoris"},
+  {d:"Hari 27 · Sifat Positif",jp:"積極的な",r:"せっきょくてきな",id:"agresif / aktif"},
+  {d:"Hari 27 · Sifat Positif",jp:"落ち着いている",r:"おちついている",id:"tenang / kalem"},
+  {d:"Hari 27 · Sifat Positif",jp:"おとなしい",r:"おとなしい",id:"nurut / pendiam"},
+  {d:"Hari 27 · Sifat Positif",jp:"まじめな",r:"まじめな",id:"sungguh-sungguh / serius"},
+  {d:"Hari 27 · Sifat Positif",jp:"のんきな",r:"のんきな",id:"santai / kalem"},
+  {d:"Hari 27 · Sifat Positif",jp:"ハンサムな",r:"はんさむな",id:"tampan"},
+  {d:"Hari 27 · Sifat Positif",jp:"美人",r:"びじん",id:"cantik"},
+  {d:"Hari 27 · Sifat Positif",jp:"スマートな",r:"すまーとな",id:"slim / stylish / cekatan"},
+  // ── HARI 27 · Sifat Negatif ──
+  {d:"Hari 27 · Sifat Negatif",jp:"かっこ悪い",r:"かっこわるい",id:"penampilan buruk"},
+  {d:"Hari 27 · Sifat Negatif",jp:"消極的な",r:"しょうきょくてきな",id:"pasif"},
+  {d:"Hari 27 · Sifat Negatif",jp:"意地悪な",r:"いじわるな",id:"suka iseng (jahat)"},
+  {d:"Hari 27 · Sifat Negatif",jp:"意地悪をする",r:"いじわるをする",id:"berbuat iseng / jahat"},
+  {d:"Hari 27 · Sifat Negatif",jp:"うそをつく",r:"うそをつく",id:"berbohong"},
+  {d:"Hari 27 · Sifat Negatif",jp:"うそつき",r:"うそつき",id:"pembohong"},
+  {d:"Hari 27 · Sifat Negatif",jp:"ずるい",r:"ずるい",id:"licik / curang"},
+  {d:"Hari 27 · Sifat Negatif",jp:"ずうずうしい",r:"ずうずうしい",id:"kurang ajar / tidak tahu malu"},
+  {d:"Hari 27 · Sifat Negatif",jp:"しつこい",r:"しつこい",id:"ngeyel / tidak mau menyerah"},
+  {d:"Hari 27 · Sifat Negatif",jp:"しつこく注意する",r:"しつこくちゅういする",id:"memperingatkan terus-menerus"},
+  {d:"Hari 27 · Sifat Negatif",jp:"だらしない",r:"だらしない",id:"ceroboh / tidak teratur"},
+  {d:"Hari 27 · Sifat Negatif",jp:"わがまま",r:"わがまま",id:"egois / mau menang sendiri"},
+  {d:"Hari 27 · Sifat Negatif",jp:"自己中心的",r:"じこちゅうしんてき",id:"egois / self-centered"},
+  {d:"Hari 27 · Sifat Negatif",jp:"欲が深い",r:"よくがふかい",id:"serakah"},
+  {d:"Hari 27 · Sifat Negatif",jp:"けちな",r:"けちな",id:"pelit"},
+  {d:"Hari 27 · Sifat Negatif",jp:"無責任な",r:"むせきにんな",id:"tidak bertanggung jawab"},
+  {d:"Hari 27 · Sifat Negatif",jp:"いいかげんな",r:"いいかげんな",id:"tidak tanggung jawab / sembarangan"},
+  {d:"Hari 27 · Sifat Negatif",jp:"いいかげんなことを言う",r:"いいかげんなことをいう",id:"mengatakan hal yang tidak bertanggung jawab"},
+  {d:"Hari 27 · Sifat Negatif",jp:"いいかげんにしろ！",r:"いいかげんにしろ！",id:"sudah, cukup! hentikan!"},
+  // ── HARI 28 · Gejala Sakit ──
+  {d:"Hari 28 · Gejala Sakit",jp:"体の調子／具合が悪い",r:"からだのちょうし／ぐあいがわるい",id:"kondisi badan sedang buruk"},
+  {d:"Hari 28 · Gejala Sakit",jp:"めまいがする",r:"めまいがする",id:"pusing (kliyengan)"},
+  {d:"Hari 28 · Gejala Sakit",jp:"頭痛がする",r:"ずつうがする",id:"sakit kepala"},
+  {d:"Hari 28 · Gejala Sakit",jp:"胃が痛い",r:"いがいたい",id:"lambung / perut terasa sakit"},
+  {d:"Hari 28 · Gejala Sakit",jp:"腰が痛い",r:"こしがいたい",id:"sakit pinggang"},
+  {d:"Hari 28 · Gejala Sakit",jp:"息が苦しい",r:"いきがくるしい",id:"sesak nafas"},
+  {d:"Hari 28 · Gejala Sakit",jp:"苦しむ",r:"くるしむ",id:"menderita"},
+  {d:"Hari 28 · Gejala Sakit",jp:"鼻がつまる",r:"はながつまる",id:"hidung tersumbat"},
+  {d:"Hari 28 · Gejala Sakit",jp:"鼻をかむ",r:"はなをかむ",id:"membuang ingus"},
+  {d:"Hari 28 · Gejala Sakit",jp:"吐き気がする",r:"はきけがする",id:"mual / ingin muntah"},
+  {d:"Hari 28 · Gejala Sakit",jp:"吐く",r:"はく",id:"muntah"},
+  {d:"Hari 28 · Gejala Sakit",jp:"気分が悪い／気持ち（が）悪い",r:"きぶんがわるい／きもち（が）わるい",id:"merasa tidak enak badan"},
+  {d:"Hari 28 · Gejala Sakit",jp:"目がかゆい",r:"めがかゆい",id:"mata terasa gatal"},
+  {d:"Hari 28 · Gejala Sakit",jp:"目をこする／かく",r:"めをこする／かく",id:"mengucek mata"},
+  {d:"Hari 28 · Gejala Sakit",jp:"風邪を引いてつらい",r:"かぜをひいてつらい",id:"terasa menyakitkan karena kena flu"},
+  {d:"Hari 28 · Gejala Sakit",jp:"アレルギーがある",r:"あれるぎーがある",id:"mempunyai alergi"},
+  // ── HARI 28 · Pengobatan ──
+  {d:"Hari 28 · Pengobatan",jp:"患者「お世話になりました。」",r:"かんじゃ「おせわになりました。」",id:"(pasien) terima kasih atas bantuannya selama ini"},
+  {d:"Hari 28 · Pengobatan",jp:"看護師「お大事に。」",r:"かんごし「おだいじに。」",id:"(perawat) semoga lekas sembuh"},
+  {d:"Hari 28 · Pengobatan",jp:"専門の医師にみてもらう",r:"せんもんのいしにみてもらう",id:"diperiksa oleh dokter spesialis"},
+  {d:"Hari 28 · Pengobatan",jp:"医師の診察を受ける",r:"いしのしんさつをうける",id:"periksa ke dokter"},
+  {d:"Hari 28 · Pengobatan",jp:"歯医者にかかる",r:"はいしゃにかかる",id:"pergi ke dokter gigi"},
+  {d:"Hari 28 · Pengobatan",jp:"インフルエンザにかかる",r:"いんふるえんざにかかる",id:"terkena influenza"},
+  {d:"Hari 28 · Pengobatan",jp:"病気の症状",r:"びょうきのしょうじょう",id:"gejala penyakit"},
+  {d:"Hari 28 · Pengobatan",jp:"注射をしてもらう",r:"ちゅうしゃをしてもらう",id:"disuntik"},
+  {d:"Hari 28 · Pengobatan",jp:"手術を受ける",r:"しゅじゅつをうける",id:"dioperasi"},
+  {d:"Hari 28 · Pengobatan",jp:"痛みをがまんする",r:"いたみをがまんする",id:"menahan rasa sakit"},
+  {d:"Hari 28 · Pengobatan",jp:"花粉症になる",r:"かふんしょうになる",id:"terkena kafunsho (alergi serbuk sari)"},
+  {d:"Hari 28 · Pengobatan",jp:"うがいをする",r:"うがいをする",id:"kumur-kumur"},
+  {d:"Hari 28 · Pengobatan",jp:"けがを治す",r:"けがをなおす",id:"menyembuhkan luka"},
+  {d:"Hari 28 · Pengobatan",jp:"手の傷",r:"てのきず",id:"luka di tangan"},
+  {d:"Hari 28 · Pengobatan",jp:"やけどをする",r:"やけどをする",id:"terkena luka bakar"},
+  {d:"Hari 28 · Pengobatan",jp:"大したことがない",r:"たいしたことがない",id:"bukan masalah berarti / tidak parah"},
+  {d:"Hari 28 · Pengobatan",jp:"ましになる",r:"ましになる",id:"mendingan (kondisinya)"},
+  {d:"Hari 28 · Pengobatan",jp:"（お）見舞いに行く",r:"（お）みまいにいく",id:"pergi menjenguk (orang sakit)"},
+];
+
+// ── STATE ──
+let mode = 'jp-id';
+let allCards = [...V];
+let filtered = [...V];
+let cur = 0;
+let isFlipped = false;
+let activeFilters = new Set(['semua']);
+
+// ── FILTERS ──
+const TOPICS = ['semua','Hari 22','Hari 23','Hari 24','Hari 25','Hari 26','Hari 27','Hari 28'];
+
+function buildFilters() {
+  const wrap = document.getElementById('filterChips');
+  wrap.innerHTML = '';
+  TOPICS.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'chip-btn' + (t === 'semua' ? ' active' : '');
+    b.textContent = t === 'semua' ? '🌈 Semua (' + V.length + ')' : t + ' (' + V.filter(v => v.d.startsWith(t)).length + ')';
+    b.onclick = () => toggleFilter(t, b);
+    wrap.appendChild(b);
+  });
+}
+
+function toggleFilter(t, btn) {
+  if (t === 'semua') {
+    activeFilters = new Set(['semua']);
+    document.querySelectorAll('.chip-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+  } else {
+    activeFilters.delete('semua');
+    document.querySelector('.chip-btn').classList.remove('active');
+    if (activeFilters.has(t)) {
+      activeFilters.delete(t);
+      btn.classList.remove('active');
+      if (activeFilters.size === 0) { activeFilters.add('semua'); document.querySelector('.chip-btn').classList.add('active'); }
+    } else {
+      activeFilters.add(t);
+      btn.classList.add('active');
+    }
+  }
+  applyFilter();
+}
+
+function applyFilter() {
+  if (activeFilters.has('semua')) {
+    filtered = [...V];
+  } else {
+    filtered = V.filter(v => [...activeFilters].some(f => v.d.startsWith(f)));
+  }
+  cur = 0;
+  document.getElementById('completeScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  render();
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeJpId').classList.toggle('active', m === 'jp-id');
+  document.getElementById('modeIdJp').classList.toggle('active', m === 'id-jp');
+  render();
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('cardInner').classList.toggle('flipped', isFlipped);
+}
+
+function render() {
+  isFlipped = false;
+  document.getElementById('cardInner').classList.remove('flipped');
+
+  const item = filtered[cur];
+  const total = filtered.length;
+
+  // stats
+  document.getElementById('statCur').textContent = cur + 1;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('counterTxt').textContent = (cur+1) + ' / ' + total;
+
+  // progress
+  document.getElementById('progFill').style.width = ((cur+1)/total*100) + '%';
+
+  // front
+  document.getElementById('cardDay').textContent = item.d;
+  document.getElementById('cardDayB').textContent = item.d;
+
+  if (mode === 'jp-id') {
+    document.getElementById('cardMain').textContent = item.jp;
+    document.getElementById('cardMain').className = 'card-main';
+    document.getElementById('cardRead').textContent = item.r;
+    document.getElementById('cardHint').textContent = 'Tap untuk lihat arti →';
+    document.getElementById('cardAns').textContent = item.id;
+    document.getElementById('cardAnsSub').textContent = '';
+  } else {
+    document.getElementById('cardMain').textContent = item.id;
+    document.getElementById('cardMain').className = 'card-main latin';
+    document.getElementById('cardRead').textContent = '';
+    document.getElementById('cardHint').textContent = 'Tap untuk lihat kanji →';
+    document.getElementById('cardAns').textContent = item.jp;
+    document.getElementById('cardAnsSub').textContent = item.r;
+  }
+
+  // buttons
+  document.getElementById('btnPrev').disabled = cur === 0;
+  document.getElementById('btnNext').textContent = cur === total-1 ? 'Selesai ✓' : 'Next →';
+}
+
+function nextCard() {
+  if (cur >= filtered.length - 1) {
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('completeScreen').style.display = 'block';
+    document.getElementById('completeMsg').textContent = 'Semua ' + filtered.length + ' kartu selesai dipelajari! 🌟';
+    return;
+  }
+  cur++;
+  render();
+}
+
+function prevCard() {
+  if (cur <= 0) return;
+  cur--;
+  render();
+}
+
+function shuffleCards() {
+  for (let i = filtered.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+  }
+  cur = 0;
+  render();
+}
+
+function resetAll() {
+  filtered = activeFilters.has('semua') ? [...V] : V.filter(v => [...activeFilters].some(f => v.d.startsWith(f)));
+  cur = 0;
+  document.getElementById('completeScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  render();
+}
+
+// keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft')  prevCard();
+  if (e.key === ' ') { e.preventDefault(); flipCard(); }
+});
+
+// init
+buildFilters();
+render();
+</script>
+</body>
+</html>
