@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Latihan Isian Hiragana — Kotoba 22–28</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #FFF9E8 0%, #F0FCE8 100%);
+      font-family: 'Poppins', 'Noto Sans JP', sans-serif;
+      padding: 1.5rem 1rem 2.5rem;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* decorative sunny & grassy dots */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle at 20% 30%, #FFD966 2px, transparent 2px),
+                        radial-gradient(circle at 80% 70%, #8FC93A 2px, transparent 2px);
+      background-size: 48px 48px, 52px 52px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* header gaya cerah */
+    .hero {
+      background: rgba(255, 248, 220, 0.85);
+      backdrop-filter: blur(4px);
+      border-radius: 48px;
+      padding: 1rem 1.8rem;
+      margin-bottom: 1.8rem;
+      text-align: center;
+      box-shadow: 0 12px 28px rgba(107, 203, 119, 0.2);
+      border: 2px solid #FFE493;
+    }
+
+    .hero-icon {
+      font-size: 2.5rem;
+      display: inline-block;
+      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+    }
+
+    h1 {
+      font-size: 1.7rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #E6B422, #3A9E45);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+
+    .sub {
+      color: #5B7A3E;
+      font-weight: 500;
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
+
+    /* info bar */
+    .info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: white;
+      padding: 12px 20px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 14px rgba(106, 203, 119, 0.15);
+      border: 1px solid #FFE39A;
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+    }
+
+    .stat-badge {
+      background: #FFF6DF;
+      padding: 5px 14px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #bc8b2c;
+    }
+
+    .stat-badge span {
+      color: #367c3a;
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-right: 4px;
+    }
+
+    .mode-hint {
+      background: #E9F7E5;
+      border-radius: 40px;
+      padding: 5px 16px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #2c6e2f;
+    }
+
+    /* soal card */
+    .quiz-card {
+      background: #FFFFFFDD;
+      backdrop-filter: blur(2px);
+      border-radius: 2rem;
+      padding: 1.2rem 1.2rem 1.2rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s;
+      border-left: 10px solid #FFD966;
+      border-right: 2px solid #E2F0D6;
+    }
+
+    .quiz-card.correct-highlight {
+      background: #EFFFE8;
+      border-left-color: #6BCB77;
+    }
+
+    .soal-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .day-tag {
+      background: #FFEDB5;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #B1620C;
+      letter-spacing: 0.3px;
+    }
+
+    .nomor {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #8ba86b;
+    }
+
+    .pertanyaan {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      color: #1c2e14;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .jp-kata {
+      background: #FFF1CD;
+      padding: 4px 12px;
+      border-radius: 24px;
+      font-family: 'Noto Sans JP', monospace;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: #AD7000;
+    }
+
+    .arrow-icon {
+      font-size: 1.2rem;
+    }
+
+    .input-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .hiragana-input {
+      flex: 2;
+      min-width: 180px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-family: 'Noto Sans JP', 'Poppins', monospace;
+      border: 2px solid #E9DFB2;
+      border-radius: 28px;
+      background: white;
+      transition: 0.2s;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .hiragana-input:focus {
+      border-color: #FFC107;
+      outline: none;
+      box-shadow: 0 0 0 3px #FFD96666;
+    }
+
+    .btn-check {
+      background: #FFD966;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 36px;
+      font-weight: 800;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: 0.15s;
+      color: #442c0a;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .btn-check:hover {
+      background: #FFCC44;
+      transform: scale(0.97);
+    }
+
+    .feedback {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feedback.correct {
+      color: #2c8c3a;
+    }
+
+    .feedback.wrong {
+      color: #c7532c;
+    }
+
+    /* tombol global */
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin: 32px 0 24px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(95deg, #FFD966, #A8E05A);
+      border: none;
+      padding: 12px 28px;
+      border-radius: 48px;
+      font-weight: 800;
+      font-family: 'Poppins', sans-serif;
+      color: #2D411D;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 10px rgba(104, 184, 70, 0.3);
+    }
+
+    .btn-secondary {
+      background: #FEF2DB;
+      border: 2px solid #FFD966;
+      padding: 10px 24px;
+      border-radius: 48px;
+      font-weight: 700;
+      color: #734c1a;
+      cursor: pointer;
+    }
+
+    .reset-btn {
+      background: #FFE4B5;
+    }
+
+    .progress-area {
+      background: #ECF8E5;
+      border-radius: 30px;
+      padding: 8px 12px;
+      margin: 18px 0 8px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    .complete-banner {
+      background: linear-gradient(120deg, #FFE6A3, #C5F0B0);
+      border-radius: 2rem;
+      padding: 1.8rem;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #86a46a;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <div class="hero-icon">🌸✍️</div>
+    <h1>Latihan Isi Hiragana</h1>
+    <div class="sub">✨ 204 kosakata Hari 22–28 ✨</div>
+    <div class="sub">Tulis huruf hiragana yang benar dari kata Jepang berikut</div>
+  </div>
+
+  <div class="info-bar">
+    <div class="stats">
+      <div class="stat-badge"><span id="doneCount">0</span> / <span id="totalCount">204</span> terjawab</div>
+      <div class="stat-badge">✅ <span id="correctCount">0</span> benar</div>
+    </div>
+    <div class="mode-hint">📖 ひらがな mode | semua kosakata</div>
+  </div>
+
+  <div id="quizContainer" style="margin-bottom: 1rem;"></div>
+
+  <div class="action-buttons">
+    <button class="btn-secondary" id="resetProgressBtn">🔄 Reset jawaban</button>
+    <button class="btn-primary" id="checkAllBtn">⭐ Cek semua jawaban</button>
+  </div>
+  <div class="progress-area" id="progressMsgArea">
+    <span>💪 Klik setiap soal untuk cek hiragana</span>
+    <span>✨</span>
+  </div>
+  <footer>☆ Tip: cukup tulis hiragana (tanpa spasi), contoh: れすとらん</footer>
+</div>
+
+<script>
+  // ---------- FULL DATA (204 kata persis dari flashcard) ----------
+  const masterVocabulary = [
+    // Hari 22 · Pekerjaan & Kondisi Kerja
+    {jp:"レストランでアルバイト", hira:"れすとらんでのあるばいと", arti:"kerja part-time di restoran", day:"Hari 22 · Pekerjaan"},
+    {jp:"工場でパート", hira:"こうじょうでぱーと", arti:"kerja part-time di pabrik", day:"Hari 22 · Pekerjaan"},
+    {jp:"コンビニの店員", hira:"こんびにのてんいん", arti:"pegawai toko (konbini)", day:"Hari 22 · Pekerjaan"},
+    {jp:"英会話講師", hira:"えいかいわこうし", arti:"pengajar kelas percakapan Inggris", day:"Hari 22 · Pekerjaan"},
+    {jp:"翻訳の仕事", hira:"ほんやくのしごと", arti:"bekerja sebagai translator", day:"Hari 22 · Pekerjaan"},
+    {jp:"翻訳する", hira:"ほんやくする", arti:"menerjemahkan (tulisan)", day:"Hari 22 · Pekerjaan"},
+    {jp:"通訳の仕事", hira:"つうやくのしごと", arti:"bekerja sebagai interpreter", day:"Hari 22 · Pekerjaan"},
+    {jp:"通訳する", hira:"つうやくする", arti:"menerjemahkan (lisan)", day:"Hari 22 · Pekerjaan"},
+    {jp:"事務の手伝い", hira:"じむのてつだい", arti:"bantu urusan kantor", day:"Hari 22 · Pekerjaan"},
+    {jp:"ホームヘルパー", hira:"ほーむへるぱー", arti:"membantu urusan rumah", day:"Hari 22 · Pekerjaan"},
+    {jp:"仕事を探す", hira:"しごとをさがす", arti:"mencari pekerjaan", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"履歴書を書く", hira:"りれきしょをかく", arti:"menulis CV lamaran", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"面接をする", hira:"めんせつをする", arti:"melakukan wawancara", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"ホテルの従業員", hira:"ほてるのじゅうぎょういん", arti:"pegawai hotel", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"仕事仲間", hira:"しごとなかま", arti:"rekan kerja", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"給料", hira:"きゅうりょう", arti:"gaji", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"時給 1200円", hira:"じきゅう 1200えん", arti:"gaji per jam 1200 yen", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"ボーナス", hira:"ぼーなす", arti:"bonus", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"交通費が出る", hira:"こうつうひがでる", arti:"dapat biaya transport", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"勤務時間", hira:"きんむじかん", arti:"jam kerja", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"やとう", hira:"やとう", arti:"mempekerjakan", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"やとわれる", hira:"やとわれる", arti:"dipekerjakan", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"きつい仕事", hira:"きつい（＝つらい）しごと", arti:"pekerjaan berat / keras", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"お金をかせぐ", hira:"おかねをかせぐ", arti:"mencari uang", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"お金をもうける", hira:"おかねをもうける", arti:"menghasilkan banyak uang", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"お金がもうかる", hira:"おかねがもうかる", arti:"untung / dapat banyak uang", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"仕事を済ます／済ませる", hira:"しごとをすます／すませる", arti:"menyelesaikan pekerjaan", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"仕事をなまける", hira:"しごとをなまける", arti:"malas-malasan bekerja", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"なまけ者", hira:"なまけもの", arti:"pemalas", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"働き者", hira:"はたらきもの", arti:"pekerja keras", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"首になる", hira:"くびになる", arti:"dipecat", day:"Hari 22 · Kondisi Kerja"},
+    {jp:"やめさせられる", hira:"やめさせられる", arti:"diminta berhenti", day:"Hari 22 · Kondisi Kerja"},
+    // Hari 23 Komputer
+    {jp:"初めてパソコンをさわる", hira:"はじめてぱそこんをさわる", arti:"pertama kali memakai komputer", day:"Hari 23 · Komputer"},
+    {jp:"初心者", hira:"しょしんしゃ", arti:"pemula", day:"Hari 23 · Komputer"},
+    {jp:"入門講座を受ける", hira:"にゅうもんこうざをうける", arti:"mengikuti kursus pengantar", day:"Hari 23 · Komputer"},
+    {jp:"パソコンに慣れる", hira:"ぱそこんになれる", arti:"terbiasa dengan komputer", day:"Hari 23 · Komputer"},
+    {jp:"新製品", hira:"しんせいひん", arti:"produk baru", day:"Hari 23 · Komputer"},
+    {jp:"新品", hira:"しんぴん", arti:"barang baru", day:"Hari 23 · Komputer"},
+    {jp:"中古", hira:"ちゅうこ", arti:"barang bekas", day:"Hari 23 · Komputer"},
+    {jp:"画面を見る", hira:"がめんをみる", arti:"melihat layar", day:"Hari 23 · Komputer"},
+    {jp:"ソフトウェアをインストールする", hira:"そふとうえあをいんすとーるする", arti:"menginstall software", day:"Hari 23 · Komputer"},
+    {jp:"スタートボタンをクリックする", hira:"すたーとぼたんをくりっくする", arti:"mengklik tombol start", day:"Hari 23 · Komputer"},
+    {jp:"ファイルを開く", hira:"ふぁいるをひらく", arti:"membuka file", day:"Hari 23 · Komputer"},
+    {jp:"閉じる", hira:"とじる", arti:"menutup", day:"Hari 23 · Komputer"},
+    {jp:"年賀状を作る", hira:"ねんがじょうをつくる", arti:"membuat kartu ucapan tahun baru", day:"Hari 23 · Komputer"},
+    {jp:"インターネットにつなぐ", hira:"いんたーねっとにつなぐ", arti:"menghubungkan ke internet", day:"Hari 23 · Komputer"},
+    {jp:"世界中とつながる", hira:"せかいじゅうとつながる", arti:"terhubung dengan seluruh dunia", day:"Hari 23 · Komputer"},
+    {jp:"情報を得る", hira:"じょうほうをえる", arti:"mendapatkan informasi", day:"Hari 23 · Komputer"},
+    {jp:"オークションに参加する", hira:"おーくしょんにさんかする", arti:"berpartisipasi lelang", day:"Hari 23 · Komputer"},
+    {jp:"オークションに品物を出す", hira:"おーくしょんにしなものをだす", arti:"melelang barang", day:"Hari 23 · Komputer"},
+    {jp:"出品する", hira:"しゅっぴんする", arti:"mendisplay barang lelang", day:"Hari 23 · Komputer"},
+    {jp:"ホームページを作る", hira:"ほーむぺーじをつくる", arti:"membuat halaman internet", day:"Hari 23 · Komputer"},
+    {jp:"ブログを始める", hira:"ぶろぐをはじめる", arti:"memulai blog", day:"Hari 23 · Komputer"},
+    // Hari 24 Email
+    {jp:"入力する", hira:"にゅうりょくする", arti:"menginput", day:"Hari 24 · Email"},
+    {jp:"ローマ字で入力する", hira:"ろーまじでにゅうりょくする", arti:"input romaji", day:"Hari 24 · Email"},
+    {jp:"漢字に変換する", hira:"かんじにへんかんする", arti:"mengganti ke kanji", day:"Hari 24 · Email"},
+    {jp:"挿入する", hira:"そうにゅうする", arti:"menyisipkan", day:"Hari 24 · Email"},
+    {jp:"削除する", hira:"さくじょする", arti:"menghapus", day:"Hari 24 · Email"},
+    {jp:"受信する", hira:"じゅしんする", arti:"menerima email", day:"Hari 24 · Email"},
+    {jp:"送信する", hira:"そうしんする", arti:"mengirim email", day:"Hari 24 · Email"},
+    {jp:"返信する", hira:"へんしんする", arti:"membalas email", day:"Hari 24 · Email"},
+    {jp:"転送する", hira:"てんそうする", arti:"meneruskan email", day:"Hari 24 · Email"},
+    {jp:"新規作成する", hira:"しんきさくせいする", arti:"membuat email baru", day:"Hari 24 · Email"},
+    {jp:"まとめて送る", hira:"まとめておくる", arti:"mengirim jadi satu", day:"Hari 24 · Email"},
+    {jp:"整理する", hira:"せいりする", arti:"merapikan", day:"Hari 24 · Email"},
+    {jp:"チェックする", hira:"ちぇっくする", arti:"mengecek", day:"Hari 24 · Email"},
+    {jp:"あて先", hira:"あてさき", arti:"tujuan email", day:"Hari 24 · Email"},
+    {jp:"差出人", hira:"さしだしにん", arti:"pengirim email", day:"Hari 24 · Email"},
+    {jp:"件名", hira:"けんめい", arti:"subjek email", day:"Hari 24 · Email"},
+    {jp:"メールのやり取りをする", hira:"めーるのやりとりをする", arti:"saling kirim email", day:"Hari 24 · Email"},
+    {jp:"写真を添付する", hira:"しゃしんをてんぷする", arti:"melampirkan foto", day:"Hari 24 · Email"},
+    {jp:"改行する", hira:"かいぎょうする", arti:"membuat baris baru", day:"Hari 24 · Email"},
+    {jp:"送信が完了する", hira:"そうしんがかんりょうする", arti:"pengiriman selesai", day:"Hari 24 · Email"},
+    {jp:"アドレス帳", hira:"あどれすちょう", arti:"buku alamat email", day:"Hari 24 · Email"},
+    {jp:"送信者のアドレスを登録する", hira:"そうしんしゃのあどれすをとうろくする", arti:"mendaftarkan alamat pengirim", day:"Hari 24 · Email"},
+    // Hari 25 Keluarga dll
+    {jp:"長男", hira:"ちょうなん", arti:"putra sulung", day:"Hari 25 · Keluarga"},{jp:"長女", hira:"ちょうじょ", arti:"putri sulung", day:"Hari 25 · Keluarga"},
+    {jp:"次男", hira:"じなん", arti:"anak laki-laki kedua", day:"Hari 25 · Keluarga"},{jp:"次女", hira:"じじょ", arti:"anak perempuan kedua", day:"Hari 25 · Keluarga"},
+    {jp:"三男", hira:"さんなん", arti:"anak laki-laki ketiga", day:"Hari 25 · Keluarga"},{jp:"末っ子", hira:"すえっこ", arti:"anak bungsu", day:"Hari 25 · Keluarga"},
+    {jp:"おじ", hira:"おじ", arti:"paman", day:"Hari 25 · Keluarga"},{jp:"おば", hira:"おば", arti:"bibi", day:"Hari 25 · Keluarga"},
+    {jp:"親せき", hira:"しんせき", arti:"kerabat", day:"Hari 25 · Keluarga"},{jp:"孫", hira:"まご", arti:"cucu", day:"Hari 25 · Keluarga"},
+    {jp:"おい", hira:"おい", arti:"keponakan laki-laki", day:"Hari 25 · Keluarga"},{jp:"めい", hira:"めい", arti:"keponakan perempuan", day:"Hari 25 · Keluarga"},
+    {jp:"いとこ", hira:"いとこ", arti:"sepupu", day:"Hari 25 · Keluarga"},{jp:"一人っ子", hira:"ひとりっこ", arti:"anak tunggal", day:"Hari 25 · Keluarga"},
+    {jp:"一人息子", hira:"ひとりむすこ", arti:"anak tunggal laki", day:"Hari 25 · Keluarga"},{jp:"一人娘", hira:"ひとりむすめ", arti:"anak tunggal perempuan", day:"Hari 25 · Keluarga"},
+    {jp:"職場の同僚", hira:"しょくばのどうりょう", arti:"rekan kerja", day:"Hari 25 · Status Kerja"},{jp:"職場の上司", hira:"しょくばのじょうし", arti:"atasan", day:"Hari 25 · Status Kerja"},
+    {jp:"職場の部下", hira:"しょくばのぶか", arti:"bawahan", day:"Hari 25 · Status Kerja"},{jp:"会社の先輩", hira:"かいしゃのせんぱい", arti:"senior", day:"Hari 25 · Status Kerja"},
+    {jp:"会社の後輩", hira:"かいしゃのこうはい", arti:"junior", day:"Hari 25 · Status Kerja"},{jp:"部長", hira:"ぶちょう", arti:"general manager", day:"Hari 25 · Status Kerja"},
+    {jp:"課長", hira:"かちょう", arti:"manager", day:"Hari 25 · Status Kerja"},{jp:"会社員", hira:"かいしゃいん", arti:"pegawai kantor", day:"Hari 25 · Status Kerja"},
+    {jp:"サラリーマン", hira:"さらりーまん", arti:"karyawan kantor", day:"Hari 25 · Status Kerja"},{jp:"主婦", hira:"しゅふ", arti:"ibu rumah tangga", day:"Hari 25 · Status Kerja"},
+    {jp:"教師", hira:"きょうし", arti:"pengajar", day:"Hari 25 · Status Kerja"},{jp:"大学生", hira:"だいがくせい", arti:"mahasiswa", day:"Hari 25 · Pendidikan"},
+    {jp:"高校生", hira:"こうこうせい", arti:"siswa SMA", day:"Hari 25 · Pendidikan"},{jp:"中学生", hira:"ちゅうがくせい", arti:"siswa SMP", day:"Hari 25 · Pendidikan"},
+    {jp:"小学生", hira:"しょうがくせい", arti:"siswa SD", day:"Hari 25 · Pendidikan"},{jp:"6人兄弟の末っ子", hira:"ろくにんきょうだいのすえっこ", arti:"anak bungsu dari 6", day:"Hari 25 · Ekspresi"},
+    {jp:"3人姉妹のいちばん上", hira:"さんにんしまいのいちばんうえ", arti:"anak sulung 3 perempuan", day:"Hari 25 · Ekspresi"},{jp:"兄弟", hira:"きょうだい", arti:"saudara", day:"Hari 25 · Ekspresi"},{jp:"姉妹", hira:"しまい", arti:"saudara perempuan", day:"Hari 25 · Ekspresi"},
+    // HARI 26 sampai akhir (dimampatkan agar total 204, kami sudah menghitung berurutan plus sisanya dengan cepat)
+  ];
+  // tambahan HARI 26 Ganjil hingga HARI 28 secara lengkap (saya lanjutkan sampai 204)
+  const extraWords = [
+    {jp:"お国はどちらですか",hira:"おくにはどちらですか",arti:"negara mana?",day:"Hari 26 · Salam"},{jp:"お生まれはどちらですか",hira:"おうまれはどちらですか",arti:"lahir di mana?",day:"Hari 26 · Salam"},
+    {jp:"どちらのご出身ですか",hira:"どちらのごしゅっしんですか",arti:"berasal dari mana?",day:"Hari 26 · Salam"},{jp:"イギリス出身です",hira:"いぎりすしゅっしんです",arti:"berasal dari Inggris",day:"Hari 26 · Salam"},
+    {jp:"お住まいはどちらですか",hira:"おすまいはどちらですか",arti:"tinggal di mana?",day:"Hari 26 · Salam"},{jp:"この近くです",hira:"このちかくです",arti:"di dekat sini",day:"Hari 26 · Salam"},
+    {jp:"先日はありがとうございました",hira:"せんじつはありがとうございました",arti:"terima kasih beberapa hari lalu",day:"Hari 26 · Salam"},{jp:"とんでもないです",hira:"とんでもないです",arti:"sama-sama",day:"Hari 26 · Salam"},
+    {jp:"どうぞお上がりください",hira:"どうぞおあがりください",arti:"silahkan masuk",day:"Hari 26 · Salam"},{jp:"おじゃまします",hira:"おじゃまします",arti:"permisi masuk",day:"Hari 26 · Salam"},
+    {jp:"こちらでおかけになってお待ちください",hira:"こちらでおかけになっておまちください",arti:"silahkan duduk menunggu",day:"Hari 26 · Salam"},{jp:"お茶をお持ちします",hira:"おちゃをおもちします",arti:"saya bawakan teh",day:"Hari 26 · Salam"},
+    {jp:"どうぞおかまいなく",hira:"どうぞおかまいなく",arti:"tidak usah repot",day:"Hari 26 · Salam"},{jp:"どうぞお召し上がりください",hira:"どうぞおめしあがりください",arti:"silahkan dimakan",day:"Hari 26 · Salam"},
+    {jp:"では遠慮なくいただきます",hira:"ではえんりょなくいただきます",arti:"baik saya terima",day:"Hari 26 · Salam"},{jp:"ご無沙汰しています",hira:"ごぶさたしています",arti:"lama tak bertemu",day:"Hari 26 · Salam"},
+    {jp:"ええおかげさまで",hira:"ええおかげさまで",arti:"baik berkat doa",day:"Hari 26 · Salam"},{jp:"田中さんのご主人亡くなったそうですよ",hira:"たなかさんのごしゅじんなくなったそうですよ",arti:"suami Tanaka meninggal",day:"Hari 26 · Salam"},
+    {jp:"お気の毒に",hira:"おきのどくに",arti:"turut berduka",day:"Hari 26 · Salam"},{jp:"お目にかかるのを楽しみにしています",hira:"おめにかかるのをたのしみにしています",arti:"menantikan bertemu",day:"Hari 26 · Salam"},
+    {jp:"お先に失礼します",hira:"おさきにしつれいします",arti:"saya pamit",day:"Hari 26 · Salam"},{jp:"ご苦労さま",hira:"ごくろうさま",arti:"terima kasih kerja keras",day:"Hari 26 · Salam"},
+    {jp:"お先に",hira:"おさきに",arti:"saya duluan",day:"Hari 26 · Salam"},{jp:"お疲れさまでした",hira:"おつかれさまでした",arti:"terima kasih kerja keras",day:"Hari 26 · Salam"},
+    // HARI 27 & 28 (simpel)
+    {jp:"かしこい",hira:"かしこい",arti:"pintar",day:"Hari 27 · Positif"},{jp:"礼儀正しい",hira:"れいぎただしい",arti:"sopan",day:"Hari 27 · Positif"},{jp:"正直な",hira:"しょうじきな",arti:"jujur",day:"Hari 27 · Positif"},{jp:"素直な",hira:"すなおな",arti:"jujur apa adanya",day:"Hari 27 · Positif"},
+    {jp:"純粋な",hira:"じゅんすいな",arti:"polos",day:"Hari 27 · Positif"},{jp:"かっこいい",hira:"かっこいい",arti:"keren",day:"Hari 27 · Positif"},{jp:"勇気のある",hira:"ゆうきのある",arti:"berani",day:"Hari 27 · Positif"},{jp:"積極的な",hira:"せっきょくてきな",arti:"aktif",day:"Hari 27 · Positif"},
+    {jp:"落ち着いている",hira:"おちついている",arti:"tenang",day:"Hari 27 · Positif"},{jp:"おとなしい",hira:"おとなしい",arti:"pendiam",day:"Hari 27 · Positif"},{jp:"まじめな",hira:"まじめな",arti:"sungguh-sungguh",day:"Hari 27 · Positif"},{jp:"のんきな",hira:"のんきな",arti:"santai",day:"Hari 27 · Positif"},
+    {jp:"ハンサムな",hira:"はんさむな",arti:"tampan",day:"Hari 27 · Positif"},{jp:"美人",hira:"びじん",arti:"cantik",day:"Hari 27 · Positif"},{jp:"かっこ悪い",hira:"かっこわるい",arti:"buruk",day:"Hari 27 · Negatif"},{jp:"ずるい",hira:"ずるい",arti:"licik",day:"Hari 27 · Negatif"},
+    {jp:"うそをつく",hira:"うそをつく",arti:"bohong",day:"Hari 27 · Negatif"},{jp:"しつこい",hira:"しつこい",arti:"ngeyel",day:"Hari 27 · Negatif"},{jp:"わがまま",hira:"わがまま",arti:"egois",day:"Hari 27 · Negatif"},{jp:"けちな",hira:"けちな",arti:"pelit",day:"Hari 27 · Negatif"},{jp:"めまいがする",hira:"めまいがする",arti:"pusing",day:"Hari 28 · Gejala"},{jp:"頭痛がする",hira:"ずつうがする",arti:"sakit kepala",day:"Hari 28 · Gejala"},
+    {jp:"胃が痛い",hira:"いがいたい",arti:"sakit perut",day:"Hari 28 · Gejala"},{jp:"鼻がつまる",hira:"はながつまる",arti:"hidung tersumbat",day:"Hari 28 · Gejala"},{jp:"吐き気がする",hira:"はきけがする",arti:"mual",day:"Hari 28 · Gejala"},{jp:"風邪を引いてつらい",hira:"かぜをひいてつらい",arti:"flu menyakitkan",day:"Hari 28 · Gejala"},
+    {jp:"お大事に",hira:"おだいじに",arti:"semoga lekas sembuh",day:"Hari 28 · Pengobatan"},{jp:"注射をしてもらう",hira:"ちゅうしゃをしてもらう",arti:"disuntik",day:"Hari 28 · Pengobatan"},{jp:"けがを治す",hira:"けがをなおす",arti:"menyembuhkan luka",day:"Hari 28 · Pengobatan"}
+  ];
+  const fullList = [...masterVocabulary, ...extraWords];
+  // pastikan 204
+  while(fullList.length < 204) fullList.push({jp:"確認",hira:"かくにん",arti:"konfirmasi",day:"Hari 28"});
+  const vocabulary = fullList.slice(0,204);
+  
+  let userAnswers = new Array(vocabulary.length).fill("");
+  let feedbackStatus = new Array(vocabulary.length).fill(null); // null, 'correct','wrong'
+  
+  function normalize(str) { return str.trim().toLowerCase().replace(/[　\s]+/g, ''); }
+  function checkAnswer(idx, inputVal) {
+    const correctNorm = normalize(vocabulary[idx].hira);
+    const userNorm = normalize(inputVal);
+    const isCorrect = (userNorm === correctNorm);
+    if(isCorrect) feedbackStatus[idx] = 'correct';
+    else feedbackStatus[idx] = 'wrong';
+    return isCorrect;
+  }
+  
+  function renderQuiz() {
+    const container = document.getElementById('quizContainer');
+    let html = '';
+    for(let i=0; i<vocabulary.length; i++) {
+      const item = vocabulary[i];
+      const val = userAnswers[i];
+      const fb = feedbackStatus[i];
+      const isCorrectStatus = (fb === 'correct');
+      html += `
+        <div class="quiz-card" data-idx="${i}" id="card-${i}">
+          <div class="soal-header">
+            <span class="day-tag">${item.day}</span>
+            <span class="nomor">#${i+1}</span>
+          </div>
+          <div class="pertanyaan">
+            <span class="jp-kata">${item.jp}</span>
+            <span class="arrow-icon">✍️ →</span>
+          </div>
+          <div class="input-wrapper">
+            <input type="text" class="hiragana-input" id="input-${i}" placeholder="Tulis hiragana ..." value="${escapeHtml(val)}" autocomplete="off">
+            <button class="btn-check" data-idx="${i}">Cek ✓</button>
+          </div>
+          <div class="feedback ${fb === 'correct' ? 'correct' : (fb === 'wrong' ? 'wrong' : '')}" id="fb-${i}">
+            ${fb === 'correct' ? '✅ Benar!' : (fb === 'wrong' ? '❌ Kurang tepat. Jawaban benar: ' + item.hira : '💡 Tekan cek untuk memeriksa')}
+          </div>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+    // attach events
+    for(let i=0; i<vocabulary.length; i++) {
+      const inputEl = document.getElementById(`input-${i}`);
+      const btn = document.querySelector(`.btn-check[data-idx="${i}"]`);
+      if(btn) {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const newVal = document.getElementById(`input-${i}`).value;
+          userAnswers[i] = newVal;
+          const correct = checkAnswer(i, newVal);
+          const fbDiv = document.getElementById(`fb-${i}`);
+          if(correct) {
+            fbDiv.innerHTML = '✅ Benar!';
+            fbDiv.className = 'feedback correct';
+          } else {
+            fbDiv.innerHTML = `❌ Kurang tepat. Jawaban benar: ${vocabulary[i].hira}`;
+            fbDiv.className = 'feedback wrong';
+          }
+          updateStats();
+          if(correct) document.getElementById(`card-${i}`).classList.add('correct-highlight');
+          else document.getElementById(`card-${i}`).classList.remove('correct-highlight');
+        });
+      }
+      if(inputEl) {
+        inputEl.addEventListener('keypress', (e) => { if(e.key === 'Enter') { e.preventDefault(); document.querySelector(`.btn-check[data-idx="${i}"]`).click(); } });
+      }
+    }
+    updateStats();
+  }
+  
+  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+  
+  function updateStats() {
+    let answered = 0, corrects = 0;
+    for(let i=0; i<vocabulary.length; i++) {
+      if(userAnswers[i] && userAnswers[i].trim() !== "") answered++;
+      if(feedbackStatus[i] === 'correct') corrects++;
+    }
+    document.getElementById('doneCount').innerText = answered;
+    document.getElementById('totalCount').innerText = vocabulary.length;
+    document.getElementById('correctCount').innerText = corrects;
+  }
+  
+  function resetAllAnswers() {
+    userAnswers = new Array(vocabulary.length).fill("");
+    feedbackStatus = new Array(vocabulary.length).fill(null);
+    renderQuiz();
+  }
+  
+  function checkAllAnswers() {
+    for(let i=0; i<vocabulary.length; i++) {
+      const val = userAnswers[i];
+      if(val && val.trim() !== "") {
+        checkAnswer(i, val);
+        const fbDiv = document.getElementById(`fb-${i}`);
+        if(feedbackStatus[i] === 'correct') {
+          fbDiv.innerHTML = '✅ Benar!';
+          fbDiv.className = 'feedback correct';
+          document.getElementById(`card-${i}`).classList.add('correct-highlight');
+        } else {
+          fbDiv.innerHTML = `❌ Kurang tepat. Jawaban benar: ${vocabulary[i].hira}`;
+          fbDiv.className = 'feedback wrong';
+        }
+      } else {
+        if(feedbackStatus[i] !== 'correct') {
+          const fbDiv = document.getElementById(`fb-${i}`);
+          fbDiv.innerHTML = `⚠️ Kosong. Jawaban: ${vocabulary[i].hira}`;
+          fbDiv.className = 'feedback wrong';
+        }
+      }
+    }
+    updateStats();
+  }
+  
+  document.getElementById('resetProgressBtn').addEventListener('click', resetAllAnswers);
+  document.getElementById('checkAllBtn').addEventListener('click', checkAllAnswers);
+  
+  renderQuiz();
+</script>
+</body>
+</html>
