@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard Bahasa Jepang - Hari 29-36</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --kuning: #FFD93D;
+    --kuning-gelap: #E6B800;
+    --kuning-muda: #FFF5B7;
+    --biru: #4FC3F7;
+    --biru-gelap: #0288D1;
+    --biru-muda: #E1F5FE;
+    --putih: #FFFFFF;
+    --teks-gelap: #1A237E;
+    --abu: #607D8B;
+    --bg: #F0F9FF;
+  }
+
+  body {
+    font-family: 'Segoe UI', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 0;
+    color: var(--teks-gelap);
+  }
+
+  header {
+    background: var(--kuning);
+    padding: 16px 20px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 4px solid var(--kuning-gelap);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--teks-gelap);
+    letter-spacing: -0.3px;
+  }
+
+  .header-sub {
+    font-size: 12px;
+    color: #37474F;
+    margin-top: 2px;
+  }
+
+  .badge-total {
+    background: var(--biru-gelap);
+    color: white;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    overflow-x: auto;
+    background: var(--putih);
+    border-bottom: 1px solid #B3E5FC;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+
+  .filter-btn {
+    white-space: nowrap;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 2px solid var(--biru);
+    background: var(--putih);
+    color: var(--biru-gelap);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--biru);
+    color: var(--putih);
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: #B3E5FC;
+    width: 100%;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--kuning-gelap);
+    transition: width 0.4s;
+  }
+
+  .counter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--abu);
+    background: var(--putih);
+    border-bottom: 1px solid #E0F7FA;
+  }
+  .counter-num {
+    font-weight: 700;
+    color: var(--teks-gelap);
+  }
+
+  .card-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    min-height: calc(100vh - 200px);
+  }
+
+  .flashcard {
+    width: 100%;
+    max-width: 460px;
+    height: 240px;
+    perspective: 1000px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-inner.flipped {
+    transform: rotateY(180deg);
+  }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .card-front {
+    background: var(--kuning);
+    border: 3px solid var(--kuning-gelap);
+    box-shadow: 0 6px 24px rgba(255, 200, 0, 0.3);
+  }
+
+  .card-back {
+    background: var(--biru);
+    border: 3px solid var(--biru-gelap);
+    box-shadow: 0 6px 24px rgba(79, 195, 247, 0.35);
+    transform: rotateY(180deg);
+    color: var(--putih);
+  }
+
+  .card-hari {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--abu);
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.5);
+    padding: 2px 10px;
+    border-radius: 10px;
+  }
+
+  .card-kanji {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--teks-gelap);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  .card-reading {
+    font-size: 15px;
+    color: #455A64;
+    margin-bottom: 4px;
+  }
+
+  .card-hint {
+    font-size: 12px;
+    color: #78909C;
+    margin-top: 8px;
+  }
+
+  .card-arti {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--putih);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .card-context {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.4;
+  }
+
+  .card-tap {
+    font-size: 12px;
+    color: rgba(0,0,0,0.35);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    max-width: 460px;
+  }
+
+  .nav-btn {
+    flex: 1;
+    padding: 13px;
+    border-radius: 14px;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-prev {
+    background: var(--putih);
+    color: var(--teks-gelap);
+    border: 2px solid var(--kuning-gelap);
+  }
+  .btn-prev:hover { background: var(--kuning-muda); }
+
+  .btn-next {
+    background: var(--kuning);
+    color: var(--teks-gelap);
+    border: 2px solid var(--kuning-gelap);
+  }
+  .btn-next:hover { background: var(--kuning-gelap); }
+
+  .btn-flip {
+    flex: 2;
+    background: var(--biru-gelap);
+    color: white;
+  }
+  .btn-flip:hover { background: #01579B; }
+
+  .shortcut-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--abu);
+    margin-top: 12px;
+  }
+
+  .done-overlay {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .done-overlay.show { display: block; }
+
+  .done-emoji { font-size: 56px; margin-bottom: 12px; }
+  .done-title { font-size: 22px; font-weight: 700; color: var(--teks-gelap); margin-bottom: 8px; }
+  .done-sub { font-size: 14px; color: var(--abu); margin-bottom: 20px; }
+  .btn-restart {
+    background: var(--kuning);
+    border: 2px solid var(--kuning-gelap);
+    padding: 12px 28px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--teks-gelap);
+  }
+
+  @media (max-width: 480px) {
+    .card-kanji { font-size: 28px; }
+    .flashcard { height: 210px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="header-title">🇯🇵 Flashcard Jepang</div>
+    <div class="header-sub">Hari 29–36 · Berbagai Topik</div>
+  </div>
+  <div class="badge-total" id="badge-total">275 kata</div>
+</header>
+
+<div class="filter-bar" id="filter-bar"></div>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progress-fill"></div>
+</div>
+<div class="counter-bar">
+  <span><span class="counter-num" id="cur-num">1</span> / <span id="total-num">275</span></span>
+  <span id="topic-label"></span>
+</div>
+
+<div class="card-area" id="card-area">
+  <div class="flashcard" id="flashcard" onclick="flipCard()">
+    <div class="card-inner" id="card-inner">
+      <div class="card-face card-front" id="front-face">
+        <div class="card-hari" id="front-hari"></div>
+        <div class="card-kanji" id="front-kanji"></div>
+        <div class="card-reading" id="front-reading"></div>
+        <div class="card-hint">ketuk untuk lihat arti ↓</div>
+      </div>
+      <div class="card-face card-back" id="back-face">
+        <div class="card-hari" id="back-hari" style="background:rgba(255,255,255,0.2);color:rgba(255,255,255,0.9)"></div>
+        <div class="card-arti" id="back-arti"></div>
+        <div class="card-context" id="back-context"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn btn-prev" onclick="prevCard()">← Prev</button>
+    <button class="nav-btn nav-btn btn-flip" onclick="flipCard()">Balik Kartu</button>
+    <button class="nav-btn btn-next" onclick="nextCard()">Next →</button>
+  </div>
+  <div class="shortcut-hint">Tekan ← → atau Spasi untuk navigasi</div>
+
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-emoji">🎉</div>
+    <div class="done-title">Selesai!</div>
+    <div class="done-sub">Semua kata di topik ini sudah dipelajari</div>
+    <button class="btn-restart" onclick="restart()">Ulangi Lagi</button>
+  </div>
+</div>
+
+<script>
+const data = [
+  // HARI 29: Kondisi Tubuh / Fisiologis
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"鼻水",reading:"はなみず",arti:"ingus"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"ため息",reading:"ためいき",arti:"nafas panjang"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"涙",reading:"なみだ",arti:"air mata"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"汗",reading:"あせ",arti:"keringat"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"よだれ",reading:"",arti:"air liur"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"せき",reading:"",arti:"batuk"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"しゃっくり",reading:"",arti:"cegukan"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"くしゃみ",reading:"",arti:"bersin"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"あくび",reading:"",arti:"menguap"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"げっぷ",reading:"",arti:"sendawa"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"おなら",reading:"",arti:"kentut"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"ため息をつく",reading:"ためいきをつく",arti:"tarik nafas panjang"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"涙を流す",reading:"なみだをながす",arti:"mengalirkan air mata"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"汗をかく",reading:"あせをかく",arti:"mengeluarkan keringat"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"汗くさい",reading:"あせくさい",arti:"bau keringat"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"いびきをかく",reading:"",arti:"mengorok"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"足がしびれる",reading:"あしがしびれる",arti:"kaki kesemutan"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"体がふるえる",reading:"からだがふるえる",arti:"tubuh gemetar"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"肩がこる",reading:"かたがこる",arti:"bahu terasa pegal"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"くせがつく",reading:"",arti:"kebiasaan / terbiasa"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"くせになる",reading:"",arti:"menjadi kebiasaan"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"ストレスがたまる",reading:"",arti:"stres menumpuk"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"年を取る",reading:"としをとる",arti:"menjadi tua"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"つめが伸びる",reading:"つめがのびる",arti:"kuku memanjang"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"ひげが生える",reading:"ひげがはえる",arti:"jenggot tumbuh"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"歯が生える",reading:"はがはえる",arti:"gigi tumbuh"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"髪の毛が抜ける",reading:"かみのけがぬける",arti:"rambut rontok"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"はげる",reading:"",arti:"botak"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"髪をそめる",reading:"かみをそめる",arti:"mewarnai rambut"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"体重が増える",reading:"たいじゅうがふえる",arti:"berat badan bertambah"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"体重を増やす",reading:"たいじゅうをふやす",arti:"menambah berat badan"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"体重が減る",reading:"たいじゅうがへる",arti:"berat badan berkurang"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"体重を減らす",reading:"たいじゅうをへらす",arti:"mengurangi berat badan"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"虫歯",reading:"むしば",arti:"gigi rusak"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"にきび",reading:"",arti:"jerawat"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"白髪",reading:"しらが",arti:"uban"},
+  {hari:"Hari 29 · Kondisi Tubuh",jp:"しわ",reading:"",arti:"keriput"},
+  // HARI 30: Kondisi Alam & Benda
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"花が咲く",reading:"はながさく",arti:"bunga mekar"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"花が散る",reading:"はながちる",arti:"bunga rontok"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"木が枯れる",reading:"きがかれる",arti:"pohon mati"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"山がくずれる",reading:"やまがくずれる",arti:"gunung runtuh"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"険しい山",reading:"けわしいやま",arti:"gunung terjal / curam"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"なだらかな坂",reading:"なだらかなさか",arti:"tanjakan landai"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"かびが生える",reading:"かびがはえる",arti:"tumbuh jamur"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"変なにおいがする",reading:"へんなにおいがする",arti:"tercium bau aneh"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"におう",reading:"",arti:"mencium bau / aroma"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"箱がつぶれる",reading:"はこがつぶれる",arti:"kotaknya hancur"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"つぶす",reading:"",arti:"menghancurkan"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"浮く",reading:"うく",arti:"mengapung"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"沈む",reading:"しずむ",arti:"tenggelam"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"蒸し暑い",reading:"むしあつい",arti:"lembab"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"くさる",reading:"",arti:"membusuk"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"気味が悪い生き物",reading:"きみがわるいいきもの",arti:"makhluk menyeramkan"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"気持ち悪い生き物",reading:"きもちがわるいいきもの",arti:"makhluk menjijikkan"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"親しい友人",reading:"したしいゆうじん",arti:"teman akrab"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"親友",reading:"しんゆう",arti:"sahabat"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"あやしい男",reading:"あやしいおとこ",arti:"laki-laki mencurigakan"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"恐ろしい事件",reading:"おそろしいじけん",arti:"kejadian yang mengerikan"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"さびた包丁",reading:"さびたほうちょう",arti:"pisau berkarat"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"さびる",reading:"",arti:"berkarat"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"鋭い",reading:"するどい",arti:"tajam"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"鈍い",reading:"にぶい",arti:"tumpul"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"のろい車",reading:"のろいくるま",arti:"mobil lambat"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"安全な場所",reading:"あんぜんなばしょ",arti:"tempat yang aman"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"薄暗い部屋",reading:"うすぐらいへや",arti:"ruangan redup / remang-remang"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"まぶしい明かり",reading:"まぶしいあかり",arti:"cahaya terang / silau"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"くわしい説明書",reading:"くわしいせつめいしょ",arti:"buku petunjuk lengkap"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"くだらない小説",reading:"くだらないしょうせつ",arti:"novel yang konyol"},
+  {hari:"Hari 30 · Kondisi Alam & Benda",jp:"でたらめに答える",reading:"でたらめにこたえる",arti:"menjawab secara asal"},
+  // HARI 31: Keterangan Waktu & Frekuensi
+  {hari:"Hari 31 · Keterangan Waktu",jp:"突然",reading:"とつぜん",arti:"tiba-tiba"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"いきなり",reading:"",arti:"tiba-tiba"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"とたんに",reading:"",arti:"seketika itu"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"やっと",reading:"",arti:"akhirnya (sembuh)"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"とうとう",reading:"",arti:"akhirnya (meninggal)"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"結局",reading:"けっきょく",arti:"ujung-ujungnya"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"ついに",reading:"",arti:"akhirnya (selesai)"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"よく",reading:"",arti:"sering / dengan baik"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"よくやった！",reading:"",arti:"melakukannya dengan baik!"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"たいてい",reading:"",arti:"biasanya"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"ふだん（は）",reading:"",arti:"biasanya (sehari-hari)"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"ふつう（は）",reading:"",arti:"biasanya (umumnya)"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"たまに",reading:"",arti:"sekali-kali"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"かなり",reading:"",arti:"cukup / lumayan"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"けっこう",reading:"",arti:"cukup"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"ものすごく",reading:"",arti:"sangat"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"めちゃくちゃ",reading:"",arti:"sangat / berantakan"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"ぜひ / ぜひとも",reading:"",arti:"ingin sekali"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"どうか",reading:"",arti:"mohon bantuan"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"まず",reading:"",arti:"pertama-tama"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"とにかく / ともかく",reading:"",arti:"pokoknya"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"一度に",reading:"いちどに",arti:"sekaligus"},
+  {hari:"Hari 31 · Keterangan Waktu",jp:"いっぺんに",reading:"",arti:"sekaligus / tiba-tiba lelah"},
+  // HARI 32: Onomatope
+  {hari:"Hari 32 · Onomatope",jp:"うっかり（する）",reading:"",arti:"lupa / kurang hati-hati"},
+  {hari:"Hari 32 · Onomatope",jp:"すっかり",reading:"",arti:"benar-benar lupa"},
+  {hari:"Hari 32 · Onomatope",jp:"がっかり（する）",reading:"",arti:"kecewa"},
+  {hari:"Hari 32 · Onomatope",jp:"やはり / やっぱり",reading:"",arti:"memang benar"},
+  {hari:"Hari 32 · Onomatope",jp:"しっかり（する）",reading:"",arti:"kuat / mandiri"},
+  {hari:"Hari 32 · Onomatope",jp:"しっかりしろ！",reading:"",arti:"kamu harus kuat!"},
+  {hari:"Hari 32 · Onomatope",jp:"すっきり（する）",reading:"",arti:"lega / plong"},
+  {hari:"Hari 32 · Onomatope",jp:"さっぱり（する）",reading:"",arti:"segar / sama sekali tidak mengerti"},
+  {hari:"Hari 32 · Onomatope",jp:"ぐっすり",reading:"",arti:"tidur terlelap"},
+  {hari:"Hari 32 · Onomatope",jp:"にっこり（する）",reading:"",arti:"tersenyum"},
+  {hari:"Hari 32 · Onomatope",jp:"にこにこ（する）",reading:"",arti:"tersenyum"},
+  {hari:"Hari 32 · Onomatope",jp:"そっくり",reading:"",arti:"mirip sekali"},
+  {hari:"Hari 32 · Onomatope",jp:"はっきり（する）",reading:"",arti:"terlihat jelas"},
+  {hari:"Hari 32 · Onomatope",jp:"ぼんやり",reading:"",arti:"tidak jelas"},
+  {hari:"Hari 32 · Onomatope",jp:"のんびり（する）",reading:"",arti:"bersantai"},
+  {hari:"Hari 32 · Onomatope",jp:"きちんと / ちゃんと（する）",reading:"",arti:"dengan rapi / benar"},
+  {hari:"Hari 32 · Onomatope",jp:"ふと",reading:"",arti:"tiba-tiba teringat"},
+  {hari:"Hari 32 · Onomatope",jp:"わざと",reading:"",arti:"sengaja"},
+  {hari:"Hari 32 · Onomatope",jp:"ほっと（する）",reading:"",arti:"lega"},
+  {hari:"Hari 32 · Onomatope",jp:"じっと（する）",reading:"",arti:"bersabar / diam"},
+  {hari:"Hari 32 · Onomatope",jp:"ざっと",reading:"",arti:"membersihkan dengan cepat"},
+  {hari:"Hari 32 · Onomatope",jp:"そっと（する）",reading:"",arti:"pelan-pelan / diam-diam"},
+  // HARI 33: Perasaan & Perubahan
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"どきどき（する）",reading:"",arti:"berdebar / deg-degan"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"いらいら（する）",reading:"",arti:"merasa kesal"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"はきはき（する）",reading:"",arti:"menjawab lugas"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"ぶつぶつ",reading:"",arti:"menggumam / mengeluh"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"うろうろ（する）",reading:"",arti:"mondar-mandir"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"ぶらぶら（する）",reading:"",arti:"jalan-jalan santai / bergoyang"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"ぎりぎり",reading:"",arti:"mepet"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"ぴかぴか",reading:"",arti:"mengkilap"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"のろのろ",reading:"",arti:"berjalan pelan"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"ぺらぺら",reading:"",arti:"lancar bicara / tipis"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"ぺこぺこ",reading:"",arti:"lapar"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"ますます（する）",reading:"",arti:"semakin"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"だんだん",reading:"",arti:"perlahan-lahan"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"どんどん",reading:"",arti:"terus-menerus"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"そろそろ",reading:"",arti:"sudah saatnya"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"もともと",reading:"",arti:"aslinya"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"たまたま",reading:"",arti:"kebetulan"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"まあまあ",reading:"",arti:"lumayan"},
+  {hari:"Hari 33 · Perasaan & Perubahan",jp:"さまざま",reading:"",arti:"berbagai macam"},
+  // HARI 34: Kata Gabungan / Majemuk
+  {hari:"Hari 34 · Kata Majemuk",jp:"出会う",reading:"であう",arti:"bertemu idaman"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"出会い",reading:"であい",arti:"pertemuan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"出迎える",reading:"でむかえる",arti:"menyambut tamu"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"出迎え",reading:"でむかえ",arti:"penyambutan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"見送る",reading:"みおくる",arti:"mengantarkan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"見送り",reading:"みおくり",arti:"pengantaran"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"見上げる",reading:"みあげる",arti:"melihat ke atas"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"見下ろす",reading:"みおろす",arti:"melihat ke bawah"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"立ち止まる",reading:"たちどまる",arti:"berhenti melangkah"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"立ち上がる",reading:"たちあがる",arti:"berdiri"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"通りかかる",reading:"とおりかかる",arti:"melewati depan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"通り過ぎる",reading:"とおりすぎる",arti:"sudah melewati"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"話しかける",reading:"はなしかける",arti:"menyapa"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"話し合う",reading:"はなしあう",arti:"berdiskusi"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"話し合い",reading:"はなしあい",arti:"pembahasan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"知り合う",reading:"しりあう",arti:"kenalan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"知り合い",reading:"しりあい",arti:"kenalan (kata benda)"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"待ち合わせる",reading:"まちあわせる",arti:"janjian ketemu"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"待ち合わせ",reading:"まちあわせ",arti:"janji ketemu"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"問い合わせる",reading:"といあわせる",arti:"menanyakan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"問い合わせ",reading:"といあわせ",arti:"pertanyaan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"申し込む",reading:"もうしこむ",arti:"mendaftar"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"申し込み",reading:"もうしこみ",arti:"pendaftaran"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"締め切る",reading:"しめきる",arti:"menutup pendaftaran"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"締め切り",reading:"しめきり",arti:"tenggat waktu"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"受け付ける",reading:"うけつける",arti:"menerima pendaftaran"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"受付",reading:"うけつけ",arti:"resepsionis"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"受け取る",reading:"うけとる",arti:"menerima barang"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"受け取り",reading:"うけとり",arti:"penerimaan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"取り替える",reading:"とりかえる",arti:"mengganti baterai"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"取り消す",reading:"とりけす",arti:"membatalkan pesanan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"取り消し",reading:"とりけし",arti:"pembatalan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"取り出す",reading:"とりだす",arti:"mengeluarkan"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"飛び出す",reading:"とびだす",arti:"meloncat keluar"},
+  {hari:"Hari 34 · Kata Majemuk",jp:"飛び込む",reading:"とびこむ",arti:"mencebur"},
+  // HARI 35: 出る・出す
+  {hari:"Hari 35 · 出る・出す",jp:"大学を出る",reading:"だいがくをでる",arti:"lulus kuliah"},
+  {hari:"Hari 35 · 出る・出す",jp:"卒業する",reading:"そつぎょうする",arti:"lulus"},
+  {hari:"Hari 35 · 出る・出す",jp:"会議に出る",reading:"かいぎにでる",arti:"menghadiri rapat"},
+  {hari:"Hari 35 · 出る・出す",jp:"出席する",reading:"しゅっせきする",arti:"hadir"},
+  {hari:"Hari 35 · 出る・出す",jp:"食事が出る",reading:"しょくじがでる",arti:"tersedia makanan"},
+  {hari:"Hari 35 · 出る・出す",jp:"食事を出す",reading:"しょくじをだす",arti:"menyajikan makanan"},
+  {hari:"Hari 35 · 出る・出す",jp:"結論が出る",reading:"けつろんがでる",arti:"sampai pada kesimpulan"},
+  {hari:"Hari 35 · 出る・出す",jp:"結論を出す",reading:"けつろんをだす",arti:"mengeluarkan kesimpulan"},
+  {hari:"Hari 35 · 出る・出す",jp:"元気が出る",reading:"げんきがでる",arti:"semangatnya keluar"},
+  {hari:"Hari 35 · 出る・出す",jp:"元気を出す",reading:"げんきをだす",arti:"bersemangat"},
+  {hari:"Hari 35 · 出る・出す",jp:"新製品が出る",reading:"しんせいひんがでる",arti:"produk baru keluar"},
+  {hari:"Hari 35 · 出る・出す",jp:"発売される",reading:"はつばいされる",arti:"dirilis"},
+  {hari:"Hari 35 · 出る・出す",jp:"新製品を出す",reading:"しんせいひんをだす",arti:"merilis produk baru"},
+  {hari:"Hari 35 · 出る・出す",jp:"芽が出る",reading:"めがでる",arti:"tunasnya keluar"},
+  {hari:"Hari 35 · 出る・出す",jp:"芽を出す",reading:"めをだす",arti:"mengeluarkan tunas"},
+  {hari:"Hari 35 · 出る・出す",jp:"ボーナスが出る",reading:"ぼーなすがでる",arti:"bonusnya keluar"},
+  {hari:"Hari 35 · 出る・出す",jp:"ボーナスを出す",reading:"ぼーなすをだす",arti:"mengeluarkan bonus"},
+  {hari:"Hari 35 · 出る・出す",jp:"ゴキブリが出る",reading:"ごきぶりがでる",arti:"muncul kecoa"},
+  {hari:"Hari 35 · 出る・出す",jp:"現れる",reading:"あらわれる",arti:"muncul"},
+  {hari:"Hari 35 · 出る・出す",jp:"新聞に名前が出る",reading:"しんぶんになまえがでる",arti:"namanya muncul di koran"},
+  {hari:"Hari 35 · 出る・出す",jp:"載る",reading:"のる",arti:"dimuat"},
+  {hari:"Hari 35 · 出る・出す",jp:"角を曲がると駅に出る",reading:"かどをまがるとえきにでる",arti:"belok di belokan keluar di stasiun"},
+  // HARI 35: とる・とれる
+  {hari:"Hari 35 · とる・とれる",jp:"財布を取る",reading:"さいふをとる",arti:"mencuri dompet"},
+  {hari:"Hari 35 · とる・とれる",jp:"盗む",reading:"ぬすむ",arti:"mencuri"},
+  {hari:"Hari 35 · とる・とれる",jp:"財布を取りに戻る",reading:"さいふをとりにもどる",arti:"kembali mengambil dompet"},
+  {hari:"Hari 35 · とる・とれる",jp:"運転免許を取る",reading:"うんてんめんきょをとる",arti:"membuat SIM"},
+  {hari:"Hari 35 · とる・とれる",jp:"コピーを取る",reading:"こぴーをとる",arti:"memfotokopi"},
+  {hari:"Hari 35 · とる・とれる",jp:"新聞を取る",reading:"しんぶんをとる",arti:"langganan koran"},
+  {hari:"Hari 35 · とる・とれる",jp:"睡眠を取る",reading:"すいみんをとる",arti:"tidur"},
+  {hari:"Hari 35 · とる・とれる",jp:"眠る",reading:"ねむる",arti:"tidur"},
+  {hari:"Hari 35 · とる・とれる",jp:"出席を取る",reading:"しゅっせきをとる",arti:"mengecek kehadiran"},
+  {hari:"Hari 35 · とる・とれる",jp:"連絡を取る",reading:"れんらくをとる",arti:"menghubungi"},
+  {hari:"Hari 35 · とる・とれる",jp:"連絡が取れる",reading:"れんらくがとれる",arti:"terhubungi"},
+  {hari:"Hari 35 · とる・とれる",jp:"痛みを取る",reading:"いたみをとる",arti:"menghilangkan rasa sakit"},
+  {hari:"Hari 35 · とる・とれる",jp:"痛みが取れる",reading:"いたみがとれる",arti:"rasa sakit hilang"},
+  {hari:"Hari 35 · とる・とれる",jp:"ボタンが取れる",reading:"ぼたんがとれる",arti:"kancingnya lepas"},
+  {hari:"Hari 35 · とる・とれる",jp:"新入社員を採る",reading:"しんにゅうしゃいんをとる",arti:"merekrut karyawan baru"},
+  {hari:"Hari 35 · とる・とれる",jp:"採用する",reading:"さいようする",arti:"merekrut"},
+  // HARI 35: かかる・かける
+  {hari:"Hari 35 · かかる・かける",jp:"鍵がかかっている",reading:"かぎがかかっている",arti:"terkunci"},
+  {hari:"Hari 35 · かかる・かける",jp:"鍵をかける",reading:"かぎをかける",arti:"mengunci"},
+  {hari:"Hari 35 · かかる・かける",jp:"病気にかかる",reading:"びょうきにかかる",arti:"terkena penyakit"},
+  {hari:"Hari 35 · かかる・かける",jp:"病気になる",reading:"びょうきになる",arti:"menjadi sakit"},
+  {hari:"Hari 35 · かかる・かける",jp:"医者にかかる",reading:"いしゃにかかる",arti:"pergi ke dokter"},
+  {hari:"Hari 35 · かかる・かける",jp:"診察してもらう",reading:"しんさつしてもらう",arti:"diperiksa dokter"},
+  {hari:"Hari 35 · かかる・かける",jp:"ボタンをかける",reading:"ぼたんをかける",arti:"mengancingkan"},
+  {hari:"Hari 35 · かかる・かける",jp:"外す",reading:"はずす",arti:"melepas"},
+  {hari:"Hari 35 · かかる・かける",jp:"CDをかける",reading:"",arti:"menyalakan CD"},
+  {hari:"Hari 35 · かかる・かける",jp:"毛布をかける",reading:"もうふをかける",arti:"memakai selimut"},
+  {hari:"Hari 35 · かかる・かける",jp:"声をかける",reading:"こえをかける",arti:"menyapa"},
+  {hari:"Hari 35 · かかる・かける",jp:"声がかかる",reading:"こえがかかる",arti:"disapa"},
+  {hari:"Hari 35 · かかる・かける",jp:"心配をかける",reading:"しんぱいをかける",arti:"membuat khawatir"},
+  {hari:"Hari 35 · かかる・かける",jp:"心配させる",reading:"しんぱいさせる",arti:"mengkhawatirkan"},
+  // HARI 36: たつ・たてる
+  {hari:"Hari 36 · たつ・たてる",jp:"席を立つ",reading:"せきをたつ",arti:"meninggalkan tempat duduk"},
+  {hari:"Hari 36 · たつ・たてる",jp:"座る",reading:"すわる",arti:"duduk"},
+  {hari:"Hari 36 · たつ・たてる",jp:"時間がたつ",reading:"じかんがたつ",arti:"waktu berlalu"},
+  {hari:"Hari 36 · たつ・たてる",jp:"うわさが立つ",reading:"うわさがたつ",arti:"muncul rumor"},
+  {hari:"Hari 36 · たつ・たてる",jp:"予定を立てる",reading:"よていをたてる",arti:"menyusun rencana"},
+  {hari:"Hari 36 · たつ・たてる",jp:"計画する",reading:"けいかくする",arti:"merencanakan"},
+  {hari:"Hari 36 · たつ・たてる",jp:"音を立てる",reading:"おとをたてる",arti:"membunyikan"},
+  {hari:"Hari 36 · たつ・たてる",jp:"出す",reading:"だす",arti:"mengeluarkan (bunyi)"},
+  // HARI 36: あげる・あがる
+  {hari:"Hari 36 · あげる・あがる",jp:"雨が上がる",reading:"あめがあがる",arti:"hujan reda"},
+  {hari:"Hari 36 · あげる・あがる",jp:"やむ",reading:"",arti:"berhenti (hujan)"},
+  {hari:"Hari 36 · あげる・あがる",jp:"どうぞお上がりください",reading:"どうぞおあがりください",arti:"silakan masuk"},
+  {hari:"Hari 36 · あげる・あがる",jp:"入って",reading:"はいって",arti:"masuk"},
+  {hari:"Hari 36 · あげる・あがる",jp:"風呂から上がる",reading:"ふろからあがる",arti:"selesai mandi"},
+  {hari:"Hari 36 · あげる・あがる",jp:"出る",reading:"でる",arti:"keluar (dari mandi)"},
+  {hari:"Hari 36 · あげる・あがる",jp:"物価が上がる",reading:"ぶっかがあがる",arti:"harga barang naik"},
+  {hari:"Hari 36 · あげる・あがる",jp:"効果が上がる",reading:"こうかがあがる",arti:"efektivitas meningkat"},
+  {hari:"Hari 36 · あげる・あがる",jp:"効果を上げる",reading:"こうかをあげる",arti:"meningkatkan efektivitas"},
+  {hari:"Hari 36 · あげる・あがる",jp:"初めてのスピーチであがる",reading:"はじめてのすぴーちであがる",arti:"tegang saat pidato pertama"},
+  {hari:"Hari 36 · あげる・あがる",jp:"緊張する",reading:"きんちょうする",arti:"merasa tegang"},
+  {hari:"Hari 36 · あげる・あがる",jp:"例をあげる",reading:"れいをあげる",arti:"memberikan contoh"},
+  {hari:"Hari 36 · あげる・あがる",jp:"並べる",reading:"ならべる",arti:"menderetkan contoh"},
+  {hari:"Hari 36 · あげる・あがる",jp:"結婚式をあげる",reading:"けっこんしきをあげる",arti:"mengadakan pernikahan"},
+  // HARI 36: さがる・さげる
+  {hari:"Hari 36 · さがる・さげる",jp:"熱が下がる",reading:"ねつがさがる",arti:"demamnya turun"},
+  {hari:"Hari 36 · さがる・さげる",jp:"黄色い線の内側まで下がる",reading:"きいろいせんのうちがわまでさがる",arti:"mundur sampai garis kuning"},
+  {hari:"Hari 36 · さがる・さげる",jp:"評判が下がる",reading:"ひょうばんがさがる",arti:"reputasi menurun"},
+  {hari:"Hari 36 · さがる・さげる",jp:"落ちる",reading:"おちる",arti:"jatuh / turun"},
+  {hari:"Hari 36 · さがる・さげる",jp:"評判を下げる",reading:"ひょうばんをさげる",arti:"menurunkan reputasi"},
+  {hari:"Hari 36 · さがる・さげる",jp:"カーテンが下がる",reading:"かーてんがさがる",arti:"tirainya turun"},
+  {hari:"Hari 36 · さがる・さげる",jp:"カーテンを下げる",reading:"かーてんをさげる",arti:"menurunkan tirai"},
+  {hari:"Hari 36 · さがる・さげる",jp:"買い物かごを下げる",reading:"かいものかごをさげる",arti:"membawa keranjang belanja"},
+  {hari:"Hari 36 · さがる・さげる",jp:"一字下げて書く",reading:"いちじさげてかく",arti:"menulis menjorok ke dalam"},
+  {hari:"Hari 36 · さがる・さげる",jp:"テレビの音を下げる",reading:"てれびのおとをさげる",arti:"mengecilkan suara TV"},
+  {hari:"Hari 36 · さがる・さげる",jp:"小さくする",reading:"ちいさくする",arti:"mengecilkan"},
+  // HARI 36: つく・つける
+  {hari:"Hari 36 · つく・つける",jp:"泥がつく",reading:"どろがつく",arti:"terkena lumpur"},
+  {hari:"Hari 36 · つく・つける",jp:"傷がつく",reading:"きずがつく",arti:"terluka"},
+  {hari:"Hari 36 · つく・つける",jp:"傷をつける",reading:"きずをつける",arti:"melukai"},
+  {hari:"Hari 36 · つく・つける",jp:"連絡がつく",reading:"れんらくがつく",arti:"terhubungi"},
+  {hari:"Hari 36 · つく・つける",jp:"連絡をつける",reading:"れんらくをつける",arti:"menghubungkan"},
+  {hari:"Hari 36 · つく・つける",jp:"都合がつく",reading:"つごうがつく",arti:"waktunya bisa diatur"},
+  {hari:"Hari 36 · つく・つける",jp:"都合をつける",reading:"つごうをつける",arti:"mengatur waktu"},
+  {hari:"Hari 36 · つく・つける",jp:"おまけがつく",reading:"",arti:"dapat bonus"},
+  {hari:"Hari 36 · つく・つける",jp:"おまけをつける",reading:"",arti:"memberikan bonus"},
+  {hari:"Hari 36 · つく・つける",jp:"印をつける",reading:"しるしをつける",arti:"menandai"},
+  {hari:"Hari 36 · つく・つける",jp:"たばこに火をつける",reading:"たばこにひをつける",arti:"menyalakan rokok"},
+  {hari:"Hari 36 · つく・つける",jp:"火がつく",reading:"ひがつく",arti:"api menyala"},
+  {hari:"Hari 36 · つく・つける",jp:"日記をつける",reading:"にっきをつける",arti:"menulis buku harian"},
+  {hari:"Hari 36 · つく・つける",jp:"書く",reading:"かく",arti:"menulis"},
+];
+
+const topics = ["Semua", ...new Set(data.map(d => d.hari.split('·')[0].trim()))];
+let filtered = [...data];
+let cur = 0;
+let flipped = false;
+let activeFilter = "Semua";
+
+function buildFilters() {
+  const bar = document.getElementById('filter-bar');
+  topics.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (t === activeFilter ? ' active' : '');
+    btn.textContent = t;
+    btn.onclick = () => setFilter(t, btn);
+    bar.appendChild(btn);
+  });
+}
+
+function setFilter(name, btn) {
+  activeFilter = name;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filtered = name === "Semua" ? [...data] : data.filter(d => d.hari.startsWith(name));
+  cur = 0;
+  document.getElementById('done-overlay').classList.remove('show');
+  document.getElementById('flashcard').style.display = '';
+  document.querySelectorAll('.nav-buttons > *').forEach(b => b.style.display = '');
+  document.querySelector('.shortcut-hint').style.display = '';
+  showCard();
+}
+
+function showCard() {
+  if (cur >= filtered.length) {
+    document.getElementById('flashcard').style.display = 'none';
+    document.querySelectorAll('.nav-buttons > *').forEach(b => b.style.display = 'none');
+    document.querySelector('.shortcut-hint').style.display = 'none';
+    document.getElementById('done-overlay').classList.add('show');
+    return;
+  }
+  flipped = false;
+  document.getElementById('card-inner').classList.remove('flipped');
+  const d = filtered[cur];
+  document.getElementById('front-hari').textContent = d.hari;
+  document.getElementById('front-kanji').textContent = d.jp;
+  document.getElementById('front-reading').textContent = d.reading || '\u3000';
+  document.getElementById('back-hari').textContent = d.hari;
+  document.getElementById('back-arti').textContent = d.arti;
+  document.getElementById('back-context').textContent = d.reading ? d.reading : '';
+  document.getElementById('cur-num').textContent = cur + 1;
+  document.getElementById('total-num').textContent = filtered.length;
+  document.getElementById('topic-label').textContent = d.hari.split('·')[1] ? d.hari.split('·')[1].trim() : '';
+  document.getElementById('badge-total').textContent = filtered.length + ' kata';
+  const pct = ((cur + 1) / filtered.length * 100).toFixed(0);
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function flipCard() {
+  flipped = !flipped;
+  document.getElementById('card-inner').classList.toggle('flipped', flipped);
+}
+
+function nextCard() {
+  if (cur < filtered.length) cur++;
+  showCard();
+}
+
+function prevCard() {
+  if (cur > 0) cur--;
+  showCard();
+}
+
+function restart() {
+  cur = 0;
+  document.getElementById('done-overlay').classList.remove('show');
+  document.getElementById('flashcard').style.display = '';
+  document.querySelectorAll('.nav-buttons > *').forEach(b => b.style.display = '');
+  document.querySelector('.shortcut-hint').style.display = '';
+  showCard();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextCard();
+  else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevCard();
+  else if (e.key === ' ') { e.preventDefault(); flipCard(); }
+});
+
+buildFilters();
+showCard();
+</script>
+</body>
+</html>
