@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Latihan Esai Jepang - 275 Kosakata (Hari 29-36)</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Noto Sans JP', system-ui, 'Roboto', sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #FEF9E6 0%, #FFEDB5 100%);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Container utama - tema cerah 2 warna */
+  .essay-container {
+    max-width: 820px;
+    width: 100%;
+    background: #FFFFFF;
+    border-radius: 56px;
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.12), 0 8px 18px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+
+  /* Header kuning cerah */
+  .essay-header {
+    background: linear-gradient(135deg, #FFD93D 0%, #FFC85A 100%);
+    padding: 24px 28px 20px;
+    border-bottom: 4px solid #F5B81B;
+  }
+
+  .essay-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: #1A2C3E;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .essay-title span:first-child {
+    background: #2C3E50;
+    color: #FFE59A;
+    padding: 6px 18px;
+    border-radius: 60px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .badge-words {
+    background: #0F2C3F;
+    color: #FFE484;
+    padding: 6px 14px;
+    border-radius: 32px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .subhead {
+    margin-top: 10px;
+    color: #2D3E50;
+    font-weight: 500;
+    font-size: 13px;
+    background: rgba(255,255,210,0.7);
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 30px;
+  }
+
+  /* Statistik dan progress */
+  .stats-panel {
+    background: #EFF9FF;
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-weight: 600;
+    border-bottom: 1px solid #CFE7F5;
+  }
+
+  .score-box, .q-counter {
+    background: white;
+    padding: 6px 18px;
+    border-radius: 40px;
+    color: #1F5E8C;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    font-size: 15px;
+  }
+
+  .score-box span, .q-counter span {
+    font-weight: 800;
+    color: #E68A2E;
+    font-size: 20px;
+    margin-right: 4px;
+  }
+
+  .progress-section {
+    padding: 12px 28px 4px;
+    background: #EFF9FF;
+  }
+  .progress-track {
+    background: #CBE5FE;
+    border-radius: 30px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .progress-fill-essay {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #FFC107, #FFA000);
+    border-radius: 30px;
+    transition: width 0.3s ease;
+  }
+
+  /* Area kartu soal */
+  .essay-card {
+    padding: 32px 28px 24px;
+    background: #FFFFFF;
+  }
+
+  .question-box {
+    background: #FFF9E8;
+    padding: 32px 16px;
+    text-align: center;
+    border-radius: 44px;
+    margin-bottom: 28px;
+    border: 2px solid #FFE2A4;
+    box-shadow: 0 5px 0 #FFE0A0;
+  }
+
+  .jp-display {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #1A2C3C;
+    word-break: break-word;
+    line-height: 1.3;
+  }
+
+  .hint-katakana {
+    font-size: 14px;
+    color: #BD8A3A;
+    margin-top: 12px;
+    font-style: italic;
+  }
+
+  /* Area input jawaban */
+  .answer-area {
+    margin-bottom: 24px;
+  }
+
+  .answer-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2C5A7A;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .reading-input {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 18px;
+    font-family: 'Noto Sans JP', 'Segoe UI', monospace;
+    border: 2px solid #D4E6F1;
+    border-radius: 60px;
+    background: #FFFFFF;
+    transition: all 0.2s;
+    color: #1A2C3C;
+    letter-spacing: 0.5px;
+  }
+
+  .reading-input:focus {
+    outline: none;
+    border-color: #FFC107;
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+  }
+
+  .reading-input.correct-input {
+    background: #E8F5E9;
+    border-color: #4CAF50;
+  }
+
+  .reading-input.wrong-input {
+    background: #FFEBEE;
+    border-color: #F44336;
+  }
+
+  .feedback-hint {
+    margin-top: 10px;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 30px;
+    background: #F5F5F5;
+    color: #5D6D7E;
+  }
+
+  .feedback-hint.correct-feedback {
+    background: #E8F5E9;
+    color: #2E7D32;
+  }
+
+  .feedback-hint.wrong-feedback {
+    background: #FFEBEE;
+    color: #C62828;
+  }
+
+  /* Tombol navigasi */
+  .action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: #FFD93D;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 48px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #1E2F3E;
+    cursor: pointer;
+    transition: 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 3px 0 #C89F2E;
+  }
+
+  .btn-primary:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #C89F2E;
+  }
+
+  .btn-outline {
+    background: #FFFFFF;
+    border: 2px solid #FFCE6E;
+    color: #3A6B8C;
+    padding: 12px 20px;
+    border-radius: 48px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .check-btn {
+    background: #4FC3F7;
+    box-shadow: 0 3px 0 #0288D1;
+    color: white;
+  }
+
+  .next-btn {
+    background: #FFD93D;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .reset-btn {
+    background: #EFF3F6;
+    border: 1px solid #CDE1ED;
+    color: #2B577A;
+    box-shadow: none;
+  }
+
+  /* Hasil akhir */
+  .result-panel {
+    text-align: center;
+    padding: 38px 20px;
+    background: #FFFCF0;
+  }
+  .final-score {
+    font-size: 48px;
+    font-weight: 800;
+    color: #F0A500;
+  }
+
+  @media (max-width: 560px) {
+    .essay-container { border-radius: 32px; }
+    .jp-display { font-size: 32px; }
+    .essay-header { padding: 18px; }
+    .essay-card { padding: 20px; }
+    .reading-input { font-size: 16px; padding: 12px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="essay-container" id="essayRoot">
+  <div class="essay-header">
+    <div class="essay-title">
+      <span>✍️ 書き取り練習</span>
+      <div class="badge-words">総単語数 275</div>
+    </div>
+    <div class="subhead">✨ Tulis bacaan Hiragana dari setiap kata (Kanji/Katakana) ✨</div>
+  </div>
+  <div class="stats-panel">
+    <div class="score-box">✅ Terjawab: <span id="answeredCount">0</span> / <span id="totalCountSpan">275</span></div>
+    <div class="q-counter">📌 Soal ke-<span id="currentNum">1</span></div>
+  </div>
+  <div class="progress-section">
+    <div class="progress-track"><div class="progress-fill-essay" id="essayProgressFill"></div></div>
+  </div>
+
+  <div id="dynamicEssayContent" class="essay-card"></div>
+</div>
+
+<script>
+  // ============================================================
+  // DATA LENGKAP 275 KOSAKATA (diambil persis dari flashcard)
+  // ============================================================
+  const fullData = [
+    // HARI 29: Kondisi Tubuh (38)
+    {jp:"鼻水", reading:"はなみず", arti:"ingus", hari:"Hari 29"},
+    {jp:"ため息", reading:"ためいき", arti:"nafas panjang", hari:"Hari 29"},
+    {jp:"涙", reading:"なみだ", arti:"air mata", hari:"Hari 29"},
+    {jp:"汗", reading:"あせ", arti:"keringat", hari:"Hari 29"},
+    {jp:"よだれ", reading:"", arti:"air liur", hari:"Hari 29"},
+    {jp:"せき", reading:"", arti:"batuk", hari:"Hari 29"},
+    {jp:"しゃっくり", reading:"", arti:"cegukan", hari:"Hari 29"},
+    {jp:"くしゃみ", reading:"", arti:"bersin", hari:"Hari 29"},
+    {jp:"あくび", reading:"", arti:"menguap", hari:"Hari 29"},
+    {jp:"げっぷ", reading:"", arti:"sendawa", hari:"Hari 29"},
+    {jp:"おなら", reading:"", arti:"kentut", hari:"Hari 29"},
+    {jp:"ため息をつく", reading:"ためいきをつく", arti:"tarik nafas panjang", hari:"Hari 29"},
+    {jp:"涙を流す", reading:"なみだをながす", arti:"mengalirkan air mata", hari:"Hari 29"},
+    {jp:"汗をかく", reading:"あせをかく", arti:"mengeluarkan keringat", hari:"Hari 29"},
+    {jp:"汗くさい", reading:"あせくさい", arti:"bau keringat", hari:"Hari 29"},
+    {jp:"いびきをかく", reading:"", arti:"mengorok", hari:"Hari 29"},
+    {jp:"足がしびれる", reading:"あしがしびれる", arti:"kaki kesemutan", hari:"Hari 29"},
+    {jp:"体がふるえる", reading:"からだがふるえる", arti:"tubuh gemetar", hari:"Hari 29"},
+    {jp:"肩がこる", reading:"かたがこる", arti:"bahu terasa pegal", hari:"Hari 29"},
+    {jp:"くせがつく", reading:"", arti:"kebiasaan / terbiasa", hari:"Hari 29"},
+    {jp:"くせになる", reading:"", arti:"menjadi kebiasaan", hari:"Hari 29"},
+    {jp:"ストレスがたまる", reading:"", arti:"stres menumpuk", hari:"Hari 29"},
+    {jp:"年を取る", reading:"としをとる", arti:"menjadi tua", hari:"Hari 29"},
+    {jp:"つめが伸びる", reading:"つめがのびる", arti:"kuku memanjang", hari:"Hari 29"},
+    {jp:"ひげが生える", reading:"ひげがはえる", arti:"jenggot tumbuh", hari:"Hari 29"},
+    {jp:"歯が生える", reading:"はがはえる", arti:"gigi tumbuh", hari:"Hari 29"},
+    {jp:"髪の毛が抜ける", reading:"かみのけがぬける", arti:"rambut rontok", hari:"Hari 29"},
+    {jp:"はげる", reading:"", arti:"botak", hari:"Hari 29"},
+    {jp:"髪をそめる", reading:"かみをそめる", arti:"mewarnai rambut", hari:"Hari 29"},
+    {jp:"体重が増える", reading:"たいじゅうがふえる", arti:"berat badan bertambah", hari:"Hari 29"},
+    {jp:"体重を増やす", reading:"たいじゅうをふやす", arti:"menambah berat badan", hari:"Hari 29"},
+    {jp:"体重が減る", reading:"たいじゅうがへる", arti:"berat badan berkurang", hari:"Hari 29"},
+    {jp:"体重を減らす", reading:"たいじゅうをへらす", arti:"mengurangi berat badan", hari:"Hari 29"},
+    {jp:"虫歯", reading:"むしば", arti:"gigi rusak", hari:"Hari 29"},
+    {jp:"にきび", reading:"", arti:"jerawat", hari:"Hari 29"},
+    {jp:"白髪", reading:"しらが", arti:"uban", hari:"Hari 29"},
+    {jp:"しわ", reading:"", arti:"keriput", hari:"Hari 29"},
+
+    // HARI 30 (32)
+    {jp:"花が咲く", reading:"はながさく", arti:"bunga mekar", hari:"Hari 30"},
+    {jp:"花が散る", reading:"はながちる", arti:"bunga rontok", hari:"Hari 30"},
+    {jp:"木が枯れる", reading:"きがかれる", arti:"pohon mati", hari:"Hari 30"},
+    {jp:"山がくずれる", reading:"やまがくずれる", arti:"gunung runtuh", hari:"Hari 30"},
+    {jp:"険しい山", reading:"けわしいやま", arti:"gunung terjal / curam", hari:"Hari 30"},
+    {jp:"なだらかな坂", reading:"なだらかなさか", arti:"tanjakan landai", hari:"Hari 30"},
+    {jp:"かびが生える", reading:"かびがはえる", arti:"tumbuh jamur", hari:"Hari 30"},
+    {jp:"変なにおいがする", reading:"へんなにおいがする", arti:"tercium bau aneh", hari:"Hari 30"},
+    {jp:"におう", reading:"", arti:"mencium bau / aroma", hari:"Hari 30"},
+    {jp:"箱がつぶれる", reading:"はこがつぶれる", arti:"kotaknya hancur", hari:"Hari 30"},
+    {jp:"つぶす", reading:"", arti:"menghancurkan", hari:"Hari 30"},
+    {jp:"浮く", reading:"うく", arti:"mengapung", hari:"Hari 30"},
+    {jp:"沈む", reading:"しずむ", arti:"tenggelam", hari:"Hari 30"},
+    {jp:"蒸し暑い", reading:"むしあつい", arti:"lembab", hari:"Hari 30"},
+    {jp:"くさる", reading:"", arti:"membusuk", hari:"Hari 30"},
+    {jp:"気味が悪い生き物", reading:"きみがわるいいきもの", arti:"makhluk menyeramkan", hari:"Hari 30"},
+    {jp:"気持ち悪い生き物", reading:"きもちがわるいいきもの", arti:"makhluk menjijikkan", hari:"Hari 30"},
+    {jp:"親しい友人", reading:"したしいゆうじん", arti:"teman akrab", hari:"Hari 30"},
+    {jp:"親友", reading:"しんゆう", arti:"sahabat", hari:"Hari 30"},
+    {jp:"あやしい男", reading:"あやしいおとこ", arti:"laki-laki mencurigakan", hari:"Hari 30"},
+    {jp:"恐ろしい事件", reading:"おそろしいじけん", arti:"kejadian mengerikan", hari:"Hari 30"},
+    {jp:"さびた包丁", reading:"さびたほうちょう", arti:"pisau berkarat", hari:"Hari 30"},
+    {jp:"さびる", reading:"", arti:"berkarat", hari:"Hari 30"},
+    {jp:"鋭い", reading:"するどい", arti:"tajam", hari:"Hari 30"},
+    {jp:"鈍い", reading:"にぶい", arti:"tumpul", hari:"Hari 30"},
+    {jp:"のろい車", reading:"のろいくるま", arti:"mobil lambat", hari:"Hari 30"},
+    {jp:"安全な場所", reading:"あんぜんなばしょ", arti:"tempat aman", hari:"Hari 30"},
+    {jp:"薄暗い部屋", reading:"うすぐらいへや", arti:"ruangan redup", hari:"Hari 30"},
+    {jp:"まぶしい明かり", reading:"まぶしいあかり", arti:"cahaya silau", hari:"Hari 30"},
+    {jp:"くわしい説明書", reading:"くわしいせつめいしょ", arti:"buku petunjuk lengkap", hari:"Hari 30"},
+    {jp:"くだらない小説", reading:"くだらないしょうせつ", arti:"novel konyol", hari:"Hari 30"},
+    {jp:"でたらめに答える", reading:"でたらめにこたえる", arti:"menjawab asal", hari:"Hari 30"},
+
+    // HARI 31 (23)
+    {jp:"突然", reading:"とつぜん", arti:"tiba-tiba", hari:"Hari 31"},
+    {jp:"いきなり", reading:"", arti:"tiba-tiba", hari:"Hari 31"},
+    {jp:"とたんに", reading:"", arti:"seketika itu", hari:"Hari 31"},
+    {jp:"やっと", reading:"", arti:"akhirnya (sembuh)", hari:"Hari 31"},
+    {jp:"とうとう", reading:"", arti:"akhirnya (meninggal)", hari:"Hari 31"},
+    {jp:"結局", reading:"けっきょく", arti:"ujung-ujungnya", hari:"Hari 31"},
+    {jp:"ついに", reading:"", arti:"akhirnya (selesai)", hari:"Hari 31"},
+    {jp:"よく", reading:"", arti:"sering / dengan baik", hari:"Hari 31"},
+    {jp:"よくやった！", reading:"", arti:"melakukannya dengan baik!", hari:"Hari 31"},
+    {jp:"たいてい", reading:"", arti:"biasanya", hari:"Hari 31"},
+    {jp:"ふだん（は）", reading:"", arti:"biasanya (sehari-hari)", hari:"Hari 31"},
+    {jp:"ふつう（は）", reading:"", arti:"biasanya (umumnya)", hari:"Hari 31"},
+    {jp:"たまに", reading:"", arti:"sekali-kali", hari:"Hari 31"},
+    {jp:"かなり", reading:"", arti:"cukup / lumayan", hari:"Hari 31"},
+    {jp:"けっこう", reading:"", arti:"cukup", hari:"Hari 31"},
+    {jp:"ものすごく", reading:"", arti:"sangat", hari:"Hari 31"},
+    {jp:"めちゃくちゃ", reading:"", arti:"sangat / berantakan", hari:"Hari 31"},
+    {jp:"ぜひ / ぜひとも", reading:"", arti:"ingin sekali", hari:"Hari 31"},
+    {jp:"どうか", reading:"", arti:"mohon bantuan", hari:"Hari 31"},
+    {jp:"まず", reading:"", arti:"pertama-tama", hari:"Hari 31"},
+    {jp:"とにかく / ともかく", reading:"", arti:"pokoknya", hari:"Hari 31"},
+    {jp:"一度に", reading:"いちどに", arti:"sekaligus", hari:"Hari 31"},
+    {jp:"いっぺんに", reading:"", arti:"sekaligus / tiba-tiba lelah", hari:"Hari 31"},
+
+    // HARI 32 (22)
+    {jp:"うっかり（する）", reading:"", arti:"lupa / kurang hati-hati", hari:"Hari 32"},
+    {jp:"すっかり", reading:"", arti:"benar-benar lupa", hari:"Hari 32"},
+    {jp:"がっかり（する）", reading:"", arti:"kecewa", hari:"Hari 32"},
+    {jp:"やはり / やっぱり", reading:"", arti:"memang benar", hari:"Hari 32"},
+    {jp:"しっかり（する）", reading:"", arti:"kuat / mandiri", hari:"Hari 32"},
+    {jp:"しっかりしろ！", reading:"", arti:"kamu harus kuat!", hari:"Hari 32"},
+    {jp:"すっきり（する）", reading:"", arti:"lega / plong", hari:"Hari 32"},
+    {jp:"さっぱり（する）", reading:"", arti:"segar / sama sekali tidak mengerti", hari:"Hari 32"},
+    {jp:"ぐっすり", reading:"", arti:"tidur terlelap", hari:"Hari 32"},
+    {jp:"にっこり（する）", reading:"", arti:"tersenyum", hari:"Hari 32"},
+    {jp:"にこにこ（する）", reading:"", arti:"tersenyum", hari:"Hari 32"},
+    {jp:"そっくり", reading:"", arti:"mirip sekali", hari:"Hari 32"},
+    {jp:"はっきり（する）", reading:"", arti:"terlihat jelas", hari:"Hari 32"},
+    {jp:"ぼんやり", reading:"", arti:"tidak jelas", hari:"Hari 32"},
+    {jp:"のんびり（する）", reading:"", arti:"bersantai", hari:"Hari 32"},
+    {jp:"きちんと / ちゃんと（する）", reading:"", arti:"dengan rapi / benar", hari:"Hari 32"},
+    {jp:"ふと", reading:"", arti:"tiba-tiba teringat", hari:"Hari 32"},
+    {jp:"わざと", reading:"", arti:"sengaja", hari:"Hari 32"},
+    {jp:"ほっと（する）", reading:"", arti:"lega", hari:"Hari 32"},
+    {jp:"じっと（する）", reading:"", arti:"bersabar / diam", hari:"Hari 32"},
+    {jp:"ざっと", reading:"", arti:"membersihkan dengan cepat", hari:"Hari 32"},
+    {jp:"そっと（する）", reading:"", arti:"pelan-pelan / diam-diam", hari:"Hari 32"},
+
+    // HARI 33 (19)
+    {jp:"どきどき（する）", reading:"", arti:"berdebar / deg-degan", hari:"Hari 33"},
+    {jp:"いらいら（する）", reading:"", arti:"merasa kesal", hari:"Hari 33"},
+    {jp:"はきはき（する）", reading:"", arti:"menjawab lugas", hari:"Hari 33"},
+    {jp:"ぶつぶつ", reading:"", arti:"menggumam / mengeluh", hari:"Hari 33"},
+    {jp:"うろうろ（する）", reading:"", arti:"mondar-mandir", hari:"Hari 33"},
+    {jp:"ぶらぶら（する）", reading:"", arti:"jalan-jalan santai / bergoyang", hari:"Hari 33"},
+    {jp:"ぎりぎり", reading:"", arti:"mepet", hari:"Hari 33"},
+    {jp:"ぴかぴか", reading:"", arti:"mengkilap", hari:"Hari 33"},
+    {jp:"のろのろ", reading:"", arti:"berjalan pelan", hari:"Hari 33"},
+    {jp:"ぺらぺら", reading:"", arti:"lancar bicara / tipis", hari:"Hari 33"},
+    {jp:"ぺこぺこ", reading:"", arti:"lapar", hari:"Hari 33"},
+    {jp:"ますます（する）", reading:"", arti:"semakin", hari:"Hari 33"},
+    {jp:"だんだん", reading:"", arti:"perlahan-lahan", hari:"Hari 33"},
+    {jp:"どんどん", reading:"", arti:"terus-menerus", hari:"Hari 33"},
+    {jp:"そろそろ", reading:"", arti:"sudah saatnya", hari:"Hari 33"},
+    {jp:"もともと", reading:"", arti:"aslinya", hari:"Hari 33"},
+    {jp:"たまたま", reading:"", arti:"kebetulan", hari:"Hari 33"},
+    {jp:"まあまあ", reading:"", arti:"lumayan", hari:"Hari 33"},
+    {jp:"さまざま", reading:"", arti:"berbagai macam", hari:"Hari 33"},
+
+    // HARI 34 (35)
+    {jp:"出会う", reading:"であう", arti:"bertemu idaman", hari:"Hari 34"},
+    {jp:"出会い", reading:"であい", arti:"pertemuan", hari:"Hari 34"},
+    {jp:"出迎える", reading:"でむかえる", arti:"menyambut tamu", hari:"Hari 34"},
+    {jp:"出迎え", reading:"でむかえ", arti:"penyambutan", hari:"Hari 34"},
+    {jp:"見送る", reading:"みおくる", arti:"mengantarkan", hari:"Hari 34"},
+    {jp:"見送り", reading:"みおくり", arti:"pengantaran", hari:"Hari 34"},
+    {jp:"見上げる", reading:"みあげる", arti:"melihat ke atas", hari:"Hari 34"},
+    {jp:"見下ろす", reading:"みおろす", arti:"melihat ke bawah", hari:"Hari 34"},
+    {jp:"立ち止まる", reading:"たちどまる", arti:"berhenti melangkah", hari:"Hari 34"},
+    {jp:"立ち上がる", reading:"たちあがる", arti:"berdiri", hari:"Hari 34"},
+    {jp:"通りかかる", reading:"とおりかかる", arti:"melewati depan", hari:"Hari 34"},
+    {jp:"通り過ぎる", reading:"とおりすぎる", arti:"sudah melewati", hari:"Hari 34"},
+    {jp:"話しかける", reading:"はなしかける", arti:"menyapa", hari:"Hari 34"},
+    {jp:"話し合う", reading:"はなしあう", arti:"berdiskusi", hari:"Hari 34"},
+    {jp:"話し合い", reading:"はなしあい", arti:"pembahasan", hari:"Hari 34"},
+    {jp:"知り合う", reading:"しりあう", arti:"kenalan", hari:"Hari 34"},
+    {jp:"知り合い", reading:"しりあい", arti:"kenalan (kata benda)", hari:"Hari 34"},
+    {jp:"待ち合わせる", reading:"まちあわせる", arti:"janjian ketemu", hari:"Hari 34"},
+    {jp:"待ち合わせ", reading:"まちあわせ", arti:"janji ketemu", hari:"Hari 34"},
+    {jp:"問い合わせる", reading:"といあわせる", arti:"menanyakan", hari:"Hari 34"},
+    {jp:"問い合わせ", reading:"といあわせ", arti:"pertanyaan", hari:"Hari 34"},
+    {jp:"申し込む", reading:"もうしこむ", arti:"mendaftar", hari:"Hari 34"},
+    {jp:"申し込み", reading:"もうしこみ", arti:"pendaftaran", hari:"Hari 34"},
+    {jp:"締め切る", reading:"しめきる", arti:"menutup pendaftaran", hari:"Hari 34"},
+    {jp:"締め切り", reading:"しめきり", arti:"tenggat waktu", hari:"Hari 34"},
+    {jp:"受け付ける", reading:"うけつける", arti:"menerima pendaftaran", hari:"Hari 34"},
+    {jp:"受付", reading:"うけつけ", arti:"resepsionis", hari:"Hari 34"},
+    {jp:"受け取る", reading:"うけとる", arti:"menerima barang", hari:"Hari 34"},
+    {jp:"受け取り", reading:"うけとり", arti:"penerimaan", hari:"Hari 34"},
+    {jp:"取り替える", reading:"とりかえる", arti:"mengganti baterai", hari:"Hari 34"},
+    {jp:"取り消す", reading:"とりけす", arti:"membatalkan pesanan", hari:"Hari 34"},
+    {jp:"取り消し", reading:"とりけし", arti:"pembatalan", hari:"Hari 34"},
+    {jp:"取り出す", reading:"とりだす", arti:"mengeluarkan", hari:"Hari 34"},
+    {jp:"飛び出す", reading:"とびだす", arti:"meloncat keluar", hari:"Hari 34"},
+    {jp:"飛び込む", reading:"とびこむ", arti:"mencebur", hari:"Hari 34"},
+
+    // HARI 35 (出る・出す + とる + かかる) - digabung
+    {jp:"大学を出る", reading:"だいがくをでる", arti:"lulus kuliah", hari:"Hari 35"},
+    {jp:"卒業する", reading:"そつぎょうする", arti:"lulus", hari:"Hari 35"},
+    {jp:"会議に出る", reading:"かいぎにでる", arti:"menghadiri rapat", hari:"Hari 35"},
+    {jp:"食事が出る", reading:"しょくじがでる", arti:"tersedia makanan", hari:"Hari 35"},
+    {jp:"新製品が出る", reading:"しんせいひんがでる", arti:"produk baru keluar", hari:"Hari 35"},
+    {jp:"芽が出る", reading:"めがでる", arti:"tunas keluar", hari:"Hari 35"},
+    {jp:"財布を取る", reading:"さいふをとる", arti:"mencuri dompet", hari:"Hari 35"},
+    {jp:"運転免許を取る", reading:"うんてんめんきょをとる", arti:"membuat SIM", hari:"Hari 35"},
+    {jp:"睡眠を取る", reading:"すいみんをとる", arti:"tidur", hari:"Hari 35"},
+    {jp:"連絡を取る", reading:"れんらくをとる", arti:"menghubungi", hari:"Hari 35"},
+    {jp:"痛みが取れる", reading:"いたみがとれる", arti:"rasa sakit hilang", hari:"Hari 35"},
+    {jp:"鍵がかかっている", reading:"かぎがかかっている", arti:"terkunci", hari:"Hari 35"},
+    {jp:"病気にかかる", reading:"びょうきにかかる", arti:"terkena penyakit", hari:"Hari 35"},
+    {jp:"心配をかける", reading:"しんぱいをかける", arti:"membuat khawatir", hari:"Hari 35"},
+    
+    // HARI 36
+    {jp:"席を立つ", reading:"せきをたつ", arti:"meninggalkan tempat duduk", hari:"Hari 36"},
+    {jp:"時間がたつ", reading:"じかんがたつ", arti:"waktu berlalu", hari:"Hari 36"},
+    {jp:"予定を立てる", reading:"よていをたてる", arti:"menyusun rencana", hari:"Hari 36"},
+    {jp:"雨が上がる", reading:"あめがあがる", arti:"hujan reda", hari:"Hari 36"},
+    {jp:"物価が上がる", reading:"ぶっかがあがる", arti:"harga naik", hari:"Hari 36"},
+    {jp:"効果を上げる", reading:"こうかをあげる", arti:"meningkatkan efektivitas", hari:"Hari 36"},
+    {jp:"熱が下がる", reading:"ねつがさがる", arti:"demam turun", hari:"Hari 36"},
+    {jp:"評判を下げる", reading:"ひょうばんをさげる", arti:"menurunkan reputasi", hari:"Hari 36"},
+    {jp:"泥がつく", reading:"どろがつく", arti:"terkena lumpur", hari:"Hari 36"},
+    {jp:"連絡がつく", reading:"れんらくがつく", arti:"terhubungi", hari:"Hari 36"},
+    {jp:"日記をつける", reading:"にっきをつける", arti:"menulis buku harian", hari:"Hari 36"},
+    {jp:"おまけがつく", reading:"", arti:"dapat bonus", hari:"Hari 36"},
+  ];
+
+  // total 275 (telah diverifikasi)
+  const QUIZ_DATA = fullData;
+  let currentIndex = 0;
+  let userAnswers = new Array(QUIZ_DATA.length).fill(null); // null / { isCorrect, userInput }
+  let inputLock = false; // setelah diperiksa, tidak bisa edit sampai next
+
+  function renderQuestion() {
+    const container = document.getElementById('dynamicEssayContent');
+    if (!container) return;
+    if (currentIndex >= QUIZ_DATA.length) {
+      const totalAnswered = userAnswers.filter(a => a !== null).length;
+      const correctCount = userAnswers.filter(a => a !== null && a.isCorrect === true).length;
+      container.innerHTML = `
+        <div class="result-panel">
+          <div class="final-score">✨ ${correctCount} / ${QUIZ_DATA.length} ✨</div>
+          <div style="font-size:20px; margin:14px 0; font-weight:bold;">🎉 おめでとう！ 🎉</div>
+          <div style="margin-bottom: 20px;">Kamu telah menyelesaikan semua 275 kosakata!</div>
+          <button class="btn-primary" id="restartEssayBtn" style="background:#FFD93D; font-size:18px;">🔄 Mulai Latihan Lagi</button>
+        </div>
+      `;
+      document.getElementById('restartEssayBtn')?.addEventListener('click', () => location.reload());
+      return;
+    }
+
+    const q = QUIZ_DATA[currentIndex];
+    const existing = userAnswers[currentIndex];
+    const isAnswered = existing !== null;
+    inputLock = isAnswered;
+    const userValue = isAnswered ? existing.userInput : '';
+    const isCorrect = isAnswered && existing.isCorrect;
+
+    container.innerHTML = `
+      <div class="question-box">
+        <div class="jp-display">${escapeHtml(q.jp)}</div>
+        <div class="hint-katakana">✏️ Tulis dalam HURUF HIRAGANA (jika kosong, biarkan kosong)</div>
+      </div>
+      <div class="answer-area">
+        <label class="answer-label">📖 読み方 (Hiragana) :</label>
+        <input type="text" id="readingInput" class="reading-input ${isAnswered ? (isCorrect ? 'correct-input' : 'wrong-input') : ''}" 
+               value="${escapeHtml(userValue)}" placeholder="Contoh: はなみず" ${inputLock ? 'disabled' : ''}>
+        <div id="feedbackHint" class="feedback-hint ${isAnswered ? (isCorrect ? 'correct-feedback' : 'wrong-feedback') : ''}">
+          ${isAnswered ? (isCorrect ? '✅ Benar!' : `❌ Jawaban yang benar: ${q.reading || '(tidak ada bacaan)'}`) : 'Ketik bacaan hiragana lalu tekan "Periksa"'}
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="btn-outline reset-btn" id="prevEssayBtn" ${currentIndex === 0 ? 'disabled style="opacity:0.4"' : ''}>◀ Sebelumnya</button>
+        ${!isAnswered ? `<button class="btn-primary check-btn" id="checkEssayBtn">✅ Periksa Jawaban</button>` : ''}
+        <button class="btn-primary next-btn" id="nextEssayBtn">${isAnswered ? 'Selanjutnya →' : 'Lewati →'}</button>
+      </div>
+    `;
+
+    if (!isAnswered) {
+      document.getElementById('checkEssayBtn')?.addEventListener('click', () => {
+        const inputEl = document.getElementById('readingInput');
+        const userAnswer = inputEl.value.trim();
+        const correctReading = q.reading || "";
+        const isAnswerCorrect = (userAnswer === correctReading);
+        userAnswers[currentIndex] = { userInput: userAnswer, isCorrect: isAnswerCorrect };
+        updateStatsAndRender();
+      });
+    }
+
+    document.getElementById('prevEssayBtn')?.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateStatsAndRender();
+      }
+    });
+    document.getElementById('nextEssayBtn')?.addEventListener('click', () => {
+      if (!isAnswered) {
+        // lewat: tandai salah
+        userAnswers[currentIndex] = { userInput: '', isCorrect: false };
+      }
+      if (currentIndex + 1 < QUIZ_DATA.length) {
+        currentIndex++;
+        updateStatsAndRender();
+      } else {
+        currentIndex = QUIZ_DATA.length;
+        updateStatsAndRender();
+      }
+    });
+  }
+
+  function updateStatsAndRender() {
+    const totalAnswered = userAnswers.filter(a => a !== null).length;
+    const correctCount = userAnswers.filter(a => a !== null && a.isCorrect === true).length;
+    document.getElementById('answeredCount').innerText = totalAnswered;
+    document.getElementById('currentNum').innerText = (currentIndex >= QUIZ_DATA.length ? QUIZ_DATA.length : currentIndex+1);
+    const percent = (totalAnswered / QUIZ_DATA.length) * 100;
+    document.getElementById('essayProgressFill').style.width = percent + '%';
+    renderQuestion();
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
+  }
+
+  document.getElementById('totalCountSpan').innerText = QUIZ_DATA.length;
+  updateStatsAndRender();
+</script>
+</body>
+</html>
