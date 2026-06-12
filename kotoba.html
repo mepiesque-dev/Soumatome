@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard Soumatome N3 – Lengkap (Hari 1–36)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap');
+
+  :root {
+    --sun: #FFD93D;
+    --sun-dark: #F4A700;
+    --sun-light: #FFF3B0;
+    --sky: #6BCB77;
+    --sky-dark: #3BA84A;
+    --sky-light: #D4F5D9;
+    --white: #FFFDF0;
+    --dark: #1A2A1A;
+    --card-radius: 24px;
+    --search: #7C5CBF;
+    --search-light: #EDE5FF;
+    --search-dark: #5A3A99;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  #header {
+    background: var(--sun);
+    border-bottom: 4px solid var(--sun-dark);
+    padding: 18px 20px 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #header::before { content:'🌞'; position:absolute;top:-8px;left:8px;font-size:72px;opacity:.12; }
+  #header::after  { content:'🌿'; position:absolute;bottom:-8px;right:8px;font-size:72px;opacity:.12; }
+  #header h1 {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: clamp(15px,4vw,23px);
+    font-weight: 900; color: var(--dark); line-height: 1.3;
+  }
+  #header p { font-size:12px; font-weight:700; color:#4a3a00; margin-top:4px; }
+
+  /* ===== TABS ===== */
+  .tab-bar {
+    display: flex;
+    background: #f5f0e0;
+    border-bottom: 3px solid var(--sun-dark);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display:none; }
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 11px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 800;
+    border: none; background: transparent;
+    cursor: pointer; color: #7a6030;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { background: var(--sun-light); }
+  .tab-btn.active { background: var(--white); color: var(--dark); border-bottom-color: var(--search); }
+
+  /* ===== SCREEN BASE ===== */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ===== SEARCH SCREEN ===== */
+  #search-screen {
+    max-width: 600px; margin: 0 auto; padding: 20px 16px 40px;
+  }
+  .search-wrap {
+    position: relative; margin-bottom: 16px;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 13px 48px 13px 46px;
+    border: 3px solid var(--search);
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 700;
+    background: var(--white);
+    color: var(--dark);
+    outline: none;
+    box-shadow: 0 3px 0 var(--search-dark);
+    transition: box-shadow .15s;
+  }
+  .search-wrap input:focus { box-shadow: 0 0 0 3px rgba(124,92,191,.25), 0 3px 0 var(--search-dark); }
+  .search-icon {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    font-size: 18px; pointer-events: none;
+  }
+  .search-clear {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 18px; cursor: pointer; opacity: .5;
+    background: none; border: none; font-family: inherit;
+    display: none;
+  }
+
+  .search-filter-row {
+    display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; align-items: center;
+  }
+  .filter-lbl { font-size: 12px; font-weight: 800; color: #6a5000; }
+  .filter-btn {
+    padding: 5px 12px; border: 2px solid var(--sun-dark);
+    border-radius: 50px; background: var(--white);
+    font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800;
+    cursor: pointer; transition: all .15s; white-space: nowrap;
+  }
+  .filter-btn.active { background: var(--sun); }
+  .filter-btn:hover { background: var(--sun-light); }
+
+  .search-stats {
+    font-size: 12px; font-weight: 700; color: #7a6030;
+    margin-bottom: 10px;
+  }
+
+  .search-results { display: flex; flex-direction: column; gap: 8px; }
+  .search-item {
+    background: var(--white);
+    border: 2px solid #e0d8b0;
+    border-radius: 16px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .search-item:hover { border-color: var(--search); background: var(--search-light); transform: translateX(3px); }
+  .si-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .si-jp {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 20px; font-weight: 900; color: var(--dark);
+  }
+  .si-day {
+    font-size: 10px; font-weight: 800; color: #888;
+    background: #f0ead0; border-radius: 50px; padding: 2px 8px;
+    white-space: nowrap; flex-shrink: 0; margin-top: 4px;
+  }
+  .si-read { font-size: 13px; color: #6a5000; font-weight: 700; margin-top: 2px; }
+  .si-id { font-size: 14px; font-weight: 800; color: var(--sky-dark); margin-top: 4px; }
+  .si-highlight { background: #ffe080; border-radius: 3px; padding: 0 2px; }
+
+  .search-empty {
+    text-align: center; padding: 40px 20px;
+    font-size: 14px; font-weight: 700; color: #999;
+  }
+
+  /* ===== START SCREEN ===== */
+  #start-screen {
+    max-width: 460px; margin: 24px auto; padding: 0 16px;
+    text-align: center;
+  }
+  .info-card {
+    background: var(--sky); border: 3px solid var(--sky-dark);
+    border-radius: 20px; padding: 20px 16px; margin-bottom: 16px;
+  }
+  .info-card h2 { font-size:18px; font-weight:900; margin-bottom:8px; }
+  .info-card p  { font-size:13px; font-weight:600; line-height:1.7; }
+
+  .opt-label { font-weight:800; font-size:13px; margin-bottom:8px; display:block; color:var(--dark); }
+
+  .row-btns { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; }
+  .tog-btn {
+    padding:8px 14px; border:3px solid var(--sun-dark); border-radius:50px;
+    background:var(--white); font-family:'Nunito',sans-serif;
+    font-size:12px; font-weight:800; cursor:pointer; transition:all .15s;
+  }
+  .tog-btn.active, .tog-btn:hover { background:var(--sun); }
+  .tog-btn.sky { border-color:var(--sky-dark); }
+  .tog-btn.sky.active, .tog-btn.sky:hover { background:var(--sky); }
+
+  /* Day filter grid */
+  .day-filter-section {
+    background: #f5f0e0; border: 2px solid var(--sun-dark);
+    border-radius: 16px; padding: 14px; margin-bottom: 16px; text-align: left;
+  }
+  .day-filter-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+  }
+  .day-filter-header span { font-size: 13px; font-weight: 800; }
+  .day-filter-actions { display: flex; gap: 6px; }
+  .dfa-btn {
+    padding: 4px 10px; border: 2px solid var(--sky-dark); border-radius: 50px;
+    background: var(--white); font-family: 'Nunito', sans-serif;
+    font-size: 11px; font-weight: 800; cursor: pointer;
+  }
+  .dfa-btn:hover { background: var(--sky-light); }
+  .day-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 6px; max-height: 200px; overflow-y: auto;
+  }
+  .day-chip {
+    padding: 5px 6px; border: 2px solid #c0b060; border-radius: 8px;
+    background: var(--white); font-family: 'Nunito', sans-serif;
+    font-size: 11px; font-weight: 800; cursor: pointer;
+    text-align: center; transition: all .15s; line-height: 1.3;
+  }
+  .day-chip.active { background: var(--sun); border-color: var(--sun-dark); }
+  .day-chip:hover { background: var(--sun-light); }
+
+  .selected-count {
+    font-size: 12px; font-weight: 800; color: var(--sky-dark); margin-top: 8px; text-align: center;
+  }
+
+  #btn-start-flash {
+    display:inline-block; padding:13px 38px;
+    background:linear-gradient(135deg,var(--sun),var(--sky));
+    border:3px solid var(--sun-dark); border-radius:50px;
+    font-family:'Nunito',sans-serif; font-size:17px; font-weight:900;
+    cursor:pointer; box-shadow:0 4px 0 var(--sun-dark); transition:transform .1s;
+  }
+  #btn-start-flash:hover { transform:translateY(-2px); }
+  #btn-start-flash:active { transform:translateY(2px); box-shadow:none; }
+
+  /* ===== FLASHCARD SCREEN ===== */
+  #flash-screen { max-width:520px; margin:0 auto; padding:12px 16px 32px; }
+
+  .top-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .prog-label { font-size:12px; font-weight:800; color:var(--sky-dark); }
+  .prog-bar-wrap {
+    flex:1; height:10px; background:#e0e0d0; border-radius:50px;
+    margin:0 10px; overflow:hidden; border:2px solid var(--sun-dark);
+  }
+  .prog-bar-fill { height:100%; background:linear-gradient(90deg,var(--sun),var(--sky)); border-radius:50px; transition:width .4s ease; }
+
+  .card-scene { perspective:1000px; width:100%; margin:12px 0; height:clamp(200px,42vw,280px); }
+  .card-inner {
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.4,0,.2,1);
+    cursor:pointer;
+  }
+  .card-inner.flipped { transform:rotateY(180deg); }
+
+  .card-face {
+    position:absolute; width:100%; height:100%;
+    backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    border-radius:var(--card-radius);
+    display:flex; flex-direction:column;
+    justify-content:center; align-items:center;
+    gap:6px; padding:20px 16px; text-align:center;
+  }
+  .card-front {
+    background:var(--sun); border:3px solid var(--sun-dark);
+    box-shadow:0 6px 0 var(--sun-dark), 0 10px 24px rgba(244,167,0,.2);
+  }
+  .card-front .face-label { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1.2px; color:var(--sun-dark); }
+  .card-front .face-word { font-family:'Zen Kaku Gothic New',sans-serif; font-size:clamp(24px,6.5vw,40px); font-weight:900; color:var(--dark); line-height:1.2; }
+  .card-front .face-read { font-size:13px; color:#6a5000; font-weight:700; }
+  .card-front .face-day { font-size:10px; color:#8a7000; font-weight:700; position:absolute; top:12px; right:14px; background:rgba(255,255,255,.5); padding:2px 8px; border-radius:50px; }
+  .card-front .tap-hint { font-size:10px; color:#8a7000; font-weight:700; position:absolute; bottom:12px; }
+
+  .card-back {
+    background:var(--sky); border:3px solid var(--sky-dark);
+    box-shadow:0 6px 0 var(--sky-dark), 0 10px 24px rgba(59,168,74,.2);
+    transform:rotateY(180deg);
+  }
+  .card-back .face-label { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1.2px; color:var(--sky-dark); }
+  .card-back .face-word { font-size:clamp(16px,4.5vw,26px); font-weight:900; color:var(--dark); line-height:1.4; }
+  .card-back .tap-hint { font-size:10px; color:#2a7a30; font-weight:700; position:absolute; bottom:12px; }
+
+  .know-row { display:flex; gap:10px; margin-top:4px; }
+  .know-btn {
+    flex:1; padding:11px; border-radius:50px; border:3px solid;
+    font-family:'Nunito',sans-serif; font-size:14px; font-weight:800; cursor:pointer; transition:all .15s;
+  }
+  .know-btn.yes { background:var(--sky-light); border-color:var(--sky-dark); color:var(--sky-dark); box-shadow:0 3px 0 var(--sky-dark); }
+  .know-btn.yes:hover { background:var(--sky); color:var(--dark); transform:translateY(-2px); }
+  .know-btn.no { background:#fde8e8; border-color:#e05555; color:#c0392b; box-shadow:0 3px 0 #e05555; }
+  .know-btn.no:hover { background:#ffb3b3; transform:translateY(-2px); }
+
+  .nav-row { display:flex; gap:10px; margin-top:8px; }
+  .nav-btn {
+    flex:1; padding:11px; border-radius:50px; border:3px solid var(--sky-dark);
+    background:var(--white); font-family:'Nunito',sans-serif;
+    font-size:14px; font-weight:900; cursor:pointer;
+    transition:all .15s; box-shadow:0 3px 0 var(--sky-dark);
+  }
+  .nav-btn:hover { background:var(--sky); transform:translateY(-2px); }
+  .nav-btn:active { transform:translateY(2px); box-shadow:none; }
+  .nav-btn:disabled { opacity:.35; cursor:default; transform:none; box-shadow:0 3px 0 var(--sky-dark); }
+  .nav-btn.sun-btn { border-color:var(--sun-dark); box-shadow:0 3px 0 var(--sun-dark); }
+  .nav-btn.sun-btn:hover { background:var(--sun); }
+
+  .stats-bar {
+    display:flex; gap:8px; margin-top:10px;
+    background:var(--sun-light); border:2px solid var(--sun-dark);
+    border-radius:14px; padding:8px 12px;
+  }
+  .stat-item { flex:1; text-align:center; }
+  .stat-num { font-size:18px; font-weight:900; }
+  .stat-lbl { font-size:10px; font-weight:800; color:#6a5000; margin-top:1px; }
+  .stat-num.green { color:var(--sky-dark); }
+  .stat-num.red   { color:#e05555; }
+  .stat-num.gray  { color:#999; }
+
+  .action-row { display:flex; gap:7px; margin-top:8px; }
+  .mini-btn {
+    flex:1; padding:8px 6px; border-radius:50px;
+    border:2px solid var(--sun-dark); background:var(--white);
+    font-family:'Nunito',sans-serif; font-size:11px; font-weight:800;
+    cursor:pointer; transition:all .15s; text-align:center;
+  }
+  .mini-btn:hover { background:var(--sun); }
+
+  /* ===== DONE SCREEN ===== */
+  #done-screen {
+    max-width:460px; margin:30px auto; padding:0 16px; text-align:center;
+  }
+  .done-card {
+    background:var(--sun); border:3px solid var(--sun-dark);
+    border-radius:24px; padding:28px 20px; margin-bottom:16px;
+  }
+  .done-emoji { font-size:56px; margin-bottom:8px; }
+  .done-score { font-size:44px; font-weight:900; color:var(--dark); }
+  .done-lbl   { font-size:13px; font-weight:700; color:#5a3a00; margin-top:4px; }
+  .done-stars { font-size:32px; margin:12px 0; }
+  .done-msg   { font-size:15px; font-weight:800; }
+
+  .review-box {
+    background:#fffbe6; border:2px solid var(--sun-dark);
+    border-radius:14px; padding:14px; margin-bottom:14px;
+    text-align:left; max-height:280px; overflow-y:auto;
+  }
+  .review-box h3 { font-size:13px; font-weight:900; color:var(--sky-dark); margin-bottom:10px; }
+  .review-item { border-bottom:1px solid #e8e0c0; padding:6px 0; font-size:12px; }
+  .review-item:last-child { border-bottom:none; }
+  .ri-jp  { font-weight:800; color:var(--dark); }
+  .ri-id  { color:var(--sky-dark); font-weight:700; }
+
+  .done-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .done-btn {
+    padding:11px 22px;
+    background:linear-gradient(135deg,var(--sun),var(--sky));
+    border:3px solid var(--sun-dark); border-radius:50px;
+    font-family:'Nunito',sans-serif; font-size:14px; font-weight:900;
+    cursor:pointer; box-shadow:0 3px 0 var(--sun-dark); transition:transform .1s;
+  }
+  .done-btn:hover { transform:translateY(-2px); }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h1>🌿 Flashcard Soumatome N3 🌞<br>Hari 1 – 36 (Lengkap)</h1>
+  <p id="header-sub">1122 kartu · Tap untuk balik · Lacak yang sudah hafal!</p>
+</div>
+
+<!-- ===== TAB BAR ===== -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('flashcard')">🃏 Flashcard</button>
+  <button class="tab-btn" onclick="showTab('search')">🔍 Cari Kata</button>
+</div>
+
+<!-- ===== SEARCH SCREEN ===== -->
+<div id="search-screen" class="screen">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Cari dalam bahasa Jepang, romaji, atau Indonesia…" oninput="doSearch()" />
+    <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+  </div>
+
+  <div class="search-filter-row">
+    <span class="filter-lbl">Filter:</span>
+    <button class="filter-btn active" id="filter-all" onclick="setSearchFilter('all')">Semua</button>
+    <button class="filter-btn" id="filter-jp" onclick="setSearchFilter('jp')">🇯🇵 Jepang</button>
+    <button class="filter-btn" id="filter-id" onclick="setSearchFilter('id')">🇮🇩 Indonesia</button>
+    <button class="filter-btn" id="filter-read" onclick="setSearchFilter('read')">📖 Romaji</button>
+  </div>
+
+  <div class="search-stats" id="search-stats">Ketik kata untuk mencari dari 1122 kosakata...</div>
+  <div class="search-results" id="search-results"></div>
+</div>
+
+<!-- ===== START SCREEN ===== -->
+<div id="start-screen" class="screen active">
+  <div class="info-card">
+    <h2>🃏 Cara Pakai</h2>
+    <p>Tap kartu untuk melihat artinya.<br>
+    Tandai <strong>✅ Hafal</strong> atau <strong>❌ Belum</strong> untuk tracking.<br>
+    Pilih hari tertentu atau mainkan semua!</p>
+  </div>
+
+  <span class="opt-label">🔤 Tampilan Depan Kartu</span>
+  <div class="row-btns">
+    <button class="tog-btn active" id="face-jp" onclick="setFace('jp')">🇯🇵 JP di depan</button>
+    <button class="tog-btn" id="face-id" onclick="setFace('id')">🇮🇩 Indo di depan</button>
+  </div>
+
+  <span class="opt-label">🔀 Urutan Kartu</span>
+  <div class="row-btns">
+    <button class="tog-btn sky active" id="order-shuffle" onclick="setOrder('shuffle')">🔀 Acak</button>
+    <button class="tog-btn sky" id="order-seq" onclick="setOrder('seq')">📋 Berurutan</button>
+  </div>
+
+  <div class="day-filter-section">
+    <div class="day-filter-header">
+      <span>📅 Filter Hari</span>
+      <div class="day-filter-actions">
+        <button class="dfa-btn" onclick="selectAllDays()">Semua</button>
+        <button class="dfa-btn" onclick="clearAllDays()">Hapus</button>
+      </div>
+    </div>
+    <div class="day-grid" id="day-grid"></div>
+    <div class="selected-count" id="selected-count"></div>
+  </div>
+
+  <button id="btn-start-flash" onclick="startFlash()">▶ Mulai Flashcard!</button>
+</div>
+
+<!-- ===== FLASH SCREEN ===== -->
+<div id="flash-screen" class="screen">
+  <div class="top-bar">
+    <span class="prog-label" id="fl-prog-txt">1 / ?</span>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-fill" id="fl-prog-fill" style="width:0%"></div>
+    </div>
+    <span class="prog-label" id="fl-remain">? sisa</span>
+  </div>
+
+  <div class="card-scene" onclick="flipCard()">
+    <div class="card-inner" id="card-inner">
+      <div class="card-face card-front">
+        <span class="face-day" id="front-day">Hari ?</span>
+        <span class="face-label" id="front-label">Bahasa Jepang</span>
+        <div class="face-word" id="front-word">—</div>
+        <div class="face-read" id="front-read"></div>
+        <span class="tap-hint">👆 Tap untuk lihat artinya</span>
+      </div>
+      <div class="card-face card-back">
+        <span class="face-label" id="back-label">Arti (Indonesia)</span>
+        <div class="face-word" id="back-word">—</div>
+        <span class="tap-hint">👆 Tap untuk balik</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="know-row">
+    <button class="know-btn no"  onclick="markCard(false)">❌ Belum Hafal</button>
+    <button class="know-btn yes" onclick="markCard(true)">✅ Sudah Hafal</button>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn sun-btn" id="btn-prev" onclick="prevCard()">← Sebelumnya</button>
+    <button class="nav-btn" id="btn-next-fl" onclick="nextCard()">Berikutnya →</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num" id="stat-total">0</div>
+      <div class="stat-lbl">Total</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num green" id="stat-know">0</div>
+      <div class="stat-lbl">✅ Hafal</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num red" id="stat-nope">0</div>
+      <div class="stat-lbl">❌ Belum</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num gray" id="stat-unseen">0</div>
+      <div class="stat-lbl">Belum Dilihat</div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="mini-btn" onclick="reviewWrong()">🔁 Ulangi Belum Hafal</button>
+    <button class="mini-btn" onclick="reshuffleAll()">🔀 Acak Ulang</button>
+    <button class="mini-btn" onclick="backToStart()">🏠 Menu</button>
+  </div>
+</div>
+
+<!-- ===== DONE SCREEN ===== -->
+<div id="done-screen" class="screen">
+  <div class="done-card">
+    <div class="done-emoji" id="done-emoji">🎉</div>
+    <div class="done-score" id="done-score">0/0</div>
+    <div class="done-lbl">Sudah Hafal</div>
+    <div class="done-stars" id="done-stars">⭐⭐⭐</div>
+    <div class="done-msg" id="done-msg">Mantap!</div>
+  </div>
+  <div class="review-box" id="review-wrong-box" style="display:none">
+    <h3>❌ Yang Belum Hafal</h3>
+    <div id="review-wrong-list"></div>
+  </div>
+  <div class="done-btns">
+    <button class="done-btn" onclick="reviewWrongFromDone()">🔁 Ulangi Belum Hafal</button>
+    <button class="done-btn" onclick="backToStart()">🏠 Menu Utama</button>
+  </div>
+</div>
+
+<script>
+const vocab = [
+  {jp:"冷蔵庫",read:"れいぞうこ",id:"kulkas",day:"Hari 1 · Kitchen"},
+  {jp:"電子レンジ",read:"でんしレンジ",id:"microwave",day:"Hari 1 · Kitchen"},
+  {jp:"ガスレンジ／ガスコンロ",read:"",id:"kompor",day:"Hari 1 · Kitchen"},
+  {jp:"湯のみ",read:"ゆのみ",id:"gelas air/teh",day:"Hari 1 · Kitchen"},
+  {jp:"茶わん",read:"ちゃわん",id:"mangkuk kecil",day:"Hari 1 · Kitchen"},
+  {jp:"ワイングラス",read:"",id:"gelas wine",day:"Hari 1 · Kitchen"},
+  {jp:"コーヒーカップ",read:"",id:"cangkir kopi",day:"Hari 1 · Kitchen"},
+  {jp:"ガラスのコップ",read:"",id:"gelas kaca",day:"Hari 1 · Kitchen"},
+  {jp:"レバー",read:"",id:"tuas (putaran) keran",day:"Hari 1 · Kitchen"},
+  {jp:"流し",read:"ながし",id:"sink / bak wastafel",day:"Hari 1 · Kitchen"},
+  {jp:"窓ガラス",read:"まどガラス",id:"kaca jendela",day:"Hari 1 · Living Room"},
+  {jp:"雨戸",read:"あまど",id:"pintu penghalang air hujan",day:"Hari 1 · Living Room"},
+  {jp:"網戸",read:"あみど",id:"pintu penghalang serangga",day:"Hari 1 · Living Room"},
+  {jp:"床",read:"ゆか",id:"lantai",day:"Hari 1 · Living Room"},
+  {jp:"天井",read:"てんじょう",id:"atap/langit-langit",day:"Hari 1 · Living Room"},
+  {jp:"エアコン",read:"",id:"air conditioner",day:"Hari 1 · Living Room"},
+  {jp:"ヒーター",read:"",id:"penghangat",day:"Hari 1 · Living Room"},
+  {jp:"コンセント",read:"",id:"stop kontak",day:"Hari 1 · Living Room"},
+  {jp:"じゅうたん／カーペット",read:"",id:"karpet",day:"Hari 1 · Living Room"},
+  {jp:"コード",read:"",id:"kabel",day:"Hari 1 · Living Room"},
+  {jp:"水道の蛇口をひねる",read:"すいどうのじゃぐちをひねる",id:"memutar air keran",day:"Hari 1 · Frasa"},
+  {jp:"水が凍る",read:"みずがこおる",id:"airnya membeku",day:"Hari 1 · Frasa"},
+  {jp:"氷になる",read:"こおりになる",id:"menjadi es",day:"Hari 1 · Frasa"},
+  {jp:"冷凍して保存する",read:"れいとうしてほぞんする",id:"menyimpan dengan membekukannya",day:"Hari 1 · Frasa"},
+  {jp:"残り物を温める",read:"のこりものをあたためる",id:"menghangatkan makanan yang tersisa",day:"Hari 1 · Frasa"},
+  {jp:"ビールを冷やす",read:"ビールをひやす",id:"mendinginkan bir",day:"Hari 1 · Frasa"},
+  {jp:"ビールが冷えている",read:"ビールがひえている",id:"birnya dingin",day:"Hari 1 · Frasa"},
+  {jp:"エアコンのリモコン",read:"",id:"remot AC",day:"Hari 1 · Frasa"},
+  {jp:"スイッチ",read:"",id:"tombol sakelar",day:"Hari 1 · Frasa"},
+  {jp:"電源を入れる",read:"でんげんをいれる",id:"menyalakan (listrik)",day:"Hari 1 · Frasa"},
+  {jp:"電源を切る",read:"でんげんをきる",id:"mematikan (listrik)",day:"Hari 1 · Frasa"},
+  {jp:"じゅうたんを敷く",read:"じゅうたんをしく",id:"menggelar karpet",day:"Hari 1 · Frasa"},
+  {jp:"部屋を暖める",read:"へやをあたためる",id:"menghangatkan ruangan",day:"Hari 1 · Frasa"},
+  {jp:"暖房をつける",read:"だんぼうをつける",id:"menyalakan penghangat",day:"Hari 1 · Frasa"},
+  {jp:"冷房（クーラー）が効いている",read:"れいぼうがきいている",id:"dinginnya terasa",day:"Hari 1 · Frasa"},
+  {jp:"日当たりがいい",read:"ひあたりがいい",id:"terkena sinar matahari",day:"Hari 1 · Frasa"},
+  {jp:"日当たりが悪い",read:"ひあたりがわるい",id:"tidak terkena sinar matahari",day:"Hari 1 · Frasa"},
+  {jp:"大さじ",read:"おおさじ",id:"takaran sendok makan",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"小さじ",read:"こさじ",id:"takaran sendok teh",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"１カップ",read:"",id:"satu gelas",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"１リットル",read:"",id:"satu liter",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"はかり",read:"",id:"timbangan",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"包丁",read:"ほうちょう",id:"pisau",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"まな板",read:"まないた",id:"talenan",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"酒",read:"さけ",id:"sake",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"酢",read:"す",id:"cuka",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"調味料",read:"ちょうみりょう",id:"bumbu",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"サラダ油",read:"サラダゆ",id:"minyak goreng",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"天ぷら油",read:"てんぷらあぶら",id:"minyak goreng tempura",day:"Hari 2 · Bahan & Takaran"},
+  {jp:"夕食のおかず",read:"ゆうしょくのおかず",id:"lauk makan malam",day:"Hari 2 · Frasa"},
+  {jp:"栄養のバランスを考える",read:"えいようのバランスをかんがえる",id:"memikirkan keseimbangan nutrisi",day:"Hari 2 · Frasa"},
+  {jp:"カロリーが高い食品",read:"カロリーがたかいしょくひん",id:"bahan makanan berkalori tinggi",day:"Hari 2 · Frasa"},
+  {jp:"はかりで量る",read:"はかりではかる",id:"mengukur dengan timbangan",day:"Hari 2 · Frasa"},
+  {jp:"塩を少々入れる",read:"しおをしょうしょういれる",id:"memasukkan sedikit garam",day:"Hari 2 · Frasa"},
+  {jp:"皮をむく",read:"かわをむく",id:"mengupas kulit",day:"Hari 2 · Frasa"},
+  {jp:"材料を刻む",read:"ざいりょうをきざむ",id:"memotong kecil-kecil / mencincang",day:"Hari 2 · Frasa"},
+  {jp:"大きめに切る",read:"おおきめにきる",id:"memotong agak besar",day:"Hari 2 · Frasa"},
+  {jp:"３センチ幅に切る",read:"３センチはばにきる",id:"memotong dengan lebar 3 cm",day:"Hari 2 · Frasa"},
+  {jp:"みそ汁がぬるくなる",read:"みそしるがぬるくなる",id:"miso soup-nya menjadi kurang hangat",day:"Hari 2 · Frasa"},
+  {jp:"ラップでくるむ",read:"",id:"membungkus dengan plastik wrap",day:"Hari 2 · Frasa"},
+  {jp:"アルミホイル",read:"",id:"aluminium foil",day:"Hari 2 · Frasa"},
+  {jp:"ラップをかぶせる／かける",read:"",id:"menutupi dengan plastik wrap",day:"Hari 2 · Frasa"},
+  {jp:"なべ",read:"",id:"panci",day:"Hari 3 · Peralatan Masak"},
+  {jp:"ふた",read:"",id:"tutup",day:"Hari 3 · Peralatan Masak"},
+  {jp:"おたま",read:"",id:"centongan",day:"Hari 3 · Peralatan Masak"},
+  {jp:"フライパン",read:"",id:"wajan",day:"Hari 3 · Peralatan Masak"},
+  {jp:"フライ返し",read:"フライがえし",id:"spatula",day:"Hari 3 · Peralatan Masak"},
+  {jp:"炊飯器",read:"すいはんき",id:"rice cooker",day:"Hari 3 · Peralatan Masak"},
+  {jp:"しゃもじ",read:"",id:"sendok nasi",day:"Hari 3 · Peralatan Masak"},
+  {jp:"(お)湯を沸かす",read:"おゆをわかす",id:"memasak air",day:"Hari 3 · Frasa Memasak"},
+  {jp:"(お)湯が沸く",read:"おゆがわく",id:"airnya mendidih",day:"Hari 3 · Frasa Memasak"},
+  {jp:"(お)湯を冷ます",read:"おゆをさます",id:"mendinginkan air",day:"Hari 3 · Frasa Memasak"},
+  {jp:"(お)湯が冷める",read:"おゆがさめる",id:"airnya mendingin",day:"Hari 3 · Frasa Memasak"},
+  {jp:"なべを火にかける",read:"なべをひにかける",id:"meletakkan panci di atas api",day:"Hari 3 · Frasa Memasak"},
+  {jp:"ご飯を炊く",read:"ごはんをたく",id:"menanak nasi",day:"Hari 3 · Frasa Memasak"},
+  {jp:"油を熱する",read:"あぶらをねっする",id:"memanaskan minyak (di wajan)",day:"Hari 3 · Frasa Memasak"},
+  {jp:"油で揚げる",read:"あぶらであげる",id:"menggoreng dengan minyak",day:"Hari 3 · Frasa Memasak"},
+  {jp:"煮る",read:"にる",id:"merebus (+ bumbu)",day:"Hari 3 · Frasa Memasak"},
+  {jp:"ゆでる",read:"",id:"merebus (hanya air)",day:"Hari 3 · Frasa Memasak"},
+  {jp:"蒸す",read:"むす",id:"mengukus",day:"Hari 3 · Frasa Memasak"},
+  {jp:"いためる",read:"",id:"menumis",day:"Hari 3 · Frasa Memasak"},
+  {jp:"混ぜる",read:"まぜる",id:"mencampur",day:"Hari 3 · Frasa Memasak"},
+  {jp:"こげる",read:"",id:"gosong",day:"Hari 3 · Frasa Memasak"},
+  {jp:"ひっくり返す／裏返す",read:"うらがえす",id:"membalikan",day:"Hari 3 · Frasa Memasak"},
+  {jp:"味をつける",read:"あじをつける",id:"memberi rasa",day:"Hari 3 · Frasa Memasak"},
+  {jp:"塩を加える",read:"しおをくわえる",id:"menambahkan garam",day:"Hari 3 · Frasa Memasak"},
+  {jp:"こしょうを振る",read:"こしょうをふる",id:"menaburi lada",day:"Hari 3 · Frasa Memasak"},
+  {jp:"味見をする",read:"あじみをする",id:"mencicipi rasa",day:"Hari 3 · Frasa Memasak"},
+  {jp:"味が濃い",read:"あじがこい",id:"rasanya pekat",day:"Hari 3 · Frasa Memasak"},
+  {jp:"味が薄い",read:"あじがうすい",id:"rasanya hambar",day:"Hari 3 · Frasa Memasak"},
+  {jp:"からい",read:"",id:"pedas",day:"Hari 3 · Frasa Memasak"},
+  {jp:"塩からい",read:"しおからい",id:"asin",day:"Hari 3 · Frasa Memasak"},
+  {jp:"酸っぱい",read:"すっぱい",id:"asam",day:"Hari 3 · Frasa Memasak"},
+  {jp:"できあがる／できあがり",read:"",id:"selesai (makanan)",day:"Hari 3 · Frasa Memasak"},
+  {jp:"エプロン",read:"",id:"apron/celemek",day:"Hari 4 · Alat Kebersihan"},
+  {jp:"ほうき",read:"",id:"sapu",day:"Hari 4 · Alat Kebersihan"},
+  {jp:"ちりとり",read:"",id:"pengki",day:"Hari 4 · Alat Kebersihan"},
+  {jp:"ぞうきん",read:"",id:"kain lap",day:"Hari 4 · Alat Kebersihan"},
+  {jp:"バケツ",read:"",id:"ember",day:"Hari 4 · Alat Kebersihan"},
+  {jp:"エプロンをする／かける／つける",read:"",id:"memakai apron",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"ソファーをどける",read:"",id:"meminggirkan/memindahkan sofa",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"（～が）どく",read:"",id:"minggir",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"部屋を散らかす",read:"へやをちらかす",id:"membuat ruangan berantakan",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"散らかる",read:"ちらかる",id:"berantakan",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"部屋を片付ける",read:"へやをかたづける",id:"merapikan ruangan",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"片付く",read:"かたづく",id:"rapi",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"ジュースをこぼす",read:"",id:"menumpahkan jus",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"こぼれる",read:"",id:"tumpah",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"ほこりがつもる",read:"",id:"debu menumpuk (dari atas)",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"ほこりがたまる",read:"",id:"debu menumpuk (dari banyak arah)",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"ほこりを取る",read:"ほこりをとる",id:"mengambil debu (membersihkan)",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"掃除機をかける",read:"そうじきをかける",id:"membersihkan dengan vacuum cleaner",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"ほうきで掃く",read:"ほうきではく",id:"menyapu dengan sapu",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"水をくむ",read:"みずをくむ",id:"mengambil air (dengan tangan/ember)",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"ぞうきんをしぼる",read:"",id:"memeras kain lap",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"ぬらす",read:"",id:"membasahi",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"床をふく",read:"ゆかをふく",id:"mengelap lantai",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"ふきんで食器をふく",read:"ふきんでしょっきをふく",id:"mengelap alat makan dengan kain lap",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"台ふきんでテーブルをふく",read:"だいふきんでテーブルをふく",id:"mengelap meja dengan lap meja",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"家具をみがく",read:"かぐをみがく",id:"menggosok/memoles furnitur",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"ブラシでこする",read:"",id:"menggosok dengan sikat",day:"Hari 4 · Frasa Kebersihan"},
+  {jp:"洗濯物がたまる",read:"せんたくものがたまる",id:"cucian menumpuk",day:"Hari 5 · Mencuci"},
+  {jp:"ためる",read:"",id:"menumpukkan",day:"Hari 5 · Mencuci"},
+  {jp:"ぬれている",read:"",id:"basah",day:"Hari 5 · Mencuci"},
+  {jp:"湿っている",read:"しめっている",id:"lembab (belum kering)",day:"Hari 5 · Mencuci"},
+  {jp:"ほす",read:"",id:"menjemur",day:"Hari 5 · Mencuci"},
+  {jp:"乾く",read:"かわく",id:"kering",day:"Hari 5 · Mencuci"},
+  {jp:"洗濯機で乾かす",read:"せんたくきでかわかす",id:"mengeringkan (dengan mesin cuci)",day:"Hari 5 · Mencuci"},
+  {jp:"真っ白に仕上がる",read:"まっしろにしあがる",id:"menjadi putih bersih",day:"Hari 5 · Mencuci"},
+  {jp:"たたむ",read:"",id:"melipat",day:"Hari 5 · Mencuci"},
+  {jp:"服を汚す",read:"ふくをよごす",id:"mengotori pakaian",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"汚れ",read:"よごれ",id:"kotoran",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"そでが真っ黒に汚れる",read:"そでがまっくろによごれる",id:"lengan bajunya kotor hitam pekat",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"洗剤を入れる",read:"せんざいをいれる",id:"memasukkan deterjen",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"スーツをクリーニングに出す",read:"",id:"mencuci jas di laundry",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"コインランドリーで洗濯をする",read:"",id:"mencuci di koin laundry",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"タオルを干す",read:"タオルをほす",id:"menjemur handuk",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"服をつるす",read:"ふくをつるす",id:"menggantung baju",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"ワイシャツにアイロンをかける",read:"",id:"menyeterika baju",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"しわを伸ばす",read:"しわをのばす",id:"merapikan baju yang kusut",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"しわが伸びる",read:"しわがのびる",id:"menjadi kusut",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"ウールのセーターが縮む",read:"ちぢむ",id:"sweater bahan wool mengkerut",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"ジーンズの色が落ちる",read:"いろがおちる",id:"warna jeans luntur",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"ゴミを分けるのは面倒くさい",read:"めんどうだ",id:"memisahkan sampah itu merepotkan",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"スリッパをそろえる",read:"",id:"merapikan sandal (sejajar)",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"物置にしまう",read:"ものおきにしまう",id:"menyimpan di tempat penyimpanan",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"生ゴミ",read:"なまゴミ",id:"sampah dapur",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"燃えるゴミ",read:"もえるゴミ",id:"sampah yang bisa dibakar",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"燃えないゴミ",read:"もえないゴミ",id:"sampah yang tidak bisa dibakar",day:"Hari 5 · Sampah & Lain-lain"},
+  {jp:"吠える",read:"ほえる",id:"menggonggong",day:"Hari 6 · Hewan"},
+  {jp:"しっぽをふる",read:"",id:"mengibaskan ekor",day:"Hari 6 · Hewan"},
+  {jp:"人になれる",read:"ひとになれる",id:"menjadi jinak",day:"Hari 6 · Hewan"},
+  {jp:"うなる",read:"",id:"menggeram",day:"Hari 6 · Hewan"},
+  {jp:"穴を掘る",read:"あなをほる",id:"menggali lubang",day:"Hari 6 · Hewan"},
+  {jp:"穴を埋める",read:"あなをうめる",id:"mengisi lubang",day:"Hari 6 · Hewan"},
+  {jp:"犬を飼う",read:"いぬをかう",id:"memelihara anjing",day:"Hari 6 · Hewan"},
+  {jp:"散歩に連れて行く",read:"さんぽにつれていく",id:"mengajak pergi jalan-jalan",day:"Hari 6 · Hewan"},
+  {jp:"犬にえさをやる",read:"あたえる",id:"memberi makan ke anjing",day:"Hari 6 · Hewan"},
+  {jp:"かわいらしい",read:"",id:"lucu, imut",day:"Hari 6 · Anak-anak"},
+  {jp:"かわいそうな",read:"",id:"kasihan",day:"Hari 6 · Anak-anak"},
+  {jp:"行儀がいい",read:"ぎょうぎがいい",id:"berperilaku baik",day:"Hari 6 · Anak-anak"},
+  {jp:"利口な／かしこい",read:"りこうな",id:"cerdas, cerdik",day:"Hari 6 · Anak-anak"},
+  {jp:"人懐っこい",read:"ひとなつっこい",id:"ramah (mudah akrab)",day:"Hari 6 · Anak-anak"},
+  {jp:"わがままな",read:"",id:"egois",day:"Hari 6 · Anak-anak"},
+  {jp:"生意気な",read:"なまいきな",id:"nakal, seenaknya, sok",day:"Hari 6 · Anak-anak"},
+  {jp:"生意気な態度",read:"なまいきなたいど",id:"bersikap seenaknya",day:"Hari 6 · Anak-anak"},
+  {jp:"甘やかす",read:"あまやかす",id:"memanjakan",day:"Hari 6 · Anak-anak"},
+  {jp:"かわいがる",read:"",id:"menyayangi",day:"Hari 6 · Anak-anak"},
+  {jp:"おんぶする",read:"",id:"menggendong (di punggung)",day:"Hari 6 · Anak-anak"},
+  {jp:"抱っこする",read:"だっこする",id:"menggendong (di lengan)",day:"Hari 6 · Anak-anak"},
+  {jp:"育児／子育て",read:"いくじ／こそだて",id:"mendidik anak",day:"Hari 6 · Anak-anak"},
+  {jp:"えらい",read:"",id:"hebat",day:"Hari 6 · Anak-anak"},
+  {jp:"幼児",read:"ようじ",id:"anak kecil",day:"Hari 6 · Anak-anak"},
+  {jp:"子どもが成長する",read:"せいちょうする",id:"anak tumbuh (besar)",day:"Hari 6 · Anak-anak"},
+  {jp:"わがままに育つ",read:"そだつ",id:"tumbuh besar jadi anak yang egois",day:"Hari 6 · Anak-anak"},
+  {jp:"頭をなでる",read:"あたまをなでる",id:"membelai kepala",day:"Hari 6 · Anak-anak"},
+  {jp:"お尻をたたく",read:"おしりをたたく",id:"memukul pantat",day:"Hari 6 · Anak-anak"},
+  {jp:"いたずらをする",read:"",id:"melakukan hal iseng",day:"Hari 6 · Anak-anak"},
+  {jp:"いたずらな",read:"",id:"iseng, nakal",day:"Hari 6 · Anak-anak"},
+  {jp:"手をつなぐ",read:"てをつなぐ",id:"menggandeng tangan",day:"Hari 6 · Anak-anak"},
+  {jp:"はなす",read:"",id:"melepaskan",day:"Hari 6 · Anak-anak"},
+  {jp:"子どもが迷子になる",read:"まいごになる",id:"anak tersesat/nyasar",day:"Hari 6 · Anak-anak"},
+  {jp:"子どもが母親の後をついていく",read:"ははおやのあとをついていく",id:"anak mengikuti ibunya",day:"Hari 6 · Anak-anak"},
+  {jp:"元日／元旦",read:"がんじつ／がんたん",id:"1 Januari",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"上旬／初旬",read:"じょうじゅん／しょじゅん",id:"awal bulan (tgl 1-10)",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"中旬",read:"ちゅうじゅん",id:"tengah bulan (tgl 11-20)",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"下旬",read:"げじゅん",id:"akhir bulan (tgl 21-31)",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"月末",read:"げつまつ",id:"akhir bulan (tgl 28-31)",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"平日",read:"へいじつ",id:"hari biasa (weekdays)",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"祝日／祭日",read:"しゅくじつ／さいじつ",id:"hari libur nasional",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"さきおととい",read:"",id:"3 hari yang lalu",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"一昨日",read:"おととい",id:"kemarin lusa",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"昨日",read:"きのう",id:"kemarin",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"今日",read:"きょう",id:"hari ini",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"明日",read:"あした",id:"besok",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"あさって",read:"",id:"besok lusa",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"しあさって",read:"",id:"3 hari ke depan",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"昨年",read:"さくねん",id:"tahun lalu",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"一昨年",read:"おととし",id:"2 tahun yang lalu",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"再来年",read:"さいらいねん",id:"2 tahun ke depan",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"先々月",read:"せんせんげつ",id:"2 bulan lalu",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"先々週",read:"せんせんしゅう",id:"2 minggu lalu",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"再来月",read:"さいらいげつ",id:"2 bulan ke depan",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"再来週",read:"さいらいしゅう",id:"2 minggu ke depan",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"先日",read:"せんじつ",id:"beberapa hari lalu",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"年末年始",read:"ねんまつねんし",id:"akhir & awal tahun",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"年の暮れ",read:"としのくれ",id:"akhir tahun",day:"Hari 7 · Kalender & Waktu"},
+  {jp:"予定",read:"よてい",id:"rencana",day:"Hari 7 · Rencana & Travel"},
+  {jp:"日にち",read:"ひにち",id:"hari & tanggal",day:"Hari 7 · Rencana & Travel"},
+  {jp:"日程",read:"にってい",id:"jadwal",day:"Hari 7 · Rencana & Travel"},
+  {jp:"スケジュール",read:"",id:"jadwal (schedule)",day:"Hari 7 · Rencana & Travel"},
+  {jp:"調整する",read:"ちょうせいする",id:"menyesuaikan",day:"Hari 7 · Rencana & Travel"},
+  {jp:"変更する",read:"へんこうする",id:"mengganti",day:"Hari 7 · Rencana & Travel"},
+  {jp:"ずらす",read:"",id:"menggeser",day:"Hari 7 · Rencana & Travel"},
+  {jp:"休暇を取る",read:"きゅうかをとる",id:"mengambil cuti",day:"Hari 7 · Rencana & Travel"},
+  {jp:"予約を取り消す／キャンセルする",read:"よやくをとりけす",id:"membatalkan reservasi",day:"Hari 7 · Rencana & Travel"},
+  {jp:"旅行会社に申し込む",read:"りょこうがいしゃにもうしこむ",id:"mendaftar ke agen perjalanan",day:"Hari 7 · Rencana & Travel"},
+  {jp:"荷物をつめる",read:"にもつをつめる",id:"packing barang",day:"Hari 7 · Rencana & Travel"},
+  {jp:"海外旅行",read:"かいがいりょこう",id:"wisata internasional",day:"Hari 7 · Rencana & Travel"},
+  {jp:"国内旅行",read:"こくないりょこう",id:"wisata domestik",day:"Hari 7 · Rencana & Travel"},
+  {jp:"2泊3日で温泉に行く",read:"2はく3にでおんせんにいく",id:"pergi ke onsen selama 3 hari 2 malam",day:"Hari 7 · Rencana & Travel"},
+  {jp:"日帰りで温泉に行く",read:"ひがえりでおんせんにいく",id:"pergi ke onsen seharian (PP)",day:"Hari 7 · Rencana & Travel"},
+  {jp:"旅館に宿泊する",read:"りょかんにしゅくはくする",id:"menginap di ryokan",day:"Hari 7 · Rencana & Travel"},
+  {jp:"階段を上る／上がる",read:"かいだんをのぼる／あがる",id:"naik / menaiki tangga",day:"Hari 8 · Kereta"},
+  {jp:"階段を下る／下りる",read:"かいだんをくだる／おりる",id:"turun / menuruni tangga",day:"Hari 8 · Kereta"},
+  {jp:"上りエスカレーター",read:"のぼりエスカレーター",id:"eskalator naik",day:"Hari 8 · Kereta"},
+  {jp:"下りエスカレーター",read:"くだりエスカレーター",id:"eskalator turun",day:"Hari 8 · Kereta"},
+  {jp:"上り電車",read:"のぼりでんしゃ",id:"kereta arah menuju pusat kota Tokyo",day:"Hari 8 · Kereta"},
+  {jp:"下り電車",read:"くだりでんしゃ",id:"kereta dari pusat kota Tokyo ke daerah",day:"Hari 8 · Kereta"},
+  {jp:"青森方面 行き",read:"あおもりほうめん いき",id:"kereta arah/tujuan ke Aomori",day:"Hari 8 · Kereta"},
+  {jp:"東京方面 行き",read:"とうきょうほうめん いき",id:"kereta arah/tujuan ke Tokyo",day:"Hari 8 · Kereta"},
+  {jp:"列車の時刻を調べる",read:"れっしゃのじこくをしらべる",id:"mencari tahu jadwal kereta",day:"Hari 8 · Kereta"},
+  {jp:"時刻表",read:"じこくひょう",id:"jadwal kereta",day:"Hari 8 · Kereta"},
+  {jp:"東京発 横浜行き",read:"とうきょうはつ よこはまいき",id:"berangkat dari Tokyo, tujuan ke Yokohama",day:"Hari 8 · Kereta"},
+  {jp:"座席を指定する",read:"ざせきをしていする",id:"menentukan tempat duduk",day:"Hari 8 · Kereta"},
+  {jp:"指定席",read:"していせき",id:"kursi reservasi (harus dipesan)",day:"Hari 8 · Kereta"},
+  {jp:"自由席",read:"じゆうせき",id:"kursi bebas",day:"Hari 8 · Kereta"},
+  {jp:"窓側",read:"まどがわ",id:"(kursi) sisi jendela",day:"Hari 8 · Kereta"},
+  {jp:"通路側",read:"つうろがわ",id:"(kursi) sisi lorong",day:"Hari 8 · Kereta"},
+  {jp:"乗車券",read:"じょうしゃけん",id:"tiket naik kereta",day:"Hari 8 · Kereta"},
+  {jp:"片道切符",read:"かたみちきっぷ",id:"tiket sekali jalan",day:"Hari 8 · Kereta"},
+  {jp:"往復切符",read:"おうふくきっぷ",id:"tiket pulang pergi",day:"Hari 8 · Kereta"},
+  {jp:"特急券",read:"とっきゅうけん",id:"tiket kereta express",day:"Hari 8 · Kereta"},
+  {jp:"特急料金",read:"とっきゅうりょうきん",id:"biaya kereta express",day:"Hari 8 · Kereta"},
+  {jp:"回数券",read:"かいすうけん",id:"tiket terusan (jumlah ditentukan)",day:"Hari 8 · Kereta"},
+  {jp:"定期（券）",read:"ていき（けん）",id:"tiket terusan langganan (batas waktu)",day:"Hari 8 · Kereta"},
+  {jp:"改札口を通る",read:"かいさつぐちをとおる",id:"melewati gate stasiun",day:"Hari 8 · Kereta"},
+  {jp:"切符を払い戻す",read:"きっぷをはらいもどす",id:"refund biaya tiket",day:"Hari 8 · Kereta"},
+  {jp:"払い戻し",read:"はらいもどし",id:"pengembalian dana",day:"Hari 8 · Kereta"},
+  {jp:"（プラット）ホームが混雑している",read:"こんざつしている",id:"platform-nya penuh / padat",day:"Hari 9 · Dalam Kereta"},
+  {jp:"白線／黄色い線の内側に下がる",read:"はくせん／きいろいせんのうちがわにさがる",id:"mundur ke dalam sisi garis putih/kuning",day:"Hari 9 · Dalam Kereta"},
+  {jp:"特急が通過する",read:"とっきゅうがつうかする",id:"kereta express akan lewat (melintas)",day:"Hari 9 · Dalam Kereta"},
+  {jp:"乗車する",read:"じょうしゃする",id:"naik kereta",day:"Hari 9 · Dalam Kereta"},
+  {jp:"下車する",read:"げしゃする",id:"turun kereta",day:"Hari 9 · Dalam Kereta"},
+  {jp:"発車する",read:"はっしゃする",id:"keretanya berangkat",day:"Hari 9 · Dalam Kereta"},
+  {jp:"電車はがらがらだ",read:"でんしゃはがらがらだ",id:"kereta sepi / sedikit penumpang",day:"Hari 9 · Dalam Kereta"},
+  {jp:"空っぽ",read:"からっぽ",id:"kosong",day:"Hari 9 · Dalam Kereta"},
+  {jp:"満員電車で通勤する",read:"まんいんでんしゃでつうきんする",id:"berangkat kerja dengan kereta penuh penumpang",day:"Hari 9 · Dalam Kereta"},
+  {jp:"電車がゆれる",read:"でんしゃがゆれる",id:"keretanya bergoyang",day:"Hari 9 · Dalam Kereta"},
+  {jp:"始発（電車）",read:"しはつ（でんしゃ）",id:"kereta pertama (pagi)",day:"Hari 9 · Dalam Kereta"},
+  {jp:"終電",read:"しゅうでん",id:"kereta terakhir (malam)",day:"Hari 9 · Dalam Kereta"},
+  {jp:"始発駅から乗る",read:"しはつえきからのる",id:"naik dari stasiun keberangkatan pertama",day:"Hari 9 · Dalam Kereta"},
+  {jp:"終点で降りる",read:"しゅうてんでおりる",id:"turun di stasiun pemberhentian terakhir",day:"Hari 9 · Dalam Kereta"},
+  {jp:"急行から各駅停車に乗り換える",read:"きゅうこうからかくえきていしゃにのりかえる",id:"transfer dari kereta express ke lokal",day:"Hari 9 · Dalam Kereta"},
+  {jp:"乗り越す",read:"のりこす",id:"melewati stasiun tujuan",day:"Hari 9 · Dalam Kereta"},
+  {jp:"乗り越し",read:"のりこし",id:"kelebihan tarif karena melewati stasiun",day:"Hari 9 · Dalam Kereta"},
+  {jp:"乗り過ごす",read:"のりすごす",id:"kelewatan (tidak sengaja)",day:"Hari 9 · Dalam Kereta"},
+  {jp:"乗り遅れる",read:"のりおくれる",id:"telat naik kereta",day:"Hari 9 · Dalam Kereta"},
+  {jp:"乗り換え",read:"のりかえ",id:"transfer / ganti kereta",day:"Hari 9 · Dalam Kereta"},
+  {jp:"運賃を精算する",read:"うんちんをせいさんする",id:"menyesuaikan tarif (pembayaran kekurangan)",day:"Hari 9 · Dalam Kereta"},
+  {jp:"車掌が車内アナウンスをする",read:"しゃしょうがしゃないアナウンスをする",id:"kondektur memberi pengumuman dalam kereta",day:"Hari 9 · Dalam Kereta"},
+  {jp:"携帯電話の使用を控える",read:"けいたいでんわのしようをひかえる",id:"menahan diri untuk tidak menggunakan handphone",day:"Hari 9 · Dalam Kereta"},
+  {jp:"お年寄り／老人に席をゆずる",read:"おとしより／ろうじんにせきをゆずる",id:"memberikan tempat duduk kepada orang tua",day:"Hari 9 · Dalam Kereta"},
+  {jp:"優先席",read:"ゆうせんせき",id:"kursi prioritas",day:"Hari 9 · Dalam Kereta"},
+  {jp:"体の不自由な人",read:"からだのふじゆうなひと",id:"orang yang memiliki disabilitas / cacat tubuh",day:"Hari 9 · Dalam Kereta"},
+  {jp:"ちかんにあう",read:"ちかんにあう",id:"mengalami pelecehan seksual",day:"Hari 9 · Dalam Kereta"},
+  {jp:"駅の売店",read:"えきのばいてん",id:"toko / kiosk yang jualan di stasiun",day:"Hari 9 · Dalam Kereta"},
+  {jp:"ライト",read:"ライト",id:"lampu (kendaraan)",day:"Hari 10–11 · Mobil"},
+  {jp:"ボンネット",read:"ボンネット",id:"kap mesin",day:"Hari 10–11 · Mobil"},
+  {jp:"フロントガラス",read:"フロントガラス",id:"kaca depan (mobil)",day:"Hari 10–11 · Mobil"},
+  {jp:"ワイパー",read:"ワイパー",id:"wiper (pembersih kaca)",day:"Hari 10–11 · Mobil"},
+  {jp:"サイドミラー",read:"サイドミラー",id:"kaca spion (samping)",day:"Hari 10–11 · Mobil"},
+  {jp:"バックミラー",read:"バックミラー",id:"kaca spion (dalam)",day:"Hari 10–11 · Mobil"},
+  {jp:"トランク",read:"トランク",id:"bagasi (mobil)",day:"Hari 10–11 · Mobil"},
+  {jp:"タイヤ",read:"タイヤ",id:"ban (mobil)",day:"Hari 10–11 · Mobil"},
+  {jp:"運転席",read:"うんてんせき",id:"kursi pengemudi",day:"Hari 10–11 · Mobil"},
+  {jp:"助手席",read:"じょしゅせき",id:"kursi penumpang depan",day:"Hari 10–11 · Mobil"},
+  {jp:"ハンドル",read:"ハンドル",id:"setir",day:"Hari 10–11 · Mobil"},
+  {jp:"カーナビ",read:"カーナビ",id:"navigasi / GPS (mobil)",day:"Hari 10–11 · Mobil"},
+  {jp:"キー",read:"キー",id:"kunci (mobil)",day:"Hari 10–11 · Mobil"},
+  {jp:"運転免許証",read:"うんてんめんきょしょう",id:"SIM (Surat Izin Mengemudi)",day:"Hari 10–11 · Mobil"},
+  {jp:"信号",read:"しんごう",id:"lampu lalu lintas",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"横断歩道",read:"おうだんほどう",id:"zebra cross",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"交差点",read:"こうさてん",id:"perempatan",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"四つ角",read:"よつかど",id:"belokan 4 / perempatan",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"一方通行",read:"いっぽうつうこう",id:"jalan satu arah",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"通行止め",read:"つうこうどめ",id:"jalan ditutup",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"工事中",read:"こうじちゅう",id:"sedang ada pengerjaan / proyek",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"バス停／バスの停留所",read:"バスてい／バスのていりゅうじょ",id:"halte bus",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"踏切",read:"ふみきり",id:"perlintasan kereta api",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"線路",read:"せんろ",id:"rel kereta api",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"渋滞",read:"じゅうたい",id:"kemacetan",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"道路が渋滞している／混んでいる",read:"どうろがじゅうたいしている／こんでいる",id:"jalanan padat / macet",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"すいている",read:"すいている",id:"kosong / lancar (jalanan)",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"回り道／遠回りをする",read:"まわりみち／とおまわりをする",id:"mengambil jalan memutar (semakin jauh)",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"近道をする",read:"ちかみちをする",id:"mengambil jalan pintas",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"突き当たりを左に曲がる",read:"つきあたりをひだりにまがる",id:"mentok lalu belok kiri",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"バスが停車する",read:"バスがていしゃする",id:"busnya berhenti",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"線路を超える",read:"せんろをこえる",id:"melintasi rel kereta api",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"時速100キロで走る",read:"じそく100キロではしる",id:"berjalan dengan kecepatan 100 km/jam",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"スピード違反で捕まる",read:"スピードいはんでつかまる",id:"ditangkap karena mengebut",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"駐車違反をする",read:"ちゅうしゃいはんをする",id:"melakukan pelanggaran parkir",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"信号を無視する",read:"しんごうをむしする",id:"mengabaikan lampu lalu lintas",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"車をぶつける",read:"くるまをぶつける",id:"menabrakkan mobil",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"車がぶつかる",read:"くるまがぶつかる",id:"mobilnya tabrakan",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"猫をひく",read:"ねこをひく",id:"melindas kucing",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"猫が車にひかれる",read:"ねこがくるまにひかれる",id:"kucing terlindas mobil",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"交通事故にあう",read:"こうつうじこにあう",id:"mengalami kecelakaan lalu lintas",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"車に気をつける",read:"くるまにきをつける",id:"hati-hati terhadap mobil",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"ななめに横断する",read:"ななめにおうだんする",id:"menyeberang secara diagonal / miring",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"道路を横切る",read:"どうろをよこぎる",id:"menyeberang jalan",day:"Hari 10–11 · Lalu Lintas"},
+  {jp:"ドライブをする",read:"ドライブをする",id:"menyetir mobil (untuk jalan-jalan)",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"レンタカーを借りる",read:"レンタカーをかりる",id:"meminjam mobil rental",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"トランクに荷物を積む",read:"トランクににもつをつむ",id:"menumpuk barang di bagasi",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"人を乗せる",read:"ひとをのせる",id:"menaikkan orang ke dalam mobil",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"シートベルトをしめる",read:"シートベルトをしめる",id:"memakai sabuk pengaman",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"エンジンをかける",read:"エンジンをかける",id:"menyalakan mesin",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"バックミラーで確認（を）する",read:"バックミラーでかくにん（を）する",id:"memastikan dengan kaca spion dalam",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"ハンドルをにぎる",read:"ハンドルをにぎる",id:"memegang setir",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"アクセルをふむ",read:"アクセルをふむ",id:"menginjak pedal gas",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"ブレーキをかける",read:"ブレーキをかける",id:"mengerem",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"急ブレーキ",read:"きゅうブレーキ",id:"rem mendadak",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"ライトをつける",read:"ライトをつける",id:"menyalakan lampu (kendaraan)",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"ワイパーを動かす",read:"ワイパーをうごかす",id:"menggerakkan wiper",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"ガソリンスタンドに寄る",read:"ガソリンスタンドによる",id:"mampir ke pom bensin",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"高速（道路）に乗る",read:"こうそく（どうろ）にのる",id:"naik jalan tol",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"タイヤがパンクする",read:"タイヤがパンクする",id:"ban bocor",day:"Hari 10–11 · Operasi Mobil"},
+  {jp:"通帳",read:"つうちょう",id:"buku tabungan",day:"Hari 12 · Bank & Pos"},
+  {jp:"キャッシュカード",read:"キャッシュカード",id:"kartu ATM",day:"Hari 12 · Bank & Pos"},
+  {jp:"サイン",read:"サイン",id:"tanda tangan",day:"Hari 12 · Bank & Pos"},
+  {jp:"はんこ／印鑑",read:"はんこ／いんかん",id:"stempel (pengganti tanda tangan)",day:"Hari 12 · Bank & Pos"},
+  {jp:"紙幣／お札",read:"しへい／おさつ",id:"uang kertas",day:"Hari 12 · Bank & Pos"},
+  {jp:"硬貨",read:"こうか",id:"uang logam (koin)",day:"Hari 12 · Bank & Pos"},
+  {jp:"百円玉",read:"ひゃくえんだま",id:"uang koin 100 yen",day:"Hari 12 · Bank & Pos"},
+  {jp:"お金をためる／貯金する",read:"おかねをためる／ちょきんする",id:"mengumpulkan uang / menabung",day:"Hari 12 · Bank & Pos"},
+  {jp:"預金する（銀行にお金を預ける）",read:"よきんする（ぎんこうにおかねをあずける）",id:"menitipkan uang di bank",day:"Hari 12 · Bank & Pos"},
+  {jp:"給料を引き出す／下ろす",read:"きゅうりょうをひきだす／おろす",id:"mengambil gaji (dari ATM/bank)",day:"Hari 12 · Bank & Pos"},
+  {jp:"通帳記入をする",read:"つうちょうきにゅうをする",id:"mengisi / mencetak buku tabungan",day:"Hari 12 · Bank & Pos"},
+  {jp:"暗証番号",read:"あんしょうばんごう",id:"nomor PIN",day:"Hari 12 · Bank & Pos"},
+  {jp:"銀行の本店",read:"ぎんこうのほんてん",id:"kantor pusat bank",day:"Hari 12 · Bank & Pos"},
+  {jp:"口座を開く",read:"こうざをひらく",id:"membuka rekening",day:"Hari 12 · Bank & Pos"},
+  {jp:"家賃を振り込む",read:"やちんをふりこむ",id:"mentransfer biaya sewa properti",day:"Hari 12 · Bank & Pos"},
+  {jp:"公共料金を支払う",read:"こうきょうりょうきんをしはらう",id:"membayar tagihan utilitas (listrik, gas, air)",day:"Hari 12 · Bank & Pos"},
+  {jp:"商品の代金を払う",read:"しょうひんのだいきんをはらう",id:"membayar biaya produk",day:"Hari 12 · Bank & Pos"},
+  {jp:"窓口で両替をする",read:"まどぐちでりょうがえをする",id:"menukar mata uang di konter",day:"Hari 12 · Bank & Pos"},
+  {jp:"送金する",read:"そうきんする",id:"mengirim uang",day:"Hari 12 · Bank & Pos"},
+  {jp:"仕送りする",read:"しおくりする",id:"mengirim uang untuk orang tua/keluarga",day:"Hari 12 · Bank & Pos"},
+  {jp:"手数料がかかる",read:"てすうりょうがかかる",id:"memerlukan biaya administrasi",day:"Hari 12 · Bank & Pos"},
+  {jp:"あて名",read:"あてな",id:"alamat yang dituju",day:"Hari 12 · Bank & Pos"},
+  {jp:"差出人名",read:"さしだしにんめい",id:"nama pengirim",day:"Hari 12 · Bank & Pos"},
+  {jp:"手紙を速達で出す",read:"てがみをそくたつでだす",id:"mengirimkan surat kilat",day:"Hari 12 · Bank & Pos"},
+  {jp:"送料がかかる",read:"そうりょうがかかる",id:"memerlukan biaya pengiriman",day:"Hari 12 · Bank & Pos"},
+  {jp:"交際する／付き合う",read:"こうさいする／つきあう",id:"berpacaran",day:"Hari 13 · Kencan"},
+  {jp:"けんかする",read:"けんかする",id:"bertengkar",day:"Hari 13 · Kencan"},
+  {jp:"仲直りする",read:"なかなおりする",id:"baikan / berdamai",day:"Hari 13 · Kencan"},
+  {jp:"仲がいい",read:"なかがいい",id:"hubungannya baik",day:"Hari 13 · Kencan"},
+  {jp:"仲良しだ",read:"なかよしだ",id:"akrab",day:"Hari 13 · Kencan"},
+  {jp:"気になる",read:"きになる",id:"penasaran / ingin tahu",day:"Hari 13 · Kencan"},
+  {jp:"好きになる",read:"すきになる",id:"jadi suka",day:"Hari 13 · Kencan"},
+  {jp:"きらいになる",read:"きらいになる",id:"jadi tidak suka",day:"Hari 13 · Kencan"},
+  {jp:"いやになる",read:"いやになる",id:"jadi tidak tertarik / bosan",day:"Hari 13 · Kencan"},
+  {jp:"うらやましい",read:"うらやましい",id:"merasa iri",day:"Hari 13 · Kencan"},
+  {jp:"コンサートにさそう",read:"コンサートにさそう",id:"mengajak ke konser",day:"Hari 13 · Kencan"},
+  {jp:"いやがる",read:"いやがる",id:"tidak suka / tidak mau sama sekali",day:"Hari 13 · Kencan"},
+  {jp:"ふる",read:"ふる",id:"menolak / memutuskan (hubungan)",day:"Hari 13 · Kencan"},
+  {jp:"好かれる",read:"すかれる",id:"disukai",day:"Hari 13 · Kencan"},
+  {jp:"きらわれる",read:"きらわれる",id:"tidak disukai / dibenci",day:"Hari 13 · Kencan"},
+  {jp:"いやがられる",read:"いやがられる",id:"tidak disukai",day:"Hari 13 · Kencan"},
+  {jp:"ふられる",read:"ふられる",id:"ditolak / diputusin",day:"Hari 13 · Kencan"},
+  {jp:"気がある",read:"きがある",id:"ada rasa / perasaan (terhadap seseorang)",day:"Hari 13 · Kencan"},
+  {jp:"あこがれる",read:"あこがれる",id:"kagum / mengidolakan",day:"Hari 13 · Kencan"},
+  {jp:"夢中になる",read:"むちゅうになる",id:"tergila-gila",day:"Hari 13 · Kencan"},
+  {jp:"恋をする",read:"こいをする",id:"jatuh cinta",day:"Hari 13 · Kencan"},
+  {jp:"女性にもてる",read:"じょせいにもてる",id:"populer / banyak disukai cewek",day:"Hari 13 · Kencan"},
+  {jp:"（お）互いに気に入る",read:"（お）たがいにきにいる",id:"saling menyukai",day:"Hari 13 · Kencan"},
+  {jp:"相手の予定を聞く",read:"あいてのよていをきく",id:"bertanya rencana pasangan",day:"Hari 13 · Kencan"},
+  {jp:"都合をつける",read:"つごうをつける",id:"meluangkan waktu",day:"Hari 13 · Kencan"},
+  {jp:"都合がつく",read:"つごうがつく",id:"waktunya ada / bisa",day:"Hari 13 · Kencan"},
+  {jp:"買い物に付き合う",read:"かいものにつきあう",id:"menemani (orang lain) belanja",day:"Hari 13 · Kencan"},
+  {jp:"付き合い",read:"つきあい",id:"hubungan / pergaulan",day:"Hari 13 · Kencan"},
+  {jp:"恋人",read:"こいびと",id:"orang yang dicintai / pacar",day:"Hari 13 · Kencan"},
+  {jp:"彼／彼氏",read:"かれ／かれし",id:"pacar (laki-laki)",day:"Hari 13 · Kencan"},
+  {jp:"彼女",read:"かのじょ",id:"pacar (perempuan)",day:"Hari 13 · Kencan"},
+  {jp:"結婚を申し込む",read:"けっこんをもうしこむ",id:"mengajak nikah / melamar",day:"Hari 13 · Kencan"},
+  {jp:"断る",read:"ことわる",id:"menolak (tawaran/ajakan)",day:"Hari 13 · Kencan"},
+  {jp:"あいまいな返事をする",read:"あいまいなへんじをする",id:"memberi respon yang ambigu",day:"Hari 13 · Kencan"},
+  {jp:"頭",read:"あたま",id:"kepala",day:"Hari 14 · Persiapan Diri"},
+  {jp:"まつげ",read:"まつげ",id:"bulu mata",day:"Hari 14 · Persiapan Diri"},
+  {jp:"ほう／ほほ",read:"ほう／ほほ",id:"pipi",day:"Hari 14 · Persiapan Diri"},
+  {jp:"まゆ／まゆげ",read:"まゆ／まゆげ",id:"alis",day:"Hari 14 · Persiapan Diri"},
+  {jp:"まぶた",read:"まぶた",id:"kelopak mata",day:"Hari 14 · Persiapan Diri"},
+  {jp:"くちびる",read:"くちびる",id:"bibir",day:"Hari 14 · Persiapan Diri"},
+  {jp:"イヤリング",read:"イヤリング",id:"anting",day:"Hari 14 · Persiapan Diri"},
+  {jp:"ネックレス",read:"ネックレス",id:"kalung",day:"Hari 14 · Persiapan Diri"},
+  {jp:"ベルト",read:"ベルト",id:"sabuk / ikat pinggang",day:"Hari 14 · Persiapan Diri"},
+  {jp:"パンツ",read:"パンツ",id:"celana / celana dalam",day:"Hari 14 · Persiapan Diri"},
+  {jp:"下着",read:"したぎ",id:"pakaian dalam",day:"Hari 14 · Persiapan Diri"},
+  {jp:"上着",read:"うわぎ",id:"pakaian luar / jaket",day:"Hari 14 · Persiapan Diri"},
+  {jp:"明日の支度をする",read:"あしたのしたくをする",id:"mempersiapkan untuk besok",day:"Hari 14 · Persiapan Diri"},
+  {jp:"シャワーを浴びる",read:"シャワーをあびる",id:"mandi shower",day:"Hari 14 · Persiapan Diri"},
+  {jp:"歯をみがく（歯磨き）",read:"はをみがく（はみがき）",id:"menggosok gigi",day:"Hari 14 · Persiapan Diri"},
+  {jp:"歯みがき粉をつける",read:"はみがきこをつける",id:"memakai pasta gigi",day:"Hari 14 · Persiapan Diri"},
+  {jp:"ひげをそる",read:"ひげをそる",id:"mencukur jenggot",day:"Hari 14 · Persiapan Diri"},
+  {jp:"髪をとく／とかす",read:"かみをとく／とかす",id:"menyisir rambut",day:"Hari 14 · Persiapan Diri"},
+  {jp:"ドライヤーで髪を乾かす",read:"かみをかわかす",id:"mengeringkan rambut dengan hair dryer",day:"Hari 14 · Persiapan Diri"},
+  {jp:"（お）化粧をする",read:"（お）けしょうをする",id:"dandan / merias wajah",day:"Hari 14 · Persiapan Diri"},
+  {jp:"口紅を塗る／つける",read:"くちべにをぬる／つける",id:"memakai lipstik",day:"Hari 14 · Persiapan Diri"},
+  {jp:"服を着替える",read:"ふくをきがえる",id:"mengganti baju",day:"Hari 14 · Persiapan Diri"},
+  {jp:"着替え",read:"きがえ",id:"ganti baju (kata benda)",day:"Hari 14 · Persiapan Diri"},
+  {jp:"おしゃれをする",read:"おしゃれをする",id:"memakai pakaian yang modis",day:"Hari 14 · Persiapan Diri"},
+  {jp:"おしゃれな人",read:"おしゃれなひと",id:"orang modis",day:"Hari 14 · Persiapan Diri"},
+  {jp:"ひもを結ぶ",read:"ひもをむすぶ",id:"mengikat tali",day:"Hari 14 · Persiapan Diri"},
+  {jp:"ほどく",read:"ほどく",id:"melepas (tali)",day:"Hari 14 · Persiapan Diri"},
+  {jp:"マフラーを巻く／する",read:"マフラーをまく／する",id:"memakai syal",day:"Hari 14 · Persiapan Diri"},
+  {jp:"手袋をはめる／する",read:"てぶくろをはめる／する",id:"memakai sarung tangan",day:"Hari 14 · Persiapan Diri"},
+  {jp:"指輪をはめる／する",read:"ゆびわをはめる／する",id:"memakai cincin",day:"Hari 14 · Persiapan Diri"},
+  {jp:"そでなし",read:"そでなし",id:"Tanpa lengan",day:"Hari 15 · Belanja"},
+  {jp:"半そで",read:"はんそで",id:"Lengan pendek",day:"Hari 15 · Belanja"},
+  {jp:"長そで",read:"ながそで",id:"Lengan panjang",day:"Hari 15 · Belanja"},
+  {jp:"無地",read:"むじ",id:"Polos",day:"Hari 15 · Belanja"},
+  {jp:"柄 / 模様",read:"がら / もよう",id:"Corak",day:"Hari 15 · Belanja"},
+  {jp:"しま",read:"しま",id:"Garis-garis",day:"Hari 15 · Belanja"},
+  {jp:"水玉",read:"みずたま",id:"Polkadot",day:"Hari 15 · Belanja"},
+  {jp:"花柄",read:"はながら",id:"Corak bunga",day:"Hari 15 · Belanja"},
+  {jp:"気に入る",read:"きにいる",id:"Menyukai",day:"Hari 15 · Belanja"},
+  {jp:"お気に入り",read:"おきにいり",id:"Kesukaan, favorit",day:"Hari 15 · Belanja"},
+  {jp:"好む",read:"このむ",id:"Menyukai",day:"Hari 15 · Belanja"},
+  {jp:"好み",read:"このみ",id:"Kesukaan",day:"Hari 15 · Belanja"},
+  {jp:"似合う",read:"にあう",id:"Cocok",day:"Hari 15 · Belanja"},
+  {jp:"目立つ色",read:"めだついろ",id:"Warna mencolok",day:"Hari 15 · Belanja"},
+  {jp:"はでな",read:"はでな",id:"Mencolok",day:"Hari 15 · Belanja"},
+  {jp:"地味な",read:"じみな",id:"Sederhana",day:"Hari 15 · Belanja"},
+  {jp:"人気のあるデザイン",read:"にんきのあるデザイン",id:"Desain populer, banyak disukai",day:"Hari 15 · Belanja"},
+  {jp:"はやっている",read:"はやっている",id:"Lagi nge-tren",day:"Hari 15 · Belanja"},
+  {jp:"はやり / 流行",read:"はやり / りゅうこう",id:"Nge-tren",day:"Hari 15 · Belanja"},
+  {jp:"サイズを確かめる",read:"サイズをたしかめる",id:"Memastikan ukuran",day:"Hari 15 · Belanja"},
+  {jp:"サイズを確認する",read:"サイズをかくにんする",id:"Memastikan ukuran",day:"Hari 15 · Belanja"},
+  {jp:"サイズが合う",read:"サイズがあう",id:"Ukurannya cocok",day:"Hari 15 · Belanja"},
+  {jp:"ゆるい",read:"ゆるい",id:"Kendor, tidak pas",day:"Hari 15 · Belanja"},
+  {jp:"きつい",read:"きつい",id:"Ketat",day:"Hari 15 · Belanja"},
+  {jp:"品物をかごに入れる",read:"しなものをかごにいれる",id:"Memasukkan barang ke keranjang",day:"Hari 15 · Belanja"},
+  {jp:"セール / バーゲンで買う",read:"セール / バーゲンでかう",id:"Membeli barang promo",day:"Hari 15 · Belanja"},
+  {jp:"デパートの特売品",read:"デパートのとくばいひん",id:"Barang promo di department store",day:"Hari 15 · Belanja"},
+  {jp:"30パーセントオフ",read:"さんじゅうパーセントオフ",id:"Diskon 30%",day:"Hari 15 · Belanja"},
+  {jp:"3割引き",read:"さんわりびき",id:"Diskon 30%",day:"Hari 15 · Belanja"},
+  {jp:"売り切れる",read:"うりきれる",id:"Habis terjual",day:"Hari 15 · Belanja"},
+  {jp:"売り切れ",read:"うりきれ",id:"Habis terjual (Kata Benda)",day:"Hari 15 · Belanja"},
+  {jp:"本物のダイヤモンド",read:"ほんもののダイヤモンド",id:"Berlian asli",day:"Hari 15 · Belanja"},
+  {jp:"偽物",read:"にせもの",id:"Barang palsu",day:"Hari 15 · Belanja"},
+  {jp:"得をする",read:"とくをする",id:"Mendapat untung",day:"Hari 15 · Belanja"},
+  {jp:"損をする",read:"そんをする",id:"Menderita kerugian",day:"Hari 15 · Belanja"},
+  {jp:"家族そろって",read:"かぞくそろって",id:"Bersama dengan semua anggota keluarga",day:"Hari 16 · Makan"},
+  {jp:"家族全員で",read:"かぞくぜんいんで",id:"Bersama seluruh keluarga",day:"Hari 16 · Makan"},
+  {jp:"子どもを連れる",read:"こどもをつれる",id:"Mengajak anak",day:"Hari 16 · Makan"},
+  {jp:"子ども連れ",read:"こどもづれ",id:"Orang tua dengan anak",day:"Hari 16 · Makan"},
+  {jp:"腹がへる",read:"はらがへる",id:"Lapar",day:"Hari 16 · Makan"},
+  {jp:"おなかがへる",read:"おなかがへる",id:"Lapar",day:"Hari 16 · Makan"},
+  {jp:"すいている",read:"すいている",id:"Lapar (perut kosong)",day:"Hari 16 · Makan"},
+  {jp:"外食をする",read:"がいしょくをする",id:"Makan di luar",day:"Hari 16 · Makan"},
+  {jp:"お昼を食べる",read:"おひるをたべる",id:"Makan siang",day:"Hari 16 · Makan"},
+  {jp:"昼食をとる",read:"ちゅうしょくをとる",id:"Makan siang",day:"Hari 16 · Makan"},
+  {jp:"ランチ",read:"ランチ",id:"Makan siang",day:"Hari 16 · Makan"},
+  {jp:"雰囲気のいい店",read:"ふんいきのいいみせ",id:"Toko dengan suasana yang bagus/nyaman",day:"Hari 16 · Makan"},
+  {jp:"満席",read:"まんせき",id:"Penuh (semua kursi terisi)",day:"Hari 16 · Makan"},
+  {jp:"列に並ぶ",read:"れつにならぶ",id:"Mengantri",day:"Hari 16 · Makan"},
+  {jp:"行列ができる",read:"ぎょうれつができる",id:"Timbul antrian",day:"Hari 16 · Makan"},
+  {jp:"禁煙席",read:"きんえんせき",id:"Kursi dilarang merokok",day:"Hari 16 · Makan"},
+  {jp:"喫煙席",read:"きつえんせき",id:"Kursi boleh merokok",day:"Hari 16 · Makan"},
+  {jp:"ウエートレスにお勧めを聞く",read:"ウエートレスにおすすめをきく",id:"Menanyakan rekomendasi ke pelayan",day:"Hari 16 · Makan"},
+  {jp:"量が多い",read:"りょうがおおい",id:"Porsi banyak",day:"Hari 16 · Makan"},
+  {jp:"少ない",read:"すくない",id:"Sedikit",day:"Hari 16 · Makan"},
+  {jp:"注文が決まる",read:"ちゅうもんがきまる",id:"Pesanan (telah) ditentukan",day:"Hari 16 · Makan"},
+  {jp:"注文する",read:"ちゅうもんする",id:"Memesan",day:"Hari 16 · Makan"},
+  {jp:"注文を取る / 受け取る",read:"ちゅうもんをとる / うけとる",id:"Menerima pesanan",day:"Hari 16 · Makan"},
+  {jp:"デザートを追加する",read:"デザートをついかする",id:"Menambah dessert",day:"Hari 16 · Makan"},
+  {jp:"コーヒーのおかわり",read:"コーヒーのおかわり",id:"Menambah kopi (refill)",day:"Hari 16 · Makan"},
+  {jp:"無料 / ただ",read:"むりょう / ただ",id:"Gratis",day:"Hari 16 · Makan"},
+  {jp:"食器を下げる",read:"しょっきをさげる",id:"Mengambil peralatan makan (selesai makan)",day:"Hari 16 · Makan"},
+  {jp:"料理を残す",read:"りょうりをのこす",id:"Menyisakan makanan",day:"Hari 16 · Makan"},
+  {jp:"もったいない",read:"もったいない",id:"Sayang, mubadzir",day:"Hari 16 · Makan"},
+  {jp:"「何名様ですか。」",read:"なんめいさまですか",id:"\\",day:"Hari 16 · Makan"},
+  {jp:"「2人です。」",read:"ふたりです",id:"\\",day:"Hari 16 · Makan"},
+  {jp:"申し訳ありません。",read:"もうしわけありません",id:"Mohon maaf.",day:"Hari 16 · Makan"},
+  {jp:"もう少々お待ちください。",read:"もうしょうしょうおまちください",id:"Mohon tunggu sebentar.",day:"Hari 16 · Makan"},
+  {jp:"お待たせいたしました。",read:"おまたせいたしました",id:"Mohon maaf telah membuat Anda menunggu.",day:"Hari 16 · Makan"},
+  {jp:"お待ちどおさま",read:"おまちどおさま",id:"Terima kasih telah bersedia menunggu.",day:"Hari 16 · Makan"},
+  {jp:"宴会を開く",read:"えんかいをひらく",id:"Mengadakan pesta",day:"Hari 17 · Minum"},
+  {jp:"飲み会",read:"のみかい",id:"Pesta minum-minum",day:"Hari 17 · Minum"},
+  {jp:"送別会",read:"そうべつかい",id:"Pesta perpisahan",day:"Hari 17 · Minum"},
+  {jp:"歓迎会",read:"かんげいかい",id:"Pesta selamat datang",day:"Hari 17 · Minum"},
+  {jp:"飲み放題",read:"のみほうだい",id:"Minum sepuasnya",day:"Hari 17 · Minum"},
+  {jp:"食べ放題",read:"たべほうだい",id:"Makan sepuasnya",day:"Hari 17 · Minum"},
+  {jp:"（お）酒を注ぐ",read:"（お）さけをそそぐ",id:"Menuangkan sake",day:"Hari 17 · Minum"},
+  {jp:"（お）湯を注ぐ",read:"（お）ゆをそそぐ",id:"Menuangkan air hangat",day:"Hari 17 · Minum"},
+  {jp:"乾杯する",read:"かんぱいする",id:"Toast / Mulai minum bersama",day:"Hari 17 · Minum"},
+  {jp:"盛り上がる",read:"もりあがる",id:"Seru, ramai, heboh",day:"Hari 17 · Minum"},
+  {jp:"土が盛り上がる",read:"つちがもりあがる",id:"Tanahnya naik",day:"Hari 17 · Minum"},
+  {jp:"こぼす",read:"こぼす",id:"Menumpahkan",day:"Hari 17 · Minum"},
+  {jp:"こぼれる",read:"こぼれる",id:"Tumpah",day:"Hari 17 · Minum"},
+  {jp:"ビールを一気に飲む",read:"ビールをいっきにのむ",id:"Minum bir sekali teguk sampai habis",day:"Hari 17 · Minum"},
+  {jp:"ウィスキーの水割り",read:"ウィスキーのみずわり",id:"Whisky campur air",day:"Hari 17 · Minum"},
+  {jp:"（お）つまみのチーズ",read:"（お）つまみのチーズ",id:"Cemilan keju",day:"Hari 17 · Minum"},
+  {jp:"よっぱらう",read:"よっぱらう",id:"Mabuk",day:"Hari 17 · Minum"},
+  {jp:"よっぱらい",read:"よっぱらい",id:"Pemabuk",day:"Hari 17 · Minum"},
+  {jp:"ビールの泡",read:"びーるのあわ",id:"Busa bir",day:"Hari 17 · Minum"},
+  {jp:"あばれる",read:"あばれる",id:"Bikin onar / hilang kontrol",day:"Hari 17 · Minum"},
+  {jp:"あふれる",read:"あふれる",id:"Meluap",day:"Hari 17 · Minum"},
+  {jp:"やかましい",read:"やかましい",id:"Berisik",day:"Hari 17 · Minum"},
+  {jp:"（お）酒によう",read:"（お）さけによう",id:"Mabuk sake",day:"Hari 17 · Minum"},
+  {jp:"そうぞうしい",read:"そうぞうしい",id:"Berisik, bising",day:"Hari 17 · Minum"},
+  {jp:"さわがしい",read:"さわがしい",id:"Gaduh",day:"Hari 17 · Minum"},
+  {jp:"さわぐ",read:"さわぐ",id:"Membuat gaduh",day:"Hari 17 · Minum"},
+  {jp:"たばこの煙",read:"たばこのけむり",id:"Asap rokok",day:"Hari 17 · Minum"},
+  {jp:"煙い / 煙たい",read:"けむい / けむたい",id:"Berasap",day:"Hari 17 · Minum"},
+  {jp:"グラスを割る",read:"グラスをわる",id:"Memecahkan gelas",day:"Hari 17 · Minum"},
+  {jp:"グラスが割れる",read:"グラスがわれる",id:"Gelasnya pecah",day:"Hari 17 · Minum"},
+  {jp:"ビールびんを倒す",read:"ビールびんをたおす",id:"Menjatuhkan botol bir",day:"Hari 17 · Minum"},
+  {jp:"ビールびんが倒れる",read:"ビールびんがたおれる",id:"Botol birnya jatuh",day:"Hari 17 · Minum"},
+  {jp:"ほかの客に迷惑をかける",read:"ほかのきゃくにめいわくをかける",id:"Mengganggu customer lain",day:"Hari 17 · Minum"},
+  {jp:"迷惑がかかる",read:"めいわくがかかる",id:"Terganggu",day:"Hari 17 · Minum"},
+  {jp:"レジ",read:"レジ",id:"Kasir",day:"Hari 18 · Bayar"},
+  {jp:"おごる",read:"おごる",id:"Mentraktir",day:"Hari 18 · Bayar"},
+  {jp:"おごり",read:"おごり",id:"Traktir",day:"Hari 18 · Bayar"},
+  {jp:"現金で払う",read:"げんきんではらう",id:"Bayar dengan uang tunai",day:"Hari 18 · Bayar"},
+  {jp:"割り勘にする",read:"わりかんにする",id:"Split bill / bagi tagihan",day:"Hari 18 · Bayar"},
+  {jp:"勘定を済ませる",read:"かんじょうをすませる",id:"Melunasi tagihan",day:"Hari 18 · Bayar"},
+  {jp:"別々に払う",read:"べつべつにはらう",id:"Bayar sendiri-sendiri",day:"Hari 18 · Bayar"},
+  {jp:"クレジットカードで払う",read:"クレジットカードではらう",id:"Bayar dengan kartu kredit",day:"Hari 18 · Bayar"},
+  {jp:"カードの有効期限を確認する",read:"カードのゆうこうきげんをかくにんする",id:"Memastikan masa berlaku kartu",day:"Hari 18 · Bayar"},
+  {jp:"（お）札をくずす",read:"（お）さつをくずす",id:"Menukar uang kertas ke uang kecil",day:"Hari 18 · Bayar"},
+  {jp:"（お）つりをもらう",read:"（お）つりをもらう",id:"Menerima kembalian",day:"Hari 18 · Bayar"},
+  {jp:"領収書をもらう",read:"りょうしゅうしょをもらう",id:"Menerima kuitansi / receipt",day:"Hari 18 · Bayar"},
+  {jp:"レシート",read:"レシート",id:"Receipt",day:"Hari 18 · Bayar"},
+  {jp:"ぜいたくをする",read:"ぜいたくをする",id:"Berfoya-foya / hidup mewah",day:"Hari 18 · Bayar"},
+  {jp:"むだづかいをする",read:"むだづかいをする",id:"Membuang-buang uang",day:"Hari 18 · Bayar"},
+  {jp:"請求書が届く",read:"せいきゅうしょがとどく",id:"Tagihan datang",day:"Hari 18 · Bayar"},
+  {jp:"費用がかかる",read:"ひようがかかる",id:"Memakan biaya",day:"Hari 18 · Bayar"},
+  {jp:"お金が足りる",read:"おかねがたりる",id:"Uangnya cukup",day:"Hari 18 · Bayar"},
+  {jp:"足りない",read:"たりない",id:"Tidak cukup",day:"Hari 18 · Bayar"},
+  {jp:"食費を節約する",read:"しょくひをせつやくする",id:"Menghemat uang makan",day:"Hari 18 · Bayar"},
+  {jp:"今月の生活費が不足する",read:"こんげつのせいかつひがふそくする",id:"Biaya hidup bulan ini kurang",day:"Hari 18 · Bayar"},
+  {jp:"交通費",read:"こうつうひ",id:"Biaya transportasi",day:"Hari 18 · Bayar"},
+  {jp:"むだを省く",read:"むだをはぶく",id:"Mengurangi pemborosan",day:"Hari 18 · Bayar"},
+  {jp:"むだをなくす",read:"むだをなくす",id:"Menghilangkan yang tidak perlu",day:"Hari 18 · Bayar"},
+  {jp:"貧乏になる",read:"びんぼうになる",id:"Menjadi miskin",day:"Hari 18 · Bayar"},
+  {jp:"お金持ちになる",read:"おかねもちになる",id:"Menjadi kaya",day:"Hari 18 · Bayar"},
+  {jp:"貧しい生活",read:"まずしいせいかつ",id:"Hidup miskin",day:"Hari 18 · Bayar"},
+  {jp:"借金をする",read:"しゃっきんをする",id:"Berhutang",day:"Hari 18 · Bayar"},
+  {jp:"教科 / 科目",read:"きょうか / かもく",id:"Mata pelajaran",day:"Hari 19 · Sekolah 1"},
+  {jp:"得意な",read:"とくいな",id:"Jago / Kuat di bidang...",day:"Hari 19 · Sekolah 1"},
+  {jp:"苦手な",read:"にがてな",id:"Lemah di bidang...",day:"Hari 19 · Sekolah 1"},
+  {jp:"国語",read:"こくご",id:"Bahasa Nasional (Jepang)",day:"Hari 19 · Sekolah 1"},
+  {jp:"算数",read:"さんすう",id:"Matematika dasar",day:"Hari 19 · Sekolah 1"},
+  {jp:"理科",read:"りか",id:"IPA",day:"Hari 19 · Sekolah 1"},
+  {jp:"社会",read:"しゃかい",id:"IPS",day:"Hari 19 · Sekolah 1"},
+  {jp:"体育",read:"たいいく",id:"Olahraga",day:"Hari 19 · Sekolah 1"},
+  {jp:"入学する",read:"にゅうがくする",id:"Masuk sekolah",day:"Hari 19 · Sekolah 1"},
+  {jp:"私立高校",read:"しりつこうこう",id:"SMA Swasta",day:"Hari 19 · Sekolah 1"},
+  {jp:"公立高校",read:"こうりつこうこう",id:"SMA Negeri",day:"Hari 19 · Sekolah 1"},
+  {jp:"国立大学",read:"こくりつだいがく",id:"Universitas Negeri",day:"Hari 19 · Sekolah 1"},
+  {jp:"昼休みに～を食べる",read:"ひるやすみに～をたべる",id:"Makan ... di jam istirahat",day:"Hari 19 · Sekolah 1"},
+  {jp:"お弁当",read:"おべんとう",id:"Bekal (Bento)",day:"Hari 19 · Sekolah 1"},
+  {jp:"給食",read:"きゅうしょく",id:"Makan siang dari sekolah",day:"Hari 19 · Sekolah 1"},
+  {jp:"時間割",read:"じかんわり",id:"Jadwal pelajaran",day:"Hari 19 · Sekolah 1"},
+  {jp:"入学式",read:"にゅうがくしき",id:"Upacara penerimaan siswa baru",day:"Hari 19 · Sekolah 1"},
+  {jp:"卒業式",read:"そつぎょうしき",id:"Upacara kelulusan",day:"Hari 19 · Sekolah 1"},
+  {jp:"出席する",read:"しゅっせきする",id:"Menghadiri / Hadir",day:"Hari 19 · Sekolah 1"},
+  {jp:"欠席する",read:"けっせきする",id:"Absen / Tidak hadir",day:"Hari 19 · Sekolah 1"},
+  {jp:"バスで通学する",read:"バスでつうがくする",id:"Pergi ke sekolah naik bus",day:"Hari 19 · Sekolah 1"},
+  {jp:"通勤する",read:"つうきんする",id:"Pergi bekerja (PP)",day:"Hari 19 · Sekolah 1"},
+  {jp:"1/2/3学期",read:"1/2/3がっき",id:"Semester 1/2/3",day:"Hari 19 · Sekolah 1"},
+  {jp:"今学期",read:"こんがっき",id:"Semester ini",day:"Hari 19 · Sekolah 1"},
+  {jp:"前期",read:"ぜんき",id:"Semester awal / sebelumnya",day:"Hari 19 · Sekolah 1"},
+  {jp:"後期",read:"こうき",id:"Semester akhir / setelahnya",day:"Hari 19 · Sekolah 1"},
+  {jp:"同じ学年",read:"おなじがくねん",id:"Tingkatan kelas yang sama",day:"Hari 19 · Sekolah 1"},
+  {jp:"自習する",read:"じしゅうする",id:"Belajar mandiri",day:"Hari 19 · Sekolah 1"},
+  {jp:"えんぴつをけずる",read:"えんぴつをけずる",id:"Meraut pensil",day:"Hari 19 · Sekolah 1"},
+  {jp:"物差し / 定規で測る",read:"ものさし / じょうぎではかる",id:"Mengukur dengan penggaris",day:"Hari 19 · Sekolah 1"},
+  {jp:"合計を出す",read:"ごうけいをだす",id:"Menghitung total",day:"Hari 19 · Sekolah 1"},
+  {jp:"～を受験する",read:"じゅけんする",id:"Menempuh ujian (masuk sekolah/univ)",day:"Hari 20 · Sekolah 2"},
+  {jp:"学部",read:"がくぶ",id:"Fakultas",day:"Hari 20 · Sekolah 2"},
+  {jp:"文学部",read:"ぶんがくぶ",id:"Fakultas Sastra",day:"Hari 20 · Sekolah 2"},
+  {jp:"経済学部",read:"けいざいがくぶ",id:"Fakultas Ekonomi",day:"Hari 20 · Sekolah 2"},
+  {jp:"法学部",read:"ほうがくぶ",id:"Fakultas Hukum",day:"Hari 20 · Sekolah 2"},
+  {jp:"理工学部",read:"りこうがくぶ",id:"Fakultas Sains dan Teknologi",day:"Hari 20 · Sekolah 2"},
+  {jp:"医学部",read:"いがくぶ",id:"Fakultas Kedokteran",day:"Hari 20 · Sekolah 2"},
+  {jp:"～を専攻する",read:"せんこうする",id:"Mengambil jurusan (fokus belajar)",day:"Hari 20 · Sekolah 2"},
+  {jp:"学科",read:"がっか",id:"Jurusan",day:"Hari 20 · Sekolah 2"},
+  {jp:"経済学",read:"けいざいがく",id:"Ilmu Ekonomi",day:"Hari 20 · Sekolah 2"},
+  {jp:"政治学",read:"せいじがく",id:"Ilmu Politik",day:"Hari 20 · Sekolah 2"},
+  {jp:"心理学",read:"しんりがく",id:"Ilmu Psikologi",day:"Hari 20 · Sekolah 2"},
+  {jp:"言語学",read:"げんごがく",id:"Ilmu Bahasa",day:"Hari 20 · Sekolah 2"},
+  {jp:"物理学",read:"ぶつりがく",id:"Ilmu Fisika",day:"Hari 20 · Sekolah 2"},
+  {jp:"～をとる",read:"～をとる",id:"Mengambil (SKS/Seminar)",day:"Hari 20 · Sekolah 2"},
+  {jp:"ゼミ",read:"ゼミ",id:"Seminar",day:"Hari 20 · Sekolah 2"},
+  {jp:"単位",read:"たんい",id:"Kredit (SKS)",day:"Hari 20 · Sekolah 2"},
+  {jp:"～を受ける",read:"～をうける",id:"Mengikuti (Kuliah)",day:"Hari 20 · Sekolah 2"},
+  {jp:"講義",read:"こうぎ",id:"Kuliah (ceramah dosen)",day:"Hari 20 · Sekolah 2"},
+  {jp:"補習",read:"ほしゅう",id:"Pelajaran tambahan",day:"Hari 20 · Sekolah 2"},
+  {jp:"補講",read:"ほこう",id:"Kuliah tambahan",day:"Hari 20 · Sekolah 2"},
+  {jp:"進学を希望する",read:"しんがくをきぼうする",id:"Berharap lanjut sekolah/kuliah",day:"Hari 20 · Sekolah 2"},
+  {jp:"合格発表を見に行く",read:"ごうかくはっぴょうをみにいく",id:"Melihat pengumuman kelulusan",day:"Hari 20 · Sekolah 2"},
+  {jp:"合格する / 受かる",read:"ごうかくする / うかる",id:"Lulus / Lolos",day:"Hari 20 · Sekolah 2"},
+  {jp:"不合格になる / 落ちる",read:"ふごうかくなる / おちる",id:"Gagal ujian",day:"Hari 20 · Sekolah 2"},
+  {jp:"授業料 / 学費を払う",read:"じゅぎょうりょう / がくひをはらう",id:"Bayar uang sekolah/kuliah",day:"Hari 20 · Sekolah 2"},
+  {jp:"奨学金をもらう",read:"しょうがくきんをもらう",id:"Dapat beasiswa",day:"Hari 20 · Sekolah 2"},
+  {jp:"大学教授",read:"だいがくきょうじゅ",id:"Profesor universitas",day:"Hari 20 · Sekolah 2"},
+  {jp:"学者",read:"がくしゃ",id:"Ilmuwan",day:"Hari 20 · Sekolah 2"},
+  {jp:"講義に間に合う",read:"こうぎにまにあう",id:"Sempat ikut kuliah (tidak telat)",day:"Hari 20 · Sekolah 2"},
+  {jp:"講義に遅れる / 遅刻する",read:"こうぎにおくれる / ちこくする",id:"Terlambat kuliah",day:"Hari 20 · Sekolah 2"},
+  {jp:"成績がいい",read:"せいせきがいい",id:"Nilai bagus",day:"Hari 20 · Sekolah 2"},
+  {jp:"成績が悪い",read:"せいせきがわるい",id:"Nilai buruk",day:"Hari 20 · Sekolah 2"},
+  {jp:"授業中に居眠りをする",read:"じゅぎょうちゅうにいねむりをする",id:"Tidur saat jam pelajaran",day:"Hari 20 · Sekolah 2"},
+  {jp:"授業をサボる",read:"じゅぎょうをサボる",id:"Membolos",day:"Hari 20 · Sekolah 2"},
+  {jp:"単位を落とす",read:"たんいをおとす",id:"Gagal dapat SKS / Gagal mata kuliah",day:"Hari 20 · Sekolah 2"},
+  {jp:"休学する",read:"きゅうがくする",id:"Cuti sekolah/kuliah",day:"Hari 20 · Sekolah 2"},
+  {jp:"留学する",read:"りゅうがくする",id:"Belajar ke luar negeri",day:"Hari 20 · Sekolah 2"},
+  {jp:"記入する",read:"きにゅうする",id:"Mengisi (formulir/jawaban)",day:"Hari 21 · Sekolah 3"},
+  {jp:"見直す",read:"みなおす",id:"Mengecek kembali",day:"Hari 21 · Sekolah 3"},
+  {jp:"間違う / 間違える",read:"まちがう / まちがえる",id:"Salah",day:"Hari 21 · Sekolah 3"},
+  {jp:"書き直す",read:"かきなおす",id:"Menulis ulang",day:"Hari 21 · Sekolah 3"},
+  {jp:"まとめる",read:"まとめる",id:"Merangkum / Menyusun",day:"Hari 21 · Sekolah 3"},
+  {jp:"仕上げる",read:"しあげる",id:"Menyelesaikan",day:"Hari 21 · Sekolah 3"},
+  {jp:"提出する",read:"ていしゅつする",id:"Mengumpulkan (tugas/laporan)",day:"Hari 21 · Sekolah 3"},
+  {jp:"担当の先生",read:"たんとうのせんせい",id:"Guru penanggung jawab / Wali kelas",day:"Hari 21 · Sekolah 3"},
+  {jp:"先生に教わる",read:"せんせいにおそわる",id:"Diajar oleh guru",day:"Hari 21 · Sekolah 3"},
+  {jp:"何度もくり返す",read:"なんどもくりかえす",id:"Mengulang berkali-kali",day:"Hari 21 · Sekolah 3"},
+  {jp:"暗記する",read:"あんきする",id:"Menghafal di luar kepala",day:"Hari 21 · Sekolah 3"},
+  {jp:"試験で問われる",read:"しけんでとわれる",id:"Ditanyakan dalam ujian",day:"Hari 21 · Sekolah 3"},
+  {jp:"問い",read:"とい",id:"Pertanyaan",day:"Hari 21 · Sekolah 3"},
+  {jp:"落ち着いて考える",read:"おちついてかんがえる",id:"Berpikir dengan tenang",day:"Hari 21 · Sekolah 3"},
+  {jp:"聞き直す",read:"ききなおす",id:"Menanyakan kembali",day:"Hari 21 · Sekolah 3"},
+  {jp:"言い直す",read:"いいなおす",id:"Mengatakan kembali / Memperbaiki ucapan",day:"Hari 21 · Sekolah 3"},
+  {jp:"聞き取る",read:"ききとる",id:"Menyimak / Menangkap ucapan orang",day:"Hari 21 · Sekolah 3"},
+  {jp:"聞き取り",read:"ききとり",id:"Listening / Pemahaman mendengarkan",day:"Hari 21 · Sekolah 3"},
+  {jp:"書き取る",read:"かきとる",id:"Mendikte / Menulis yang didengar",day:"Hari 21 · Sekolah 3"},
+  {jp:"書き取り",read:"かきとり",id:"Dictation / Menulis dikte",day:"Hari 21 · Sekolah 3"},
+  {jp:"ついている",read:"ついている",id:"Beruntung",day:"Hari 21 · Sekolah 3"},
+  {jp:"ついていない",read:"ついていない",id:"Sial / Tidak beruntung",day:"Hari 21 · Sekolah 3"},
+  {jp:"試験が済む",read:"しけんがすむ",id:"Ujian selesai",day:"Hari 21 · Sekolah 3"},
+  {jp:"レストランでアルバイト",read:"れすとらんでのあるばいと",id:"kerja part-time di restoran",day:"Hari 22 · Pekerjaan"},
+  {jp:"工場でパート",read:"こうじょうでぱーと",id:"kerja part-time di pabrik",day:"Hari 22 · Pekerjaan"},
+  {jp:"コンビニの店員",read:"こんびにのてんいん",id:"pegawai toko (konbini)",day:"Hari 22 · Pekerjaan"},
+  {jp:"英会話講師",read:"えいかいわこうし",id:"pengajar kelas percakapan bahasa Inggris",day:"Hari 22 · Pekerjaan"},
+  {jp:"翻訳の仕事",read:"ほんやくのしごと",id:"bekerja sebagai translator",day:"Hari 22 · Pekerjaan"},
+  {jp:"翻訳する",read:"ほんやくする",id:"menerjemahkan (tulisan)",day:"Hari 22 · Pekerjaan"},
+  {jp:"通訳の仕事",read:"つうやくのしごと",id:"bekerja sebagai interpreter",day:"Hari 22 · Pekerjaan"},
+  {jp:"通訳する",read:"つうやくする",id:"menerjemahkan (lisan)",day:"Hari 22 · Pekerjaan"},
+  {jp:"事務の手伝い",read:"じむのてつだい",id:"bantu urusan kantor",day:"Hari 22 · Pekerjaan"},
+  {jp:"ホームヘルパー",read:"ほーむへるぱー",id:"membantu urusan rumah",day:"Hari 22 · Pekerjaan"},
+  {jp:"仕事を探す",read:"しごとをさがす",id:"mencari pekerjaan",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"履歴書を書く",read:"りれきしょをかく",id:"menulis CV lamaran",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"面接をする",read:"めんせつをする",id:"melakukan wawancara",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"ホテルの従業員",read:"ほてるのじゅうぎょういん",id:"pegawai hotel",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"仕事仲間",read:"しごとなかま",id:"rekan kerja",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"給料",read:"きゅうりょう",id:"gaji",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"時給 1200円",read:"じきゅう 1200えん",id:"gaji per jam 1200 yen",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"ボーナス",read:"ぼーなす",id:"bonus",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"交通費が出る",read:"こうつうひがでる",id:"dapat biaya transport",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"勤務時間",read:"きんむじかん",id:"jam kerja",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"やとう",read:"やとう",id:"mempekerjakan",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"やとわれる",read:"やとわれる",id:"dipekerjakan",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"きつい仕事",read:"きつい（＝つらい）しごと",id:"pekerjaan yang berat / keras",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"お金をかせぐ",read:"おかねをかせぐ",id:"mencari uang",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"お金をもうける",read:"おかねをもうける",id:"menghasilkan banyak uang",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"お金がもうかる",read:"おかねがもうかる",id:"untung / dapat banyak uang",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"仕事を済ます／済ませる",read:"しごとをすます／すませる",id:"menyelesaikan pekerjaan",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"仕事をなまける",read:"しごとをなまける",id:"malas-malasan bekerja",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"なまけ者",read:"なまけもの",id:"pemalas",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"働き者",read:"はたらきもの",id:"pekerja keras",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"首になる",read:"くびになる",id:"dipecat / diberhentikan",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"やめさせられる",read:"やめさせられる",id:"diminta berhenti",day:"Hari 22 · Kondisi Kerja"},
+  {jp:"初めてパソコンをさわる",read:"はじめてぱそこんをさわる",id:"pertama kali memakai komputer",day:"Hari 23 · Komputer"},
+  {jp:"初心者",read:"しょしんしゃ",id:"pemula",day:"Hari 23 · Komputer"},
+  {jp:"入門講座を受ける",read:"にゅうもんこうざをうける",id:"mengikuti kursus pengantar / dasar",day:"Hari 23 · Komputer"},
+  {jp:"パソコンに慣れる",read:"ぱそこんになれる",id:"terbiasa dengan komputer",day:"Hari 23 · Komputer"},
+  {jp:"新製品",read:"しんせいひん",id:"produk baru",day:"Hari 23 · Komputer"},
+  {jp:"新品",read:"しんぴん",id:"barang yang masih baru",day:"Hari 23 · Komputer"},
+  {jp:"中古",read:"ちゅうこ",id:"barang bekas",day:"Hari 23 · Komputer"},
+  {jp:"画面を見る",read:"がめんをみる",id:"melihat layar / monitor",day:"Hari 23 · Komputer"},
+  {jp:"ソフトウェアをインストールする",read:"そふとうえあをいんすとーるする",id:"menginstall software",day:"Hari 23 · Komputer"},
+  {jp:"スタートボタンをクリックする",read:"すたーとぼたんをくりっくする",id:"mengklik tombol start",day:"Hari 23 · Komputer"},
+  {jp:"ファイルを開く",read:"ふぁいるをひらく",id:"membuka file",day:"Hari 23 · Komputer"},
+  {jp:"閉じる",read:"とじる",id:"menutup (file/jendela)",day:"Hari 23 · Komputer"},
+  {jp:"年賀状を作る",read:"ねんがじょうをつくる",id:"membuat kartu ucapan tahun baru",day:"Hari 23 · Komputer"},
+  {jp:"インターネットにつなぐ",read:"いんたーねっとにつなぐ",id:"menghubungkan ke internet",day:"Hari 23 · Komputer"},
+  {jp:"世界中とつながる",read:"せかいじゅうとつながる",id:"terhubung dengan seluruh dunia",day:"Hari 23 · Komputer"},
+  {jp:"情報を得る",read:"じょうほうをえる",id:"mendapatkan informasi",day:"Hari 23 · Komputer"},
+  {jp:"オークションに参加する",read:"おーくしょんにさんかする",id:"berpartisipasi dalam lelang",day:"Hari 23 · Komputer"},
+  {jp:"オークションに品物を出す",read:"おーくしょんにしなものをだす",id:"melelang suatu barang",day:"Hari 23 · Komputer"},
+  {jp:"出品する",read:"しゅっぴんする",id:"mendisplay / menampilkan barang (lelang)",day:"Hari 23 · Komputer"},
+  {jp:"ホームページを作る",read:"ほーむぺーじをつくる",id:"membuat halaman di internet",day:"Hari 23 · Komputer"},
+  {jp:"ブログを始める",read:"ぶろぐをはじめる",id:"memulai / menulis blog",day:"Hari 23 · Komputer"},
+  {jp:"入力する",read:"にゅうりょくする",id:"menginput",day:"Hari 24 · Email"},
+  {jp:"ローマ字で入力する",read:"ろーまじでにゅうりょくする",id:"input dengan romaji",day:"Hari 24 · Email"},
+  {jp:"漢字に変換する",read:"かんじにへんかんする",id:"mengganti ke kanji",day:"Hari 24 · Email"},
+  {jp:"挿入する",read:"そうにゅうする",id:"memasukkan / menyisipkan",day:"Hari 24 · Email"},
+  {jp:"削除する",read:"さくじょする",id:"menghapus",day:"Hari 24 · Email"},
+  {jp:"受信する",read:"じゅしんする",id:"menerima (email)",day:"Hari 24 · Email"},
+  {jp:"送信する",read:"そうしんする",id:"mengirim (email)",day:"Hari 24 · Email"},
+  {jp:"返信する",read:"へんしんする",id:"membalas (email)",day:"Hari 24 · Email"},
+  {jp:"転送する",read:"てんそうする",id:"meneruskan / forward (email)",day:"Hari 24 · Email"},
+  {jp:"新規作成する",read:"しんきさくせいする",id:"membuat (email) baru",day:"Hari 24 · Email"},
+  {jp:"まとめて送る",read:"まとめておくる",id:"mengirim jadi satu",day:"Hari 24 · Email"},
+  {jp:"整理する",read:"せいりする",id:"mengatur / merapikan",day:"Hari 24 · Email"},
+  {jp:"チェックする",read:"ちぇっくする",id:"mengecek",day:"Hari 24 · Email"},
+  {jp:"あて先",read:"あてさき",id:"tujuan pengiriman (email)",day:"Hari 24 · Email"},
+  {jp:"差出人",read:"さしだしにん",id:"pengirim (email)",day:"Hari 24 · Email"},
+  {jp:"件名",read:"けんめい",id:"judul / subjek email",day:"Hari 24 · Email"},
+  {jp:"メールのやり取りをする",read:"めーるのやりとりをする",id:"saling mengirimkan email",day:"Hari 24 · Email"},
+  {jp:"写真を添付する",read:"しゃしんをてんぷする",id:"melampirkan foto (attachment)",day:"Hari 24 · Email"},
+  {jp:"改行する",read:"かいぎょうする",id:"membuat baris baru (enter)",day:"Hari 24 · Email"},
+  {jp:"送信が完了する",read:"そうしんがかんりょうする",id:"pengiriman telah selesai",day:"Hari 24 · Email"},
+  {jp:"アドレス帳",read:"あどれすちょう",id:"buku alamat (kontak email)",day:"Hari 24 · Email"},
+  {jp:"送信者のアドレスを登録する",read:"そうしんしゃの（めーる）あどれすをとうろくする",id:"mendaftarkan alamat pengirim",day:"Hari 24 · Email"},
+  {jp:"長男",read:"ちょうなん",id:"putra sulung",day:"Hari 25 · Keluarga"},
+  {jp:"長女",read:"ちょうじょ",id:"putri sulung",day:"Hari 25 · Keluarga"},
+  {jp:"次男",read:"じなん",id:"anak laki-laki kedua",day:"Hari 25 · Keluarga"},
+  {jp:"次女",read:"じじょ",id:"anak perempuan kedua",day:"Hari 25 · Keluarga"},
+  {jp:"三男",read:"さんなん",id:"anak laki-laki ketiga",day:"Hari 25 · Keluarga"},
+  {jp:"末っ子",read:"すえっこ",id:"anak bungsu",day:"Hari 25 · Keluarga"},
+  {jp:"おじ",read:"おじ",id:"paman / om",day:"Hari 25 · Keluarga"},
+  {jp:"おば",read:"おば",id:"bibi / tante",day:"Hari 25 · Keluarga"},
+  {jp:"親せき",read:"しんせき",id:"saudara (kerabat)",day:"Hari 25 · Keluarga"},
+  {jp:"孫",read:"まご",id:"cucu",day:"Hari 25 · Keluarga"},
+  {jp:"おい",read:"おい",id:"keponakan laki-laki",day:"Hari 25 · Keluarga"},
+  {jp:"めい",read:"めい",id:"keponakan perempuan",day:"Hari 25 · Keluarga"},
+  {jp:"いとこ",read:"いとこ",id:"sepupu",day:"Hari 25 · Keluarga"},
+  {jp:"一人っ子",read:"ひとりっこ",id:"anak tunggal",day:"Hari 25 · Keluarga"},
+  {jp:"一人息子",read:"ひとりむすこ",id:"anak tunggal laki-laki",day:"Hari 25 · Keluarga"},
+  {jp:"一人娘",read:"ひとりむすめ",id:"anak tunggal perempuan",day:"Hari 25 · Keluarga"},
+  {jp:"職場の同僚",read:"しょくばのどうりょう",id:"rekan kerja (di tempat kerja)",day:"Hari 25 · Status Kerja"},
+  {jp:"職場の上司",read:"しょくばのじょうし",id:"atasan di tempat kerja",day:"Hari 25 · Status Kerja"},
+  {jp:"職場の部下",read:"しょくばのぶか",id:"bawahan di tempat kerja",day:"Hari 25 · Status Kerja"},
+  {jp:"会社の先輩",read:"かいしゃのせんぱい",id:"senior di perusahaan",day:"Hari 25 · Status Kerja"},
+  {jp:"会社の後輩",read:"かいしゃのこうはい",id:"junior di perusahaan",day:"Hari 25 · Status Kerja"},
+  {jp:"部長",read:"ぶちょう",id:"general manager",day:"Hari 25 · Status Kerja"},
+  {jp:"課長",read:"かちょう",id:"manager",day:"Hari 25 · Status Kerja"},
+  {jp:"会社員",read:"かいしゃいん",id:"pegawai kantor",day:"Hari 25 · Status Kerja"},
+  {jp:"サラリーマン",read:"さらりーまん",id:"karyawan kantor",day:"Hari 25 · Status Kerja"},
+  {jp:"主婦",read:"しゅふ",id:"ibu rumah tangga",day:"Hari 25 · Status Kerja"},
+  {jp:"教師",read:"きょうし",id:"pengajar",day:"Hari 25 · Status Kerja"},
+  {jp:"大学生",read:"だいがくせい",id:"mahasiswa",day:"Hari 25 · Pendidikan"},
+  {jp:"高校生",read:"こうこうせい",id:"siswa SMA",day:"Hari 25 · Pendidikan"},
+  {jp:"中学生",read:"ちゅうがくせい",id:"siswa SMP",day:"Hari 25 · Pendidikan"},
+  {jp:"小学生",read:"しょうがくせい",id:"siswa SD",day:"Hari 25 · Pendidikan"},
+  {jp:"6人兄弟の末っ子",read:"ろくにんきょうだいのすえっこ",id:"anak bungsu dari 6 bersaudara",day:"Hari 25 · Ekspresi"},
+  {jp:"3人姉妹のいちばん上",read:"さんにんしまいのいちばんうえ",id:"anak sulung dari 3 bersaudara perempuan",day:"Hari 25 · Ekspresi"},
+  {jp:"兄弟",read:"きょうだい",id:"saudara (laki-laki maupun perempuan)",day:"Hari 25 · Ekspresi"},
+  {jp:"姉妹",read:"しまい",id:"saudara perempuan saja",day:"Hari 25 · Ekspresi"},
+  {jp:"お国はどちらですか",read:"おくにはどちらですか",id:"negara kamu mana?",day:"Hari 26 · Salam"},
+  {jp:"お生まれはどちらですか",read:"おうまれはどちらですか",id:"lahirnya di mana?",day:"Hari 26 · Salam"},
+  {jp:"どちらのご出身ですか",read:"どちらのごしゅっしんですか",id:"berasal dari mana?",day:"Hari 26 · Salam"},
+  {jp:"イギリス出身です",read:"いぎりすしゅっしんです",id:"berasal dari Inggris",day:"Hari 26 · Salam"},
+  {jp:"お住まいはどちらですか",read:"おすまいはどちらですか",id:"tinggalnya di mana?",day:"Hari 26 · Salam"},
+  {jp:"この近くです",read:"このちかくです",id:"di dekat sini",day:"Hari 26 · Salam"},
+  {jp:"先日は、ありがとうございました",read:"せんじつは、ありがとうございました",id:"terima kasih atas... beberapa hari yang lalu",day:"Hari 26 · Salam"},
+  {jp:"とんでもないです。こちらこそ",read:"とんでもないです。こちらこそ",id:"tidak apa-apa / sama-sama",day:"Hari 26 · Salam"},
+  {jp:"どうぞお上がりください",read:"どうぞおあがりください",id:"silahkan masuk",day:"Hari 26 · Salam"},
+  {jp:"おじゃまします",read:"おじゃまします",id:"permisi (saat masuk rumah orang)",day:"Hari 26 · Salam"},
+  {jp:"こちらでおかけになってお待ちください",read:"こちらでおかけになっておまちください",id:"silahkan duduk menunggu di sini",day:"Hari 26 · Salam"},
+  {jp:"お茶をお持ちします",read:"おちゃをおもちします",id:"saya akan bawakan teh",day:"Hari 26 · Salam"},
+  {jp:"どうぞおかまいなく",read:"どうぞおかまいなく",id:"tidak usah repot-repot",day:"Hari 26 · Salam"},
+  {jp:"どうぞお召し上がりください",read:"どうぞおめしあがりください",id:"silahkan dimakan / diminum",day:"Hari 26 · Salam"},
+  {jp:"では、遠慮なくいただきます",read:"では、えんりょなくいただきます",id:"baik, saya terima (menerima tawaran)",day:"Hari 26 · Salam"},
+  {jp:"ご無沙汰しています。お元気でいらっしゃいますか",read:"ごぶさたしています。おげんきでいらっしゃいますか",id:"lama tidak bertemu, apa kabar?",day:"Hari 26 · Salam"},
+  {jp:"ええ、おかげさまで",read:"ええ、おかげさまで",id:"baik, berkat doa Anda",day:"Hari 26 · Salam"},
+  {jp:"田中さんのご主人、亡くなったそうですよ",read:"たなかさんのごしゅじん、なくなったそうですよ",id:"suami Tanaka-san katanya meninggal",day:"Hari 26 · Salam"},
+  {jp:"そうですか。お気の毒に",read:"そうですか。おきのどくに",id:"oh begitu... kasihan (turut berduka)",day:"Hari 26 · Salam"},
+  {jp:"お目にかかるのを楽しみにしています",read:"おめにかかるのをたのしみにしています",id:"saya menantikan hari kita bertemu",day:"Hari 26 · Salam"},
+  {jp:"お先に失礼します",read:"おさきにしつれいします",id:"saya pamit terlebih dahulu",day:"Hari 26 · Salam"},
+  {jp:"ご苦労さま／お疲れさま",read:"ごくろうさま／おつかれさま",id:"terima kasih atas kerja keras hari ini",day:"Hari 26 · Salam"},
+  {jp:"お先に",read:"おさきに",id:"saya duluan (pulang)",day:"Hari 26 · Salam"},
+  {jp:"お疲れさまでした",read:"おつかれさまでした",id:"terima kasih atas kerja keras hari ini (formal)",day:"Hari 26 · Salam"},
+  {jp:"かしこい",read:"かしこい",id:"pintar",day:"Hari 27 · Sifat Positif"},
+  {jp:"礼儀正しい",read:"れいぎただしい",id:"sopan",day:"Hari 27 · Sifat Positif"},
+  {jp:"正直な",read:"しょうじきな",id:"jujur / tidak bohong",day:"Hari 27 · Sifat Positif"},
+  {jp:"正直に言うと",read:"しょうじきにいうと",id:"sejujurnya",day:"Hari 27 · Sifat Positif"},
+  {jp:"素直な",read:"すなおな",id:"jujur / apa adanya",day:"Hari 27 · Sifat Positif"},
+  {jp:"純粋な",read:"じゅんすいな",id:"polos / murni",day:"Hari 27 · Sifat Positif"},
+  {jp:"純粋な気持ち",read:"じゅんすいきもち",id:"perasaan murni",day:"Hari 27 · Sifat Positif"},
+  {jp:"かっこいい",read:"かっこいい",id:"penampilan keren / cakep",day:"Hari 27 · Sifat Positif"},
+  {jp:"勇気のある",read:"ゆうきのある",id:"berani",day:"Hari 27 · Sifat Positif"},
+  {jp:"ユーモアのある",read:"ゆーもあのある",id:"humoris",day:"Hari 27 · Sifat Positif"},
+  {jp:"積極的な",read:"せっきょくてきな",id:"agresif / aktif",day:"Hari 27 · Sifat Positif"},
+  {jp:"落ち着いている",read:"おちついている",id:"tenang / kalem",day:"Hari 27 · Sifat Positif"},
+  {jp:"おとなしい",read:"おとなしい",id:"nurut / pendiam",day:"Hari 27 · Sifat Positif"},
+  {jp:"まじめな",read:"まじめな",id:"sungguh-sungguh / serius",day:"Hari 27 · Sifat Positif"},
+  {jp:"のんきな",read:"のんきな",id:"santai / kalem",day:"Hari 27 · Sifat Positif"},
+  {jp:"ハンサムな",read:"はんさむな",id:"tampan",day:"Hari 27 · Sifat Positif"},
+  {jp:"美人",read:"びじん",id:"cantik",day:"Hari 27 · Sifat Positif"},
+  {jp:"スマートな",read:"すまーとな",id:"slim / stylish / cekatan",day:"Hari 27 · Sifat Positif"},
+  {jp:"かっこ悪い",read:"かっこわるい",id:"penampilan buruk",day:"Hari 27 · Sifat Negatif"},
+  {jp:"消極的な",read:"しょうきょくてきな",id:"pasif",day:"Hari 27 · Sifat Negatif"},
+  {jp:"意地悪な",read:"いじわるな",id:"suka iseng (jahat)",day:"Hari 27 · Sifat Negatif"},
+  {jp:"意地悪をする",read:"いじわるをする",id:"berbuat iseng / jahat",day:"Hari 27 · Sifat Negatif"},
+  {jp:"うそをつく",read:"うそをつく",id:"berbohong",day:"Hari 27 · Sifat Negatif"},
+  {jp:"うそつき",read:"うそつき",id:"pembohong",day:"Hari 27 · Sifat Negatif"},
+  {jp:"ずるい",read:"ずるい",id:"licik / curang",day:"Hari 27 · Sifat Negatif"},
+  {jp:"ずうずうしい",read:"ずうずうしい",id:"kurang ajar / tidak tahu malu",day:"Hari 27 · Sifat Negatif"},
+  {jp:"しつこい",read:"しつこい",id:"ngeyel / tidak mau menyerah",day:"Hari 27 · Sifat Negatif"},
+  {jp:"しつこく注意する",read:"しつこくちゅういする",id:"memperingatkan terus-menerus",day:"Hari 27 · Sifat Negatif"},
+  {jp:"だらしない",read:"だらしない",id:"ceroboh / tidak teratur",day:"Hari 27 · Sifat Negatif"},
+  {jp:"わがまま",read:"わがまま",id:"egois / mau menang sendiri",day:"Hari 27 · Sifat Negatif"},
+  {jp:"自己中心的",read:"じこちゅうしんてき",id:"egois / self-centered",day:"Hari 27 · Sifat Negatif"},
+  {jp:"欲が深い",read:"よくがふかい",id:"serakah",day:"Hari 27 · Sifat Negatif"},
+  {jp:"けちな",read:"けちな",id:"pelit",day:"Hari 27 · Sifat Negatif"},
+  {jp:"無責任な",read:"むせきにんな",id:"tidak bertanggung jawab",day:"Hari 27 · Sifat Negatif"},
+  {jp:"いいかげんな",read:"いいかげんな",id:"tidak tanggung jawab / sembarangan",day:"Hari 27 · Sifat Negatif"},
+  {jp:"いいかげんなことを言う",read:"いいかげんなことをいう",id:"mengatakan hal yang tidak bertanggung jawab",day:"Hari 27 · Sifat Negatif"},
+  {jp:"いいかげんにしろ！",read:"いいかげんにしろ！",id:"sudah, cukup! hentikan!",day:"Hari 27 · Sifat Negatif"},
+  {jp:"体の調子／具合が悪い",read:"からだのちょうし／ぐあいがわるい",id:"kondisi badan sedang buruk",day:"Hari 28 · Gejala Sakit"},
+  {jp:"めまいがする",read:"めまいがする",id:"pusing (kliyengan)",day:"Hari 28 · Gejala Sakit"},
+  {jp:"頭痛がする",read:"ずつうがする",id:"sakit kepala",day:"Hari 28 · Gejala Sakit"},
+  {jp:"胃が痛い",read:"いがいたい",id:"lambung / perut terasa sakit",day:"Hari 28 · Gejala Sakit"},
+  {jp:"腰が痛い",read:"こしがいたい",id:"sakit pinggang",day:"Hari 28 · Gejala Sakit"},
+  {jp:"息が苦しい",read:"いきがくるしい",id:"sesak nafas",day:"Hari 28 · Gejala Sakit"},
+  {jp:"苦しむ",read:"くるしむ",id:"menderita",day:"Hari 28 · Gejala Sakit"},
+  {jp:"鼻がつまる",read:"はながつまる",id:"hidung tersumbat",day:"Hari 28 · Gejala Sakit"},
+  {jp:"鼻をかむ",read:"はなをかむ",id:"membuang ingus",day:"Hari 28 · Gejala Sakit"},
+  {jp:"吐き気がする",read:"はきけがする",id:"mual / ingin muntah",day:"Hari 28 · Gejala Sakit"},
+  {jp:"吐く",read:"はく",id:"muntah",day:"Hari 28 · Gejala Sakit"},
+  {jp:"気分が悪い／気持ち（が）悪い",read:"きぶんがわるい／きもち（が）わるい",id:"merasa tidak enak badan",day:"Hari 28 · Gejala Sakit"},
+  {jp:"目がかゆい",read:"めがかゆい",id:"mata terasa gatal",day:"Hari 28 · Gejala Sakit"},
+  {jp:"目をこする／かく",read:"めをこする／かく",id:"mengucek mata",day:"Hari 28 · Gejala Sakit"},
+  {jp:"風邪を引いてつらい",read:"かぜをひいてつらい",id:"terasa menyakitkan karena kena flu",day:"Hari 28 · Gejala Sakit"},
+  {jp:"アレルギーがある",read:"あれるぎーがある",id:"mempunyai alergi",day:"Hari 28 · Gejala Sakit"},
+  {jp:"患者「お世話になりました。」",read:"かんじゃ「おせわになりました。」",id:"(pasien) terima kasih atas bantuannya selama ini",day:"Hari 28 · Pengobatan"},
+  {jp:"看護師「お大事に。」",read:"かんごし「おだいじに。」",id:"(perawat) semoga lekas sembuh",day:"Hari 28 · Pengobatan"},
+  {jp:"専門の医師にみてもらう",read:"せんもんのいしにみてもらう",id:"diperiksa oleh dokter spesialis",day:"Hari 28 · Pengobatan"},
+  {jp:"医師の診察を受ける",read:"いしのしんさつをうける",id:"periksa ke dokter",day:"Hari 28 · Pengobatan"},
+  {jp:"歯医者にかかる",read:"はいしゃにかかる",id:"pergi ke dokter gigi",day:"Hari 28 · Pengobatan"},
+  {jp:"インフルエンザにかかる",read:"いんふるえんざにかかる",id:"terkena influenza",day:"Hari 28 · Pengobatan"},
+  {jp:"病気の症状",read:"びょうきのしょうじょう",id:"gejala penyakit",day:"Hari 28 · Pengobatan"},
+  {jp:"注射をしてもらう",read:"ちゅうしゃをしてもらう",id:"disuntik",day:"Hari 28 · Pengobatan"},
+  {jp:"手術を受ける",read:"しゅじゅつをうける",id:"dioperasi",day:"Hari 28 · Pengobatan"},
+  {jp:"痛みをがまんする",read:"いたみをがまんする",id:"menahan rasa sakit",day:"Hari 28 · Pengobatan"},
+  {jp:"花粉症になる",read:"かふんしょうになる",id:"terkena kafunsho (alergi serbuk sari)",day:"Hari 28 · Pengobatan"},
+  {jp:"うがいをする",read:"うがいをする",id:"kumur-kumur",day:"Hari 28 · Pengobatan"},
+  {jp:"けがを治す",read:"けがをなおす",id:"menyembuhkan luka",day:"Hari 28 · Pengobatan"},
+  {jp:"手の傷",read:"てのきず",id:"luka di tangan",day:"Hari 28 · Pengobatan"},
+  {jp:"やけどをする",read:"やけどをする",id:"terkena luka bakar",day:"Hari 28 · Pengobatan"},
+  {jp:"大したことがない",read:"たいしたことがない",id:"bukan masalah berarti / tidak parah",day:"Hari 28 · Pengobatan"},
+  {jp:"ましになる",read:"ましになる",id:"mendingan (kondisinya)",day:"Hari 28 · Pengobatan"},
+  {jp:"（お）見舞いに行く",read:"（お）みまいにいく",id:"pergi menjenguk (orang sakit)",day:"Hari 28 · Pengobatan"},
+  {jp:"鼻水",read:"はなみず",id:"ingus",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"ため息",read:"ためいき",id:"nafas panjang",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"涙",read:"なみだ",id:"air mata",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"汗",read:"あせ",id:"keringat",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"よだれ",read:"",id:"air liur",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"せき",read:"",id:"batuk",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"しゃっくり",read:"",id:"cegukan",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"くしゃみ",read:"",id:"bersin",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"あくび",read:"",id:"menguap",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"げっぷ",read:"",id:"sendawa",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"おなら",read:"",id:"kentut",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"ため息をつく",read:"ためいきをつく",id:"tarik nafas panjang",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"涙を流す",read:"なみだをながす",id:"mengalirkan air mata",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"汗をかく",read:"あせをかく",id:"mengeluarkan keringat",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"汗くさい",read:"あせくさい",id:"bau keringat",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"いびきをかく",read:"",id:"mengorok",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"足がしびれる",read:"あしがしびれる",id:"kaki kesemutan",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"体がふるえる",read:"からだがふるえる",id:"tubuh gemetar",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"肩がこる",read:"かたがこる",id:"bahu terasa pegal",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"くせがつく",read:"",id:"kebiasaan / terbiasa",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"くせになる",read:"",id:"menjadi kebiasaan",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"ストレスがたまる",read:"",id:"stres menumpuk",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"年を取る",read:"としをとる",id:"menjadi tua",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"つめが伸びる",read:"つめがのびる",id:"kuku memanjang",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"ひげが生える",read:"ひげがはえる",id:"jenggot tumbuh",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"歯が生える",read:"はがはえる",id:"gigi tumbuh",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"髪の毛が抜ける",read:"かみのけがぬける",id:"rambut rontok",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"はげる",read:"",id:"botak",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"髪をそめる",read:"かみをそめる",id:"mewarnai rambut",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"体重が増える",read:"たいじゅうがふえる",id:"berat badan bertambah",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"体重を増やす",read:"たいじゅうをふやす",id:"menambah berat badan",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"体重が減る",read:"たいじゅうがへる",id:"berat badan berkurang",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"体重を減らす",read:"たいじゅうをへらす",id:"mengurangi berat badan",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"虫歯",read:"むしば",id:"gigi rusak",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"にきび",read:"",id:"jerawat",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"白髪",read:"しらが",id:"uban",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"しわ",read:"",id:"keriput",day:"Hari 29 · Kondisi Tubuh"},
+  {jp:"花が咲く",read:"はながさく",id:"bunga mekar",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"花が散る",read:"はながちる",id:"bunga rontok",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"木が枯れる",read:"きがかれる",id:"pohon mati",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"山がくずれる",read:"やまがくずれる",id:"gunung runtuh",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"険しい山",read:"けわしいやま",id:"gunung terjal / curam",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"なだらかな坂",read:"なだらかなさか",id:"tanjakan landai",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"かびが生える",read:"かびがはえる",id:"tumbuh jamur",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"変なにおいがする",read:"へんなにおいがする",id:"tercium bau aneh",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"におう",read:"",id:"mencium bau / aroma",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"箱がつぶれる",read:"はこがつぶれる",id:"kotaknya hancur",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"つぶす",read:"",id:"menghancurkan",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"浮く",read:"うく",id:"mengapung",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"沈む",read:"しずむ",id:"tenggelam",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"蒸し暑い",read:"むしあつい",id:"lembab",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"くさる",read:"",id:"membusuk",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"気味が悪い生き物",read:"きみがわるいいきもの",id:"makhluk menyeramkan",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"気持ち悪い生き物",read:"きもちがわるいいきもの",id:"makhluk menjijikkan",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"親しい友人",read:"したしいゆうじん",id:"teman akrab",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"親友",read:"しんゆう",id:"sahabat",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"あやしい男",read:"あやしいおとこ",id:"laki-laki mencurigakan",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"恐ろしい事件",read:"おそろしいじけん",id:"kejadian yang mengerikan",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"さびた包丁",read:"さびたほうちょう",id:"pisau berkarat",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"さびる",read:"",id:"berkarat",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"鋭い",read:"するどい",id:"tajam",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"鈍い",read:"にぶい",id:"tumpul",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"のろい車",read:"のろいくるま",id:"mobil lambat",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"安全な場所",read:"あんぜんなばしょ",id:"tempat yang aman",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"薄暗い部屋",read:"うすぐらいへや",id:"ruangan redup / remang-remang",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"まぶしい明かり",read:"まぶしいあかり",id:"cahaya terang / silau",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"くわしい説明書",read:"くわしいせつめいしょ",id:"buku petunjuk lengkap",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"くだらない小説",read:"くだらないしょうせつ",id:"novel yang konyol",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"でたらめに答える",read:"でたらめにこたえる",id:"menjawab secara asal",day:"Hari 30 · Kondisi Alam & Benda"},
+  {jp:"突然",read:"とつぜん",id:"tiba-tiba",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"いきなり",read:"",id:"tiba-tiba",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"とたんに",read:"",id:"seketika itu",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"やっと",read:"",id:"akhirnya (sembuh)",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"とうとう",read:"",id:"akhirnya (meninggal)",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"結局",read:"けっきょく",id:"ujung-ujungnya",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"ついに",read:"",id:"akhirnya (selesai)",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"よく",read:"",id:"sering / dengan baik",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"よくやった！",read:"",id:"melakukannya dengan baik!",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"たいてい",read:"",id:"biasanya",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"ふだん（は）",read:"",id:"biasanya (sehari-hari)",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"ふつう（は）",read:"",id:"biasanya (umumnya)",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"たまに",read:"",id:"sekali-kali",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"かなり",read:"",id:"cukup / lumayan",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"けっこう",read:"",id:"cukup",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"ものすごく",read:"",id:"sangat",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"めちゃくちゃ",read:"",id:"sangat / berantakan",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"ぜひ / ぜひとも",read:"",id:"ingin sekali",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"どうか",read:"",id:"mohon bantuan",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"まず",read:"",id:"pertama-tama",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"とにかく / ともかく",read:"",id:"pokoknya",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"一度に",read:"いちどに",id:"sekaligus",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"いっぺんに",read:"",id:"sekaligus / tiba-tiba lelah",day:"Hari 31 · Keterangan Waktu"},
+  {jp:"うっかり（する）",read:"",id:"lupa / kurang hati-hati",day:"Hari 32 · Onomatope"},
+  {jp:"すっかり",read:"",id:"benar-benar lupa",day:"Hari 32 · Onomatope"},
+  {jp:"がっかり（する）",read:"",id:"kecewa",day:"Hari 32 · Onomatope"},
+  {jp:"やはり / やっぱり",read:"",id:"memang benar",day:"Hari 32 · Onomatope"},
+  {jp:"しっかり（する）",read:"",id:"kuat / mandiri",day:"Hari 32 · Onomatope"},
+  {jp:"しっかりしろ！",read:"",id:"kamu harus kuat!",day:"Hari 32 · Onomatope"},
+  {jp:"すっきり（する）",read:"",id:"lega / plong",day:"Hari 32 · Onomatope"},
+  {jp:"さっぱり（する）",read:"",id:"segar / sama sekali tidak mengerti",day:"Hari 32 · Onomatope"},
+  {jp:"ぐっすり",read:"",id:"tidur terlelap",day:"Hari 32 · Onomatope"},
+  {jp:"にっこり（する）",read:"",id:"tersenyum",day:"Hari 32 · Onomatope"},
+  {jp:"にこにこ（する）",read:"",id:"tersenyum",day:"Hari 32 · Onomatope"},
+  {jp:"そっくり",read:"",id:"mirip sekali",day:"Hari 32 · Onomatope"},
+  {jp:"はっきり（する）",read:"",id:"terlihat jelas",day:"Hari 32 · Onomatope"},
+  {jp:"ぼんやり",read:"",id:"tidak jelas",day:"Hari 32 · Onomatope"},
+  {jp:"のんびり（する）",read:"",id:"bersantai",day:"Hari 32 · Onomatope"},
+  {jp:"きちんと / ちゃんと（する）",read:"",id:"dengan rapi / benar",day:"Hari 32 · Onomatope"},
+  {jp:"ふと",read:"",id:"tiba-tiba teringat",day:"Hari 32 · Onomatope"},
+  {jp:"わざと",read:"",id:"sengaja",day:"Hari 32 · Onomatope"},
+  {jp:"ほっと（する）",read:"",id:"lega",day:"Hari 32 · Onomatope"},
+  {jp:"じっと（する）",read:"",id:"bersabar / diam",day:"Hari 32 · Onomatope"},
+  {jp:"ざっと",read:"",id:"membersihkan dengan cepat",day:"Hari 32 · Onomatope"},
+  {jp:"そっと（する）",read:"",id:"pelan-pelan / diam-diam",day:"Hari 32 · Onomatope"},
+  {jp:"どきどき（する）",read:"",id:"berdebar / deg-degan",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"いらいら（する）",read:"",id:"merasa kesal",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"はきはき（する）",read:"",id:"menjawab lugas",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"ぶつぶつ",read:"",id:"menggumam / mengeluh",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"うろうろ（する）",read:"",id:"mondar-mandir",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"ぶらぶら（する）",read:"",id:"jalan-jalan santai / bergoyang",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"ぎりぎり",read:"",id:"mepet",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"ぴかぴか",read:"",id:"mengkilap",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"のろのろ",read:"",id:"berjalan pelan",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"ぺらぺら",read:"",id:"lancar bicara / tipis",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"ぺこぺこ",read:"",id:"lapar",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"ますます（する）",read:"",id:"semakin",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"だんだん",read:"",id:"perlahan-lahan",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"どんどん",read:"",id:"terus-menerus",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"そろそろ",read:"",id:"sudah saatnya",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"もともと",read:"",id:"aslinya",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"たまたま",read:"",id:"kebetulan",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"まあまあ",read:"",id:"lumayan",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"さまざま",read:"",id:"berbagai macam",day:"Hari 33 · Perasaan & Perubahan"},
+  {jp:"出会う",read:"であう",id:"bertemu idaman",day:"Hari 34 · Kata Majemuk"},
+  {jp:"出会い",read:"であい",id:"pertemuan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"出迎える",read:"でむかえる",id:"menyambut tamu",day:"Hari 34 · Kata Majemuk"},
+  {jp:"出迎え",read:"でむかえ",id:"penyambutan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"見送る",read:"みおくる",id:"mengantarkan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"見送り",read:"みおくり",id:"pengantaran",day:"Hari 34 · Kata Majemuk"},
+  {jp:"見上げる",read:"みあげる",id:"melihat ke atas",day:"Hari 34 · Kata Majemuk"},
+  {jp:"見下ろす",read:"みおろす",id:"melihat ke bawah",day:"Hari 34 · Kata Majemuk"},
+  {jp:"立ち止まる",read:"たちどまる",id:"berhenti melangkah",day:"Hari 34 · Kata Majemuk"},
+  {jp:"立ち上がる",read:"たちあがる",id:"berdiri",day:"Hari 34 · Kata Majemuk"},
+  {jp:"通りかかる",read:"とおりかかる",id:"melewati depan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"通り過ぎる",read:"とおりすぎる",id:"sudah melewati",day:"Hari 34 · Kata Majemuk"},
+  {jp:"話しかける",read:"はなしかける",id:"menyapa",day:"Hari 34 · Kata Majemuk"},
+  {jp:"話し合う",read:"はなしあう",id:"berdiskusi",day:"Hari 34 · Kata Majemuk"},
+  {jp:"話し合い",read:"はなしあい",id:"pembahasan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"知り合う",read:"しりあう",id:"kenalan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"知り合い",read:"しりあい",id:"kenalan (kata benda)",day:"Hari 34 · Kata Majemuk"},
+  {jp:"待ち合わせる",read:"まちあわせる",id:"janjian ketemu",day:"Hari 34 · Kata Majemuk"},
+  {jp:"待ち合わせ",read:"まちあわせ",id:"janji ketemu",day:"Hari 34 · Kata Majemuk"},
+  {jp:"問い合わせる",read:"といあわせる",id:"menanyakan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"問い合わせ",read:"といあわせ",id:"pertanyaan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"申し込む",read:"もうしこむ",id:"mendaftar",day:"Hari 34 · Kata Majemuk"},
+  {jp:"申し込み",read:"もうしこみ",id:"pendaftaran",day:"Hari 34 · Kata Majemuk"},
+  {jp:"締め切る",read:"しめきる",id:"menutup pendaftaran",day:"Hari 34 · Kata Majemuk"},
+  {jp:"締め切り",read:"しめきり",id:"tenggat waktu",day:"Hari 34 · Kata Majemuk"},
+  {jp:"受け付ける",read:"うけつける",id:"menerima pendaftaran",day:"Hari 34 · Kata Majemuk"},
+  {jp:"受付",read:"うけつけ",id:"resepsionis",day:"Hari 34 · Kata Majemuk"},
+  {jp:"受け取る",read:"うけとる",id:"menerima barang",day:"Hari 34 · Kata Majemuk"},
+  {jp:"受け取り",read:"うけとり",id:"penerimaan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"取り替える",read:"とりかえる",id:"mengganti baterai",day:"Hari 34 · Kata Majemuk"},
+  {jp:"取り消す",read:"とりけす",id:"membatalkan pesanan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"取り消し",read:"とりけし",id:"pembatalan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"取り出す",read:"とりだす",id:"mengeluarkan",day:"Hari 34 · Kata Majemuk"},
+  {jp:"飛び出す",read:"とびだす",id:"meloncat keluar",day:"Hari 34 · Kata Majemuk"},
+  {jp:"飛び込む",read:"とびこむ",id:"mencebur",day:"Hari 34 · Kata Majemuk"},
+  {jp:"大学を出る",read:"だいがくをでる",id:"lulus kuliah",day:"Hari 35 · 出る・出す"},
+  {jp:"卒業する",read:"そつぎょうする",id:"lulus",day:"Hari 35 · 出る・出す"},
+  {jp:"会議に出る",read:"かいぎにでる",id:"menghadiri rapat",day:"Hari 35 · 出る・出す"},
+  {jp:"出席する",read:"しゅっせきする",id:"hadir",day:"Hari 35 · 出る・出す"},
+  {jp:"食事が出る",read:"しょくじがでる",id:"tersedia makanan",day:"Hari 35 · 出る・出す"},
+  {jp:"食事を出す",read:"しょくじをだす",id:"menyajikan makanan",day:"Hari 35 · 出る・出す"},
+  {jp:"結論が出る",read:"けつろんがでる",id:"sampai pada kesimpulan",day:"Hari 35 · 出る・出す"},
+  {jp:"結論を出す",read:"けつろんをだす",id:"mengeluarkan kesimpulan",day:"Hari 35 · 出る・出す"},
+  {jp:"元気が出る",read:"げんきがでる",id:"semangatnya keluar",day:"Hari 35 · 出る・出す"},
+  {jp:"元気を出す",read:"げんきをだす",id:"bersemangat",day:"Hari 35 · 出る・出す"},
+  {jp:"新製品が出る",read:"しんせいひんがでる",id:"produk baru keluar",day:"Hari 35 · 出る・出す"},
+  {jp:"発売される",read:"はつばいされる",id:"dirilis",day:"Hari 35 · 出る・出す"},
+  {jp:"新製品を出す",read:"しんせいひんをだす",id:"merilis produk baru",day:"Hari 35 · 出る・出す"},
+  {jp:"芽が出る",read:"めがでる",id:"tunasnya keluar",day:"Hari 35 · 出る・出す"},
+  {jp:"芽を出す",read:"めをだす",id:"mengeluarkan tunas",day:"Hari 35 · 出る・出す"},
+  {jp:"ボーナスが出る",read:"ぼーなすがでる",id:"bonusnya keluar",day:"Hari 35 · 出る・出す"},
+  {jp:"ボーナスを出す",read:"ぼーなすをだす",id:"mengeluarkan bonus",day:"Hari 35 · 出る・出す"},
+  {jp:"ゴキブリが出る",read:"ごきぶりがでる",id:"muncul kecoa",day:"Hari 35 · 出る・出す"},
+  {jp:"現れる",read:"あらわれる",id:"muncul",day:"Hari 35 · 出る・出す"},
+  {jp:"新聞に名前が出る",read:"しんぶんになまえがでる",id:"namanya muncul di koran",day:"Hari 35 · 出る・出す"},
+  {jp:"載る",read:"のる",id:"dimuat",day:"Hari 35 · 出る・出す"},
+  {jp:"角を曲がると駅に出る",read:"かどをまがるとえきにでる",id:"belok di belokan keluar di stasiun",day:"Hari 35 · 出る・出す"},
+  {jp:"財布を取る",read:"さいふをとる",id:"mencuri dompet",day:"Hari 35 · とる・とれる"},
+  {jp:"盗む",read:"ぬすむ",id:"mencuri",day:"Hari 35 · とる・とれる"},
+  {jp:"財布を取りに戻る",read:"さいふをとりにもどる",id:"kembali mengambil dompet",day:"Hari 35 · とる・とれる"},
+  {jp:"運転免許を取る",read:"うんてんめんきょをとる",id:"membuat SIM",day:"Hari 35 · とる・とれる"},
+  {jp:"コピーを取る",read:"こぴーをとる",id:"memfotokopi",day:"Hari 35 · とる・とれる"},
+  {jp:"新聞を取る",read:"しんぶんをとる",id:"langganan koran",day:"Hari 35 · とる・とれる"},
+  {jp:"睡眠を取る",read:"すいみんをとる",id:"tidur",day:"Hari 35 · とる・とれる"},
+  {jp:"眠る",read:"ねむる",id:"tidur",day:"Hari 35 · とる・とれる"},
+  {jp:"出席を取る",read:"しゅっせきをとる",id:"mengecek kehadiran",day:"Hari 35 · とる・とれる"},
+  {jp:"連絡を取る",read:"れんらくをとる",id:"menghubungi",day:"Hari 35 · とる・とれる"},
+  {jp:"連絡が取れる",read:"れんらくがとれる",id:"terhubungi",day:"Hari 35 · とる・とれる"},
+  {jp:"痛みを取る",read:"いたみをとる",id:"menghilangkan rasa sakit",day:"Hari 35 · とる・とれる"},
+  {jp:"痛みが取れる",read:"いたみがとれる",id:"rasa sakit hilang",day:"Hari 35 · とる・とれる"},
+  {jp:"ボタンが取れる",read:"ぼたんがとれる",id:"kancingnya lepas",day:"Hari 35 · とる・とれる"},
+  {jp:"新入社員を採る",read:"しんにゅうしゃいんをとる",id:"merekrut karyawan baru",day:"Hari 35 · とる・とれる"},
+  {jp:"採用する",read:"さいようする",id:"merekrut",day:"Hari 35 · とる・とれる"},
+  {jp:"鍵がかかっている",read:"かぎがかかっている",id:"terkunci",day:"Hari 35 · かかる・かける"},
+  {jp:"鍵をかける",read:"かぎをかける",id:"mengunci",day:"Hari 35 · かかる・かける"},
+  {jp:"病気にかかる",read:"びょうきにかかる",id:"terkena penyakit",day:"Hari 35 · かかる・かける"},
+  {jp:"病気になる",read:"びょうきになる",id:"menjadi sakit",day:"Hari 35 · かかる・かける"},
+  {jp:"医者にかかる",read:"いしゃにかかる",id:"pergi ke dokter",day:"Hari 35 · かかる・かける"},
+  {jp:"診察してもらう",read:"しんさつしてもらう",id:"diperiksa dokter",day:"Hari 35 · かかる・かける"},
+  {jp:"ボタンをかける",read:"ぼたんをかける",id:"mengancingkan",day:"Hari 35 · かかる・かける"},
+  {jp:"外す",read:"はずす",id:"melepas",day:"Hari 35 · かかる・かける"},
+  {jp:"CDをかける",read:"",id:"menyalakan CD",day:"Hari 35 · かかる・かける"},
+  {jp:"毛布をかける",read:"もうふをかける",id:"memakai selimut",day:"Hari 35 · かかる・かける"},
+  {jp:"声をかける",read:"こえをかける",id:"menyapa",day:"Hari 35 · かかる・かける"},
+  {jp:"声がかかる",read:"こえがかかる",id:"disapa",day:"Hari 35 · かかる・かける"},
+  {jp:"心配をかける",read:"しんぱいをかける",id:"membuat khawatir",day:"Hari 35 · かかる・かける"},
+  {jp:"心配させる",read:"しんぱいさせる",id:"mengkhawatirkan",day:"Hari 35 · かかる・かける"},
+  {jp:"席を立つ",read:"せきをたつ",id:"meninggalkan tempat duduk",day:"Hari 36 · たつ・たてる"},
+  {jp:"座る",read:"すわる",id:"duduk",day:"Hari 36 · たつ・たてる"},
+  {jp:"時間がたつ",read:"じかんがたつ",id:"waktu berlalu",day:"Hari 36 · たつ・たてる"},
+  {jp:"うわさが立つ",read:"うわさがたつ",id:"muncul rumor",day:"Hari 36 · たつ・たてる"},
+  {jp:"予定を立てる",read:"よていをたてる",id:"menyusun rencana",day:"Hari 36 · たつ・たてる"},
+  {jp:"計画する",read:"けいかくする",id:"merencanakan",day:"Hari 36 · たつ・たてる"},
+  {jp:"音を立てる",read:"おとをたてる",id:"membunyikan",day:"Hari 36 · たつ・たてる"},
+  {jp:"出す",read:"だす",id:"mengeluarkan (bunyi)",day:"Hari 36 · たつ・たてる"},
+  {jp:"雨が上がる",read:"あめがあがる",id:"hujan reda",day:"Hari 36 · あげる・あがる"},
+  {jp:"やむ",read:"",id:"berhenti (hujan)",day:"Hari 36 · あげる・あがる"},
+  {jp:"どうぞお上がりください",read:"どうぞおあがりください",id:"silakan masuk",day:"Hari 36 · あげる・あがる"},
+  {jp:"入って",read:"はいって",id:"masuk",day:"Hari 36 · あげる・あがる"},
+  {jp:"風呂から上がる",read:"ふろからあがる",id:"selesai mandi",day:"Hari 36 · あげる・あがる"},
+  {jp:"出る",read:"でる",id:"keluar (dari mandi)",day:"Hari 36 · あげる・あがる"},
+  {jp:"物価が上がる",read:"ぶっかがあがる",id:"harga barang naik",day:"Hari 36 · あげる・あがる"},
+  {jp:"効果が上がる",read:"こうかがあがる",id:"efektivitas meningkat",day:"Hari 36 · あげる・あがる"},
+  {jp:"効果を上げる",read:"こうかをあげる",id:"meningkatkan efektivitas",day:"Hari 36 · あげる・あがる"},
+  {jp:"初めてのスピーチであがる",read:"はじめてのすぴーちであがる",id:"tegang saat pidato pertama",day:"Hari 36 · あげる・あがる"},
+  {jp:"緊張する",read:"きんちょうする",id:"merasa tegang",day:"Hari 36 · あげる・あがる"},
+  {jp:"例をあげる",read:"れいをあげる",id:"memberikan contoh",day:"Hari 36 · あげる・あがる"},
+  {jp:"並べる",read:"ならべる",id:"menderetkan contoh",day:"Hari 36 · あげる・あがる"},
+  {jp:"結婚式をあげる",read:"けっこんしきをあげる",id:"mengadakan pernikahan",day:"Hari 36 · あげる・あがる"},
+  {jp:"熱が下がる",read:"ねつがさがる",id:"demamnya turun",day:"Hari 36 · さがる・さげる"},
+  {jp:"黄色い線の内側まで下がる",read:"きいろいせんのうちがわまでさがる",id:"mundur sampai garis kuning",day:"Hari 36 · さがる・さげる"},
+  {jp:"評判が下がる",read:"ひょうばんがさがる",id:"reputasi menurun",day:"Hari 36 · さがる・さげる"},
+  {jp:"落ちる",read:"おちる",id:"jatuh / turun",day:"Hari 36 · さがる・さげる"},
+  {jp:"評判を下げる",read:"ひょうばんをさげる",id:"menurunkan reputasi",day:"Hari 36 · さがる・さげる"},
+  {jp:"カーテンが下がる",read:"かーてんがさがる",id:"tirainya turun",day:"Hari 36 · さがる・さげる"},
+  {jp:"カーテンを下げる",read:"かーてんをさげる",id:"menurunkan tirai",day:"Hari 36 · さがる・さげる"},
+  {jp:"買い物かごを下げる",read:"かいものかごをさげる",id:"membawa keranjang belanja",day:"Hari 36 · さがる・さげる"},
+  {jp:"一字下げて書く",read:"いちじさげてかく",id:"menulis menjorok ke dalam",day:"Hari 36 · さがる・さげる"},
+  {jp:"テレビの音を下げる",read:"てれびのおとをさげる",id:"mengecilkan suara TV",day:"Hari 36 · さがる・さげる"},
+  {jp:"小さくする",read:"ちいさくする",id:"mengecilkan",day:"Hari 36 · さがる・さげる"},
+  {jp:"泥がつく",read:"どろがつく",id:"terkena lumpur",day:"Hari 36 · つく・つける"},
+  {jp:"傷がつく",read:"きずがつく",id:"terluka",day:"Hari 36 · つく・つける"},
+  {jp:"傷をつける",read:"きずをつける",id:"melukai",day:"Hari 36 · つく・つける"},
+  {jp:"連絡がつく",read:"れんらくがつく",id:"terhubungi",day:"Hari 36 · つく・つける"},
+  {jp:"連絡をつける",read:"れんらくをつける",id:"menghubungkan",day:"Hari 36 · つく・つける"},
+  {jp:"都合がつく",read:"つごうがつく",id:"waktunya bisa diatur",day:"Hari 36 · つく・つける"},
+  {jp:"都合をつける",read:"つごうをつける",id:"mengatur waktu",day:"Hari 36 · つく・つける"},
+  {jp:"おまけがつく",read:"",id:"dapat bonus",day:"Hari 36 · つく・つける"},
+  {jp:"おまけをつける",read:"",id:"memberikan bonus",day:"Hari 36 · つく・つける"},
+  {jp:"印をつける",read:"しるしをつける",id:"menandai",day:"Hari 36 · つく・つける"},
+  {jp:"たばこに火をつける",read:"たばこにひをつける",id:"menyalakan rokok",day:"Hari 36 · つく・つける"},
+  {jp:"火がつく",read:"ひがつく",id:"api menyala",day:"Hari 36 · つく・つける"},
+  {jp:"日記をつける",read:"にっきをつける",id:"menulis buku harian",day:"Hari 36 · つく・つける"},
+  {jp:"書く",read:"かく",id:"menulis",day:"Hari 36 · つく・つける"}
+];
+// ==================== UTILS ====================
+function shuffle(arr) {
+  let a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+// ==================== TAB LOGIC ====================
+let currentTab = 'flashcard';
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', (i===0 && tab==='flashcard') || (i===1 && tab==='search'));
+  });
+  // Show appropriate screen within tab
+  if (tab === 'search') {
+    document.getElementById('start-screen').classList.remove('active');
+    document.getElementById('flash-screen').classList.remove('active');
+    document.getElementById('done-screen').classList.remove('active');
+    document.getElementById('search-screen').classList.add('active');
+    document.getElementById('search-input').focus();
+  } else {
+    document.getElementById('search-screen').classList.remove('active');
+    // restore last flashcard sub-screen
+    document.getElementById('start-screen').classList.add('active');
+    document.getElementById('flash-screen').classList.remove('active');
+    document.getElementById('done-screen').classList.remove('active');
+  }
+}
+
+// ==================== SEARCH LOGIC ====================
+let searchFilter = 'all';
+
+function setSearchFilter(f) {
+  searchFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('filter-' + f).classList.add('active');
+  doSearch();
+}
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-clear').style.display = 'none';
+  document.getElementById('search-stats').textContent = 'Ketik kata untuk mencari dari ' + vocab.length + ' kosakata...';
+  document.getElementById('search-results').innerHTML = '';
+}
+
+function highlight(text, query) {
+  if (!query) return text;
+  const esc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp('(' + esc + ')', 'gi'), '<span class="si-highlight">$1</span>');
+}
+
+function doSearch() {
+  const q = document.getElementById('search-input').value.trim();
+  const clearBtn = document.getElementById('search-clear');
+  clearBtn.style.display = q ? 'block' : 'none';
+
+  if (!q) {
+    clearSearch();
+    return;
+  }
+
+  const ql = q.toLowerCase();
+  const results = vocab.filter(v => {
+    if (searchFilter === 'jp')   return v.jp.toLowerCase().includes(ql);
+    if (searchFilter === 'id')   return v.id.toLowerCase().includes(ql);
+    if (searchFilter === 'read') return v.read.toLowerCase().includes(ql);
+    // all
+    return v.jp.toLowerCase().includes(ql) ||
+           v.id.toLowerCase().includes(ql) ||
+           v.read.toLowerCase().includes(ql);
+  });
+
+  document.getElementById('search-stats').textContent =
+    results.length > 0
+      ? `Ditemukan ${results.length} kata untuk "${q}"`
+      : `Tidak ditemukan kata untuk "${q}"`;
+
+  const container = document.getElementById('search-results');
+  if (results.length === 0) {
+    container.innerHTML = '<div class="search-empty">😕 Tidak ada hasil.<br>Coba kata lain.</div>';
+    return;
+  }
+
+  container.innerHTML = results.slice(0, 80).map(v => `
+    <div class="search-item">
+      <div class="si-top">
+        <div class="si-jp">${highlight(v.jp, q)}</div>
+        <div class="si-day">${v.day}</div>
+      </div>
+      ${v.read ? `<div class="si-read">（${highlight(v.read, q)}）</div>` : ''}
+      <div class="si-id">→ ${highlight(v.id, q)}</div>
+    </div>
+  `).join('');
+
+  if (results.length > 80) {
+    container.innerHTML += `<div class="search-empty">...dan ${results.length - 80} lagi. Perjelas pencarian.</div>`;
+  }
+}
+
+// ==================== DAY FILTER ====================
+// Get unique hari numbers
+function getHariNum(day) {
+  const m = day.match(/(\d+)/);
+  return m ? parseInt(m[1]) : 0;
+}
+
+const allDays = [...new Set(vocab.map(v => v.day))];
+const allHariNums = [...new Set(allDays.map(getHariNum))].sort((a,b)=>a-b);
+let selectedHari = new Set(allHariNums);
+
+function buildDayGrid() {
+  const grid = document.getElementById('day-grid');
+  grid.innerHTML = allHariNums.map(n => `
+    <button class="day-chip active" id="chip-${n}" onclick="toggleDay(${n})">Hari ${n}</button>
+  `).join('');
+  updateSelectedCount();
+}
+
+function toggleDay(n) {
+  if (selectedHari.has(n)) {
+    selectedHari.delete(n);
+    document.getElementById('chip-'+n).classList.remove('active');
+  } else {
+    selectedHari.add(n);
+    document.getElementById('chip-'+n).classList.add('active');
+  }
+  updateSelectedCount();
+}
+
+function selectAllDays() {
+  allHariNums.forEach(n => {
+    selectedHari.add(n);
+    document.getElementById('chip-'+n).classList.add('active');
+  });
+  updateSelectedCount();
+}
+
+function clearAllDays() {
+  allHariNums.forEach(n => {
+    selectedHari.delete(n);
+    document.getElementById('chip-'+n).classList.remove('active');
+  });
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  const count = vocab.filter(v => selectedHari.has(getHariNum(v.day))).length;
+  const hCount = selectedHari.size;
+  document.getElementById('selected-count').textContent =
+    hCount > 0 ? `✅ ${hCount} hari dipilih · ${count} kartu` : '⚠️ Tidak ada hari dipilih';
+}
+
+// ==================== FLASHCARD STATE ====================
+let faceMode = 'jp';
+let orderMode = 'shuffle';
+let deck = [];
+let current = 0;
+let knowSet = new Set();
+let nopeSet = new Set();
+let isFlipped = false;
+let activeDeckSize = 0;
+
+function setFace(m) {
+  faceMode = m;
+  document.querySelectorAll('#face-jp,#face-id').forEach(b=>b.classList.remove('active'));
+  document.getElementById('face-'+m).classList.add('active');
+}
+function setOrder(m) {
+  orderMode = m;
+  document.querySelectorAll('#order-shuffle,#order-seq').forEach(b=>b.classList.remove('active'));
+  document.getElementById('order-'+m).classList.add('active');
+}
+
+function startFlash() {
+  const filtered = vocab.map((_,i)=>i).filter(i => selectedHari.has(getHariNum(vocab[i].day)));
+  if (filtered.length === 0) { alert('Pilih minimal satu hari terlebih dahulu!'); return; }
+  knowSet.clear(); nopeSet.clear();
+  activeDeckSize = filtered.length;
+  deck = orderMode === 'shuffle' ? shuffle(filtered) : filtered;
+  current = 0;
+  showFlashScreen();
+  renderCard();
+}
+
+function showFlashScreen() {
+  document.getElementById('start-screen').classList.remove('active');
+  document.getElementById('done-screen').classList.remove('active');
+  document.getElementById('flash-screen').classList.add('active');
+}
+
+function renderCard() {
+  document.getElementById('card-inner').classList.remove('flipped');
+  isFlipped = false;
+
+  const idx = deck[current];
+  const item = vocab[idx];
+
+  const pct = (current / deck.length) * 100;
+  document.getElementById('fl-prog-fill').style.width = pct+'%';
+  document.getElementById('fl-prog-txt').textContent = `${current+1} / ${deck.length}`;
+  document.getElementById('fl-remain').textContent = `${deck.length - current - 1} sisa`;
+
+  document.getElementById('front-day').textContent = item.day;
+
+  if (faceMode === 'jp') {
+    document.getElementById('front-label').textContent = '日本語';
+    document.getElementById('front-word').textContent = item.jp;
+    document.getElementById('front-read').textContent = item.read ? `（${item.read}）` : '';
+    document.getElementById('back-label').textContent = 'Artinya (Indonesia)';
+    document.getElementById('back-word').textContent = item.id;
+  } else {
+    document.getElementById('front-label').textContent = 'Bahasa Indonesia';
+    document.getElementById('front-word').textContent = item.id;
+    document.getElementById('front-read').textContent = '';
+    document.getElementById('back-label').textContent = '日本語';
+    document.getElementById('back-word').innerHTML = item.jp +
+      (item.read ? `<br><span style="font-size:13px;font-weight:600;opacity:.75">（${item.read}）</span>` : '');
+  }
+
+  document.getElementById('btn-prev').disabled = (current === 0);
+  document.getElementById('btn-next-fl').disabled = (current === deck.length - 1);
+  updateStats();
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('card-inner').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard() {
+  if (current < deck.length - 1) { current++; renderCard(); }
+  else { showDone(); }
+}
+function prevCard() {
+  if (current > 0) { current--; renderCard(); }
+}
+
+function markCard(know) {
+  const idx = deck[current];
+  if (know) { knowSet.add(idx); nopeSet.delete(idx); }
+  else       { nopeSet.add(idx); knowSet.delete(idx); }
+  updateStats();
+  if (current < deck.length - 1) { current++; renderCard(); }
+  else { showDone(); }
+}
+
+function updateStats() {
+  document.getElementById('stat-total').textContent = deck.length;
+  document.getElementById('stat-know').textContent  = knowSet.size;
+  document.getElementById('stat-nope').textContent  = nopeSet.size;
+  const seen = knowSet.size + nopeSet.size;
+  document.getElementById('stat-unseen').textContent = deck.length - seen;
+}
+
+function reviewWrong() {
+  if (nopeSet.size === 0) { alert('Tidak ada kartu yang perlu diulang! Semua sudah hafal 🎉'); return; }
+  deck = orderMode === 'shuffle' ? shuffle([...nopeSet]) : [...nopeSet];
+  current = 0;
+  document.getElementById('done-screen').classList.remove('active');
+  document.getElementById('flash-screen').classList.add('active');
+  renderCard();
+}
+
+function reviewWrongFromDone() { reviewWrong(); }
+
+function reshuffleAll() {
+  const filtered = vocab.map((_,i)=>i).filter(i => selectedHari.has(getHariNum(vocab[i].day)));
+  knowSet.clear(); nopeSet.clear();
+  deck = shuffle(filtered);
+  current = 0;
+  renderCard();
+}
+
+function backToStart() {
+  document.getElementById('flash-screen').classList.remove('active');
+  document.getElementById('done-screen').classList.remove('active');
+  document.getElementById('start-screen').classList.add('active');
+}
+
+function showDone() {
+  document.getElementById('flash-screen').classList.remove('active');
+  document.getElementById('done-screen').classList.add('active');
+
+  const total = deck.length;
+  const know = knowSet.size;
+  const pct = know / total;
+
+  document.getElementById('done-score').textContent = `${know}/${total}`;
+
+  let emoji,stars,msg;
+  if(pct>=0.95){emoji='🏆';stars='⭐⭐⭐⭐⭐';msg='Luar biasa! Hampir semua hafal!';}
+  else if(pct>=0.80){emoji='🎉';stars='⭐⭐⭐⭐';msg='Bagus banget! Tinggal sedikit lagi!';}
+  else if(pct>=0.60){emoji='😊';stars='⭐⭐⭐';msg='Lumayan! Terus berlatih ya!';}
+  else if(pct>=0.40){emoji='😅';stars='⭐⭐';msg='Masih perlu banyak latihan!';}
+  else{emoji='😓';stars='⭐';msg='Semangat! Ulangi terus ya!';}
+
+  document.getElementById('done-emoji').textContent = emoji;
+  document.getElementById('done-stars').textContent = stars;
+  document.getElementById('done-msg').textContent = msg;
+
+  const box = document.getElementById('review-wrong-box');
+  if (nopeSet.size > 0) {
+    box.style.display = 'block';
+    document.getElementById('review-wrong-list').innerHTML = [...nopeSet].map(i => {
+      const v = vocab[i];
+      return `<div class="review-item"><div class="ri-jp">${v.jp}${v.read?' （'+v.read+'）':''}</div><div class="ri-id">→ ${v.id}</div></div>`;
+    }).join('');
+  } else {
+    box.style.display = 'none';
+  }
+  updateStats();
+}
+
+// ==================== INIT ====================
+buildDayGrid();
+</script>
+</body>
+</html>
