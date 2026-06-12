@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soumatome N3 - Materi Bunpou</title>
+<style>
+  :root{
+    --pink:#ff5da2;
+    --yellow:#ffd400;
+    --bg1:#fff4e0;
+    --bg2:#ffe9f3;
+    --card:#ffffff;
+    --text:#3a2e2e;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', 'Helvetica Neue', sans-serif;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    color:var(--text);
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  header{
+    background:linear-gradient(90deg,var(--pink),var(--yellow));
+    padding:24px 16px;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    position:sticky;
+    top:0;
+    z-index:50;
+  }
+  header h1{
+    margin:0;
+    color:#fff;
+    font-size:2rem;
+    text-shadow:2px 2px 0 rgba(0,0,0,0.15);
+    letter-spacing:1px;
+  }
+  header p{
+    margin:6px 0 16px;
+    color:#fff8e0;
+    font-weight:600;
+  }
+  .search-wrap{
+    max-width:600px;
+    margin:0 auto;
+    position:relative;
+  }
+  #searchInput{
+    width:100%;
+    padding:14px 18px;
+    border-radius:999px;
+    border:none;
+    font-size:1.05rem;
+    outline:none;
+    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  }
+  #searchInput:focus{
+    box-shadow:0 0 0 3px #fff, 0 4px 10px rgba(0,0,0,0.2);
+  }
+  #resultCount{
+    text-align:center;
+    margin-top:8px;
+    color:#fff;
+    font-size:0.85rem;
+    font-weight:600;
+  }
+  main{
+    max-width:900px;
+    margin:0 auto;
+    padding:20px 14px;
+  }
+  .week{
+    margin-top:34px;
+  }
+  .week-title{
+    background:var(--pink);
+    color:#fff;
+    display:inline-block;
+    padding:6px 18px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:0.95rem;
+    margin-bottom:10px;
+    box-shadow:0 3px 6px rgba(0,0,0,0.15);
+  }
+  .day{
+    background:var(--card);
+    border-radius:18px;
+    padding:16px 18px;
+    margin-bottom:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
+    border:3px solid transparent;
+    transition:border-color .2s, transform .15s;
+  }
+  .day-title{
+    font-size:1.15rem;
+    font-weight:800;
+    color:var(--pink);
+    margin:0 0 10px 0;
+    border-bottom:3px dashed var(--yellow);
+    padding-bottom:6px;
+  }
+  .item{
+    background:#fffaf0;
+    border-radius:12px;
+    padding:10px 14px;
+    margin-bottom:10px;
+    border-left:6px solid var(--yellow);
+  }
+  .item-title{
+    font-weight:700;
+    color:#d6336c;
+    font-size:1.02rem;
+    margin-bottom:4px;
+  }
+  .item-row{
+    font-size:0.92rem;
+    margin:2px 0;
+    line-height:1.45;
+  }
+  .item-row .label{
+    font-weight:700;
+    color:#888;
+    margin-right:4px;
+  }
+  .contoh b{
+    background:var(--yellow);
+    padding:0 2px;
+    border-radius:4px;
+    color:#5a3d00;
+  }
+  .hidden{
+    display:none !important;
+  }
+  .no-result{
+    text-align:center;
+    margin-top:60px;
+    font-size:1.2rem;
+    color:#aaa;
+    font-weight:700;
+  }
+  mark.hl{
+    background:#ff8fc7;
+    color:#fff;
+    border-radius:4px;
+    padding:0 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📘 Soumatome N3 - Bunpou</h1>
+  <p>Minggu 1 - 6 • Hari ke-01 s/d ke-36</p>
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="🔍 Cari kotoba, rumus, arti, atau contoh kalimat...">
+    <div id="resultCount"></div>
+  </div>
+</header>
+
+<main id="main"></main>
+<div class="no-result hidden" id="noResult">😢 Tidak ada hasil ditemukan...</div>
+
+<script>
+const data = [
+{week:1, days:[
+ {num:1, items:[
+   {title:"Kalimat Pasif (うけみ - Ukemi)", rumus:"Kelompok 1: U → A + れる (Kaku→Kakareru) / Kelompok 2: る dihapus + られる (Taberu→Taberaru) / Kelompok 3: する→される, くる→こられる", arti:"Dikenai tindakan oleh orang lain / Terkena dampak negatif.", contoh:"いもうとにケーキをたべられました。", pattern:"たべられました"},
+   {title:"Kalimat Kausatif (しえき - Shieki)", rumus:"Kelompok 1: U → A + せる (Iku→Ikaseru) / Kelompok 2: る dihapus + させる (Taberu→Tabesaseru) / Kelompok 3: する→させる, くる→こさせる", arti:"Menyuruh atau mengizinkan orang lain melakukan sesuatu.", contoh:"はははおとうとにへやをそうじさせました。", pattern:"させました"}
+ ]},
+ {num:2, items:[
+   {title:"~naito (~ないと)", rumus:"Kata Kerja bentuk ない (tanpa い) + と", arti:"Harus.", contoh:"もうねないと。", pattern:"ないと"},
+   {title:"~chatta (~ちゃった)", rumus:"Kata Kerja bentuk て/で → ちゃった/じゃった", arti:"Sudah telanjur / Menyesal.", contoh:"しゅくだいをわすれちゃった。", pattern:"ちゃった"},
+   {title:"~toku (~とく)", rumus:"Kata Kerja bentuk て/で → とく/どく", arti:"Melakukan persiapan terlebih dahulu.", contoh:"りょこうのまえにチケットをかっておく。", pattern:"かっておく"}
+ ]},
+ {num:3, items:[
+   {title:"~mitai (~みたい)", rumus:"Kata Kerja Biasa / Kata Sifat / Kata Benda + みたいだ/みたいです", arti:"Mirip seperti / Sepertinya (pengamatan langsung).", contoh:"かれはこどものみたいです。", pattern:"のみたいです"},
+   {title:"~rashii (~らしい)", rumus:"Kata Kerja Biasa / Kata Sifat / Kata Benda + らしい", arti:"Kesannya sangat... / Sepertinya (kabar angin).", contoh:"あしたはあめがふるらしいです。", pattern:"ふるらしいです"},
+   {title:"~ppoi (~っぽい)", rumus:"Kata Kerja bentuk ます (tanpa ます) / Kata Benda / Kata Sifat + っぽい", arti:"Sifat atau warnanya terasa kental / Ke-A-an.", contoh:"あのシャツはくろっぽいです。", pattern:"くろっぽいです"}
+ ]},
+ {num:4, items:[
+   {title:"~you ni suru (~ようにする)", rumus:"Kata Kerja bentuk Kamus / bentuk ない + ようにする", arti:"Berusaha/mengusahakan untuk membiasakan sesuatu.", contoh:"まいにちやさいをたべるようにしています。", pattern:"ようにしています"},
+   {title:"~you ni naru (~ようになる)", rumus:"Kata Kerja bentuk Potensial (bisa) / Kamus + ようになる", arti:"Menjadi bisa / Berubah menjadi suatu kondisi.", contoh:"にほんごがはなせるようになりました。", pattern:"ようになりました"},
+   {title:"~you ni (~ように)", rumus:"Kata Kerja bentuk Kamus / bentuk ない / Potensial + ように", arti:"Supaya / Agar.", contoh:"わすれないようにメモします。", pattern:"ないように"},
+   {title:"~tame ni (~ために)", rumus:"Kata Kerja bentuk Kamus + ために / Kata Benda + のために", arti:"Demi / Untuk (tujuan jelas atau sebab).", contoh:"にほんへいくためににほんごをべんきょうします。", pattern:"くために"}
+ ]},
+ {num:5, items:[
+   {title:"~you ni (~ように) - perintah halus/doa", rumus:"Kata Kerja bentuk Kamus / bentuk ない / Potensial + ように / ように（おねがいします）", arti:"Tolong... (perintah halus) / Semoga... (doa).", contoh:"しけんがごうかくしますように。", pattern:"しますように"}
+ ]},
+ {num:6, items:[
+   {title:"~you to omou (~ようと思う)", rumus:"Kata Kerja Maksud (Volitional) + と思う", arti:"Bermaksud / Berniat.", contoh:"らいねんにほんへいこうとおもいます。", pattern:"いこうとおもいます"},
+   {title:"~you to suru (~ようとする)", rumus:"Kata Kerja Maksud (Volitional) + とするとき / としたら / としている", arti:"Baru mau / Pas bersiap-siap melakukan sesuatu.", contoh:"でかけようとしたときにあめがふりました。", pattern:"ようとしたとき"},
+   {title:"~you to shinai (~ようとしない)", rumus:"Kata Kerja Maksud (Volitional) + としない", arti:"Sama sekali tidak mau.", contoh:"かれはなにもはなそうとしない。", pattern:"そうとしない"}
+ ]}
+]},
+{week:2, days:[
+ {num:7, items:[
+   {title:"~bakari (~ばかり)", rumus:"Kata Benda / Kata Kerja bentuk て + ばかり / ばかりいる", arti:"Melulu / Hanya... terus-terusan.", contoh:"ゲームばかりしています。", pattern:"ばかりしています"},
+   {title:"~dake shika (~だけしか)", rumus:"Kata Benda + だけしか + Kata Kerja bentuk Negatif", arti:"Hanya... saja.", contoh:"さいふにひゃくえんだけしかない。", pattern:"だけしかない"},
+   {title:"~sae (~さえ)", rumus:"Kata Benda + さえ", arti:"Bahkan... pun.", contoh:"ひらがなさえかけません。", pattern:"さえかけません"},
+   {title:"~koso (~こそ)", rumus:"Kata Benda + こそ", arti:"Justru / Justru karena inilah.", contoh:"らいねんこそにほんへいきます。", pattern:"こそにほんへいきます"}
+ ]},
+ {num:8, items:[
+   {title:"~ni tsuite (~について)", rumus:"Kata Benda + について / についての + Kata Benda", arti:"Tentang / Mengenai.", contoh:"にほんのぶんかについてしらべます。", pattern:"についてしらべます"},
+   {title:"~ni kanshite (~に関して)", rumus:"Kata Benda + に関して / に関する + Kata Benda", arti:"Sehubungan dengan / Terkait dengan (formal).", contoh:"このけんに関してはわかりません。", pattern:"に関してはわかりません"},
+   {title:"~ni yoru to (~によると)", rumus:"Kata Benda + によると / によれば + ~そうだ / ~らしい", arti:"Menurut... / Berdasarkan sumber informasi.", contoh:"てんきよほうによるとあしたはあめです。", pattern:"によるとあしたはあめです"},
+   {title:"~ni yotte (~によって)", rumus:"Kata Benda + によって / によっては / により / による + Kata Benda", arti:"Oleh / Melalui cara / Karena / Tergantung pada.", contoh:"ひとによってかんがえかたがちがいます。", pattern:"によってかんがえかたがちがいます"}
+ ]},
+ {num:9, items:[
+   {title:"Pembentukan kata benda (こと & の)", rumus:"Kalimat Biasa (Plain Form) + こと / の", arti:"Mengubah kalimat/kata kerja menjadi kata benda.", contoh:"にほんごをべんきょうすることはたのしいです。", pattern:"することはたのしいです"}
+ ]},
+ {num:10, items:[
+   {title:"~to iu (~という)", rumus:"Kata Benda A + という + Kata Benda B", arti:"Yang bernama... / Yang disebut...", contoh:"サクラというはなをしっていますか。", pattern:"というはな"},
+   {title:"~to iu no wa (~というのは)", rumus:"Kata Benda / Kata Kunci + というのは ~（ことだ／意味だ）", arti:"Yang dimaksud dengan... adalah...", contoh:"「きんし」というのは「してはいけない」ということです。", pattern:"というのは"},
+   {title:"~to iu koto (~ということ)", rumus:"Kalimat Biasa + ということ / というの", arti:"Bahwa... (pembendaan satu kalimat fakta).", contoh:"かれがまじめだということをしっています。", pattern:"だということを"}
+ ]},
+ {num:11, items:[
+   {title:"~to iu yori (~というより)", rumus:"Kata / Kalimat A + というより + B", arti:"Daripada dibilang A, lebih tepat disebut B.", contoh:"ともだちというよりかぞくみたいです。", pattern:"というよりかぞくみたいです"},
+   {title:"~to iu to (~というと)", rumus:"Kata Benda / Kata Kerja + というと / といえば / といったら", arti:"Kalau bicara soal...", contoh:"にほんのたべものというとすしがおもいうかびます。", pattern:"というとすしがおもいうかびます"},
+   {title:"~to ittemo (~といっても)", rumus:"Kata / Kalimat A + といっても + B", arti:"Meskipun dibilang... (kenyataannya tidak se-ekstrem itu).", contoh:"にほんごがはなせるといってもすこしだけです。", pattern:"といってもすこしだけです"}
+ ]},
+ {num:12, items:[
+   {title:"~te goran (~てごらん)", rumus:"Kata Kerja bentuk て + ごらん", arti:"Cobalah untuk melakukan... (perintah halus).", contoh:"これをたべてごらん。", pattern:"てごらん"},
+   {title:"~you ni iu (~ように言う)", rumus:"Kata Kerja bentuk Kamus / bentuk ない + ように言う / ように頼む / ように伝える", arti:"Menyampaikan pesan agar melakukan (atau tidak melakukan) sesuatu.", contoh:"せんせいにしゅくだいをだすようにいわれました。", pattern:"ようにいわれました"},
+   {title:"~to iwareru (~と言われる)", rumus:"Kalimat perintah/larangan langsung + と言われる / と怒られる", arti:"Diberitahu atau diperintahkan untuk...", contoh:"あぶないからはしるなといわれた。", pattern:"なといわれた"}
+ ]}
+]},
+{week:3, days:[
+ {num:13, items:[
+   {title:"~temo (~ても)", rumus:"Kata Kerja bentuk て / Kata Sifat い→くて / Kata Sifat な→で / Kata Benda + で + も", arti:"Walaupun / Meskipun...", contoh:"あめがふってもいきます。", pattern:"ふってもいきます"},
+   {title:"donna ni temo (どんなにても)", rumus:"どんなに / いくら + Kata Kerja bentuk て / Kata Sifat + も", arti:"Bagaimanapun / Biar se-... apa pun...", contoh:"どんなにたかくてもかいます。", pattern:"どんなにたかくても"},
+   {title:"~zu ni (~ずに)", rumus:"Kata Kerja bentuk ない (tanpa ない) + ずに (する→せずに)", arti:"Tanpa melakukan... (Sama dengan ~nai de).", contoh:"あさごはんをたべずにがっこうへいきました。", pattern:"たべずに"}
+ ]},
+ {num:14, items:[
+   {title:"~toshite (~として)", rumus:"Kata Benda + として / としての + Kata Benda", arti:"Sebagai... (status/peran/kapasitas).", contoh:"わたしはかいごしとしてにほんへいきます。", pattern:"としてにほんへいきます"},
+   {title:"~ni shite wa (~にしては)", rumus:"Kalimat Biasa / Kata Benda / Kata Sifat + にしては", arti:"Untuk ukuran... / Padahal... (di luar perkiraan umum).", contoh:"にほんごをはじめて１か月にしてはじょうずです。", pattern:"にしてはじょうずです"},
+   {title:"ni shitemo (~にしても)", rumus:"Kalimat Biasa / Kata Benda / Kata Sifat + にしても", arti:"Kalaupun begitu... / Meskipun begitu...", contoh:"いそがしいにしてもれんらくはしてください。", pattern:"にしてもれんらくはしてください"},
+   {title:"~to shitara (~としたら)", rumus:"Kalimat Biasa + としたら / とすれば", arti:"Seandainya... / Jika diasumsikan...", contoh:"もし１おくえんあるとしたらなにをかいますか。", pattern:"あるとしたら"}
+ ]},
+ {num:15, items:[
+   {title:"~tsumori datta (~つもりだった)", rumus:"Kata Kerja bentuk Kamus / bentuk ない + つもりだった", arti:"Tadinya berniat... (tetapi kenyataannya berbeda).", contoh:"にほんごをべんきょうするつもりだったがねてしまった。", pattern:"するつもりだった"},
+   {title:"~hazu (~はず)", rumus:"Kalimat Biasa (Kata Sifat な+な / Kata Benda + の) + はずだ / はずがない", arti:"Seharusnya pasti... / Wajarnya...", contoh:"かれはきょうくるはずです。", pattern:"くるはずです"},
+   {title:"~beki (~べき)", rumus:"Kata Kerja bentuk Kamus + べきだ / べきではない (する→するべき / すべき)", arti:"Sudah sewajarnya / Seharusnya wajib dilakukan.", contoh:"おとしよりにはしんせつにするべきです。", pattern:"するべきです"},
+   {title:"~ta mono da (~たものだ)", rumus:"Kata Kerja bentuk た + ものだ / もんだ", arti:"Dulu sering... (mengenang kebiasaan masa lalu).", contoh:"こどものときよくこのかわでおよいだものだ。", pattern:"およいだものだ"}
+ ]},
+ {num:16, items:[
+   {title:"~tsuide ni (~ついでに)", rumus:"Kata Kerja bentuk Kamus / bentuk た + ついでに / Kata Benda + のついでに", arti:"Sekalian / Mumpung melakukan kegiatan tersebut.", contoh:"かいものにいくついでにてがみをだして。", pattern:"いくついでに"},
+   {title:"~tabi ni (~たびに)", rumus:"Kata Kerja bentuk Kamus + たびに / Kata Benda + のたびに", arti:"Setiap kali melakukan... (pasti terjadi hal yang sama).", contoh:"このしゃしんをみるたびにかぞくをおもいだします。", pattern:"みるたびに"},
+   {title:"~ta totan (~たとたん)", rumus:"Kata Kerja bentuk た + とたん / とたんに", arti:"Begitu pas selesai melakukan... langsung seketika itu juga.", contoh:"おきあがったとたんめまいがした。", pattern:"あがったとたん"},
+   {title:"~saichuu ni (~最中に)", rumus:"Kata Kerja bentuk ている + 最中に / Kata Benda + の最中に", arti:"Tepat di tengah-tengah sedang asyik...", contoh:"テストのさいちゅうにおなかがいたくなりました。", pattern:"のさいちゅうに"}
+ ]},
+ {num:17, items:[
+   {title:"~toori (~通り)", rumus:"Kata Kerja bentuk Kamus / bentuk た + 通り / 通りに / Kata Benda + の通り / どおり", arti:"Sesuai dengan... / Sama persis seperti.", contoh:"せんせいがいったとおりにかきます。", pattern:"いったとおりに"},
+   {title:"~mama (~まま)", rumus:"Kata Kerja bentuk た / bentuk ない + まま / Kata Benda + のまま / Kata Sifat", arti:"Biarkan dalam kondisi tetap begitu.", contoh:"まどをあけたままねてしまいました。", pattern:"あけたまま"},
+   {title:"~ppanashi (~っぱなし)", rumus:"Kata Kerja bentuk ます (tanpa ます) + っぱなし", arti:"Membiarkan menyala/terbuka terus karena kelalaian.", contoh:"みずをだしっぱなしにしないでください。", pattern:"だしっぱなし"},
+   {title:"~kiri (~きり)", rumus:"Kata Kerja bentuk た + きり / Kata Benda + きり", arti:"Hanya... / Setelah kejadian itu tidak pernah terjadi lagi.", contoh:"かれには１かいあったきりです。", pattern:"あったきりです"}
+ ]},
+ {num:18, items:[
+   {title:"~garu (~がる)", rumus:"Kata Sifat い (tanpa い) / Kata Sifat な (tanpa な) + がる / がっている / がらないで", arti:"Terlihat merasakan (menunjukkan perasaan pihak ketiga).", contoh:"いもうとがさむがっています。", pattern:"さむがっています"},
+   {title:"~te hoshii (~てほしい)", rumus:"Kata Kerja bentuk て / bentuk ない + で + ほしい / ほしくない", arti:"Ingin orang lain melakukan sesuatu untuk kita.", contoh:"にほんごをおしえてほしいです。", pattern:"おしえてほしいです"},
+   {title:"~furi wo suru (~ふりをする)", rumus:"Kalimat Biasa (Kata Sifat な+な / Kata Benda + の) + ふりをする", arti:"Berpura-pura seolah-olah.", contoh:"ねているふりをつづけました。", pattern:"ふりをつづけました"}
+ ]}
+]},
+{week:4, days:[
+ {num:19, items:[
+   {title:"~ni totte (~にとって)", rumus:"Kata Benda + にとって / にとっては / にとっても", arti:"Bagi... / Dari sudut pandang...", contoh:"わたしにとってかぞくはいちばんたいせつです。", pattern:"にとってかぞくは"},
+   {title:"~wari ni (~わりに)", rumus:"Kalimat Biasa (Kata Sifat な+な / Kata Benda + の) + わりに / わりには", arti:"Padahal... / Untuk ukuran...", contoh:"このみせはやすいわりににおいしいです。", pattern:"わりににおいしいです"},
+   {title:"~kuse ni (~くせに)", rumus:"Kalimat Biasa (Kata Sifat な+な / Kata Benda + の) + くせに", arti:"Padahal... (nada kesal/menyindir/merendahkan).", contoh:"しらないくせにしっているという。", pattern:"くせにしっているという"},
+   {title:"~nanka / nante (~なんか／~なんて)", rumus:"Kata Benda / Kata Kerja / Kalimat Biasa + なんか / なんて / など", arti:"Hal-hal seperti... (meremehkan atau mengecilkan arti).", contoh:"テストなんてだいきらいです。", pattern:"なんてだいきらいです"}
+ ]},
+ {num:20, items:[
+   {title:"~okage (~おかげ)", rumus:"Kalimat Biasa (Kata Sifat な+な / Kata Benda + の) + おかげ / おかげだ", arti:"Berkat... (alasan yang membawa hasil positif).", contoh:"せんせいのおかげでごうかくしました。", pattern:"のおかげでごうかくしました"},
+   {title:"~sei (~せい)", rumus:"Kalimat Biasa (Kata Sifat な+な / Kata Benda + の) + せい / せいだ / せいで", arti:"Gara-gara... (alasan yang membawa hasil negatif).", contoh:"あめのせいでおくれちゃいました。", pattern:"のせいでおくれちゃいました"},
+   {title:"~kawari ni (~かわりに)", rumus:"Kata Kerja bentuk Kamus / Kata Benda + の + かわりに", arti:"Sebagai gantinya / Sebagai kompensasi.", contoh:"えいごをおしえるかわりににほんごをおしえてください。", pattern:"るかわりに"},
+   {title:"ni kawatte (~に代わって)", rumus:"Kata Benda + にかわって / にかわり", arti:"Mewakili / Menggantikan posisi.", contoh:"しゃちょうにかわってあいさつします。", pattern:"にかわってあいさつします"}
+ ]},
+ {num:21, items:[
+   {title:"~kurai / hodo (~くらい／~ほど)", rumus:"Kata Kerja / Kata Sifat / Kata Benda + くらい / ほど / ぐらい", arti:"Kira-kira / Sampai tingkat...", contoh:"なみだがでるほどうれしかったです。", pattern:"でるほどうれしかったです"},
+   {title:"~ba...hodo (ばほど)", rumus:"Kata Kerja bentuk 条件 (ーば) + Kata Kerja bentuk Kamus + ほど", arti:"Semakin... maka akan semakin...", contoh:"にほんごはべんきょうすればするほどおもしろいです。", pattern:"すればするほど"},
+   {title:"~hodo wa nai (~ほどではない)", rumus:"Kata Benda + ほど + Kata Kerja / Kata Sifat bentuk Negatif", arti:"Tidak ada yang se-level/sebanding dengan...", contoh:"ことしはきょねんほどあつくない。", pattern:"ほどあつくない"}
+ ]},
+ {num:22, items:[
+   {title:"~koto wa nai (~ことはない)", rumus:"Kata Kerja bentuk Kamus + ことはない", arti:"Tidak perlu / Tidak usah melakukan sesuatu.", contoh:"しんぱいすることはありませんよ。", pattern:"することはありませんよ"},
+   {title:"~to iu koto da (~ということだ)", rumus:"Kalimat Biasa + ということです / ということだ", arti:"Artinya adalah... / Katanya... (menyampaikan informasi).", contoh:"ぶっかがあがるということはせいかつがたいへんになるということです。", pattern:"になるということです"},
+   {title:"~koto da (~ことだ)", rumus:"Kata Kerja bentuk Kamus / bentuk ない + ことだ", arti:"Sebaiknya... / Harusnya... (saran kuat).", contoh:"にほんごがじょうずになりたければ、まいにちはなすことです。", pattern:"はなすことです"},
+   {title:"~koto ka (~ことか)", rumus:"Kata Kerja / Kata Sifat + ことか (diikuti kata tanya seperti donna ni, nando)", arti:"Betapa... ! / Sungguh sangat... ! (seruan emosional).", contoh:"ごうかくしてどんなにうれしかったことか。", pattern:"うれしかったことか"}
+ ]},
+ {num:23, items:[
+   {title:"~kke (~っけ)", rumus:"Kalimat bentuk Lampau (た-form) + っけ / だっけ / だったっけ", arti:"...kan ya? (memastikan ingatan yang lupa).", contoh:"きょうのテストはなんじからだっけ。", pattern:"からだっけ"},
+   {title:"~shika nai (~しかない)", rumus:"Kata Kerja bentuk Kamus + しかない", arti:"Tidak ada pilihan lain selain...", contoh:"やるしかない。", pattern:"やるしかない"},
+   {title:"~ndatte (~んだって)", rumus:"Kalimat Biasa + んだって / だって (bahasa lisan)", arti:"Katanya...", contoh:"あしたはおやすみなんだって。", pattern:"なんだって"},
+   {title:"~da mono (~だもん)", rumus:"Kalimat Biasa + もの / もん / だもん (alasan kasual)", arti:"Karena... sih / Habisnya... sih.", contoh:"しらなかったんだもん。", pattern:"んだもん"}
+ ]},
+ {num:24, items:[
+   {title:"~tsumari (~つまり)", rumus:"Kalimat / Kata A. つまり + Kata B", arti:"Yaitu / Artinya / Singkatnya.", contoh:"ははのおとうと、つまりおじです。", pattern:"つまりおじです"},
+   {title:"~sono tame (~そのため)", rumus:"Kalimat Sebab. そのため（に）+ Kalimat Akibat", arti:"Oleh karena itu / Karena hal tersebut.", contoh:"あめがふった。そのためにおくれました。", pattern:"そのためにおくれました"},
+   {title:"~sono kekka (~その結果)", rumus:"Kalimat Proses. その結果 + Kalimat Hasil Akhir", arti:"Akibatnya / Hasil dari hal tersebut adalah.", contoh:"まいにちれんしゅうした。そのけっかしあいにかった。", pattern:"そのけっかしあいにかった"},
+   {title:"~naze nara (~なぜなら)", rumus:"Kalimat Kesimpulan. なぜなら + Kalimat Alasan + からだ / のだ", arti:"Pasalnya / Alasan utamanya adalah karena...", contoh:"がっこうをやすんだ。なぜならかぜをひいたからだ。", pattern:"なぜならかぜをひいたからだ"}
+ ]}
+]},
+{week:5, days:[
+ {num:25, items:[
+   {title:"~wa mochiron (~はもちろん)", rumus:"Kata Benda + はもちろん / はもとより + も", arti:"Kalau A sudah pasti, dan tidak hanya itu, B juga.", contoh:"かれはにほんごはもちろんえいごもはなせます。", pattern:"はもちろんえいごも"},
+   {title:"~bakari ka (~ばかりか)", rumus:"Kalimat Biasa (Kata Sifat な+な / Kata Benda + である) + ばかりか / ばかりでなく + も", arti:"Bukan hanya... bahkan... juga.", contoh:"えいごばかりかにほんごもべんきょうしています。", pattern:"ばかりかにほんごも"},
+   {title:"~ni kurabete (~に比べて)", rumus:"Kata Benda + にくらべて / にくらべ", arti:"Dibandingkan dengan...", contoh:"インドネシアにくらべてにほんはさむいです。", pattern:"にくらべてにほんは"},
+   {title:"~ni taishite (~に対して)", rumus:"Kata Benda + に対して / に対する + Kata Benda / Kalimat Biasa + のに対して", arti:"Terhadap... / Berbanding terbalik dengan...", contoh:"おとうとがうるさいのにたいして、あにのはしずかだ。", pattern:"のにたいして"}
+ ]},
+ {num:26, items:[
+   {title:"~ageru (~あげる)", rumus:"Kata Kerja bentuk ます (tanpa ます) + あげる / あがる (transitif/intransitif)", arti:"Menyelesaikan pekerjaan sampai tuntas.", contoh:"レポートをかきあげました。", pattern:"かきあげました"},
+   {title:"~kiru (~きる)", rumus:"Kata Kerja bentuk ます (tanpa ます) + きる / きれる / きれない", arti:"Melakukan sampai benar-benar habis / Sangat.", contoh:"つかれきってしまいました。", pattern:"つかれきって"},
+   {title:"~kake (~かけ)", rumus:"Kata Kerja bentuk ます (tanpa ます) + かけ / かけの + Kata Benda / かける", arti:"Baru setengah jalan / Belum selesai dilakukan.", contoh:"よみかけのほんがあります。", pattern:"よみかけの"},
+   {title:"~tate (~たて)", rumus:"Kata Kerja bentuk ます (tanpa ます) + たて / たての + Kata Benda", arti:"Kondisi yang masih sangat segar karena baru saja selesai dibuat.", contoh:"やきたてのパンはおいしいです。", pattern:"やきたての"}
+ ]},
+ {num:27, items:[
+   {title:"~to ii naa (~といいなあ)", rumus:"Kata Kerja bentuk Kamus / bentuk ない + といい（なあ／ね）", arti:"Kira-kira kalau... bagus ya / Semoga saja...", contoh:"あしたはれるといいなあ。", pattern:"はれるといいなあ"},
+   {title:"~ba yokatta (~ばよかった)", rumus:"Kata Kerja bentuk 条件 (ーば) / bentuk ない (ーなければ) + よかった", arti:"Andai saja dulu melakukan... (penyesalan).", contoh:"もっとべんきょうすればよかった。", pattern:"すればよかった"},
+   {title:"~ba noni (~ばのに)", rumus:"Kalimat bentuk Pengandaian (ーば／たら) + のに", arti:"Padahal kalau... (menyayangkan situasi nyata yang berbeda).", contoh:"くればよかったのに。", pattern:"くればよかったのに"},
+   {title:"~kanaa (~かなあ)", rumus:"Kalimat Biasa / Kata Kerja bentuk Kamus / bentuk ない + かな / かなあ", arti:"Ya gak ya? / Mudah-mudahan... (bergumam).", contoh:"しけんにごうかくできるかなあ。", pattern:"できるかなあ"}
+ ]},
+ {num:28, items:[
+   {title:"~made (~まで)", rumus:"Kata Benda + まで / Kata Kerja bentuk て + まで", arti:"Sampai... / Bahkan sampai tingkat... pun dilakukan.", contoh:"こどもまでスマホをもっている。", pattern:"こどもまで"},
+   {title:"~kara ni kakete (からにかけて)", rumus:"Kata Benda (waktu/tempat) + から + Kata Benda + にかけて", arti:"Dari... sampai... (rentang waktu/tempat tidak pasti batasnya).", contoh:"あしたはあさからばんにかけてあめでしょう。", pattern:"からばんにかけて"},
+   {title:"~ni oite (~において)", rumus:"Kata Benda + において / における + Kata Benda", arti:"Di... / Dalam hal... (bentuk formal dari partikel de).", contoh:"きょうとにおいてまつりがあります。", pattern:"においてまつりがあります"}
+ ]},
+ {num:29, items:[
+   {title:"~to wa kagiranai (~とは限らない)", rumus:"Kalimat Biasa + とは限らない", arti:"Belum tentu... / Tidak selalu begitu...", contoh:"たかいものがいつもいいものとはかぎらない。", pattern:"とはかぎらない"},
+   {title:"tatoe (たとえ~ても)", rumus:"たとえ + Kata Kerja bentuk て / Kata Sifat / Kata Benda + も", arti:"Walaupun seandainya... / Biarpun...", contoh:"たとえあめがふってもいきます。", pattern:"たとえあめがふっても"},
+   {title:"moshikasuru to (もしかすると)", rumus:"もしかすると / もしかしたら + Kalimat Biasa + かもしれない", arti:"Jangan-jangan... / Mungkin saja...", contoh:"もしかするとかれはこないかもしれない。", pattern:"もしかするとかれはこないかもしれない"},
+   {title:"maru de (まるで)", rumus:"まるで + Kata Benda + のよう / Kalimat Biasa + みたい", arti:"Benar-benar mirip... / Bagaikan...", contoh:"まるでゆきのようです。", pattern:"まるでゆきのようです"}
+ ]},
+ {num:30, items:[
+   {title:"dakedo (だけど)", rumus:"Kalimat A. だけど + Kalimat B", arti:"Akan tetapi... / Namun...", contoh:"にほんごはむずかしい。だけどおもしろい。", pattern:"だけどおもしろい"},
+   {title:"desu kara (ですから)", rumus:"Kalimat A (Alasan). ですから + Kalimat B (Kesimpulan)", arti:"Oleh karena itu... / Maka dari itu...", contoh:"あめがふっています。ですからカサをもっていきます。", pattern:"ですからカサをもっていきます"},
+   {title:"tokoro ga (ところが)", rumus:"Kalimat A (Ekspektasi). ところが + Kalimat B (Fakta di luar dugaan)", arti:"Namun ternyata...", contoh:"べんきょうした。ところがてん数がわるかった。", pattern:"ところがてん数がわるかった"},
+   {title:"tokoro de (ところで)", rumus:"Kalimat A. ところで + Kalimat B (Topik Baru)", arti:"Ngomong-ngomong... (mengubah topik pembicaraan).", contoh:"もうすぐテストですね。ところで、ごはんはたべましたか。", pattern:"ところで、ごはんはたべましたか"}
+ ]}
+]},
+{week:6, days:[
+ {num:31, items:[
+   {title:"moshi...nara / temo (もし~なら／~ても)", rumus:"もし + Kalimat bentuk たら / なら / ても", arti:"Seandainya jika... / Seandainya pun...", contoh:"もしあめならいきません。", pattern:"もしあめならいきません"},
+   {title:"moshimo (もしも)", rumus:"もしも + Kalimat bentuk たら / なら / 場合は", arti:"Andaikata... (pengandaian kondisi ekstrem yang jarang terjadi).", contoh:"もしもじしんがおきたらどうしますか。", pattern:"もしもじしんがおきたら"}
+ ]},
+ {num:32, items:[
+   {title:"~koto ni naru (~ことになる)", rumus:"Kata Kerja bentuk Kamus / bentuk ない + ことになる / ことになっている", arti:"Sudah diputuskan bahwa... (keputusan dari luar/aturan).", contoh:"らいげつにほんへいくことになりました。", pattern:"いくことになりました"},
+   {title:"~koto ni suru (~ことにする)", rumus:"Kata Kerja bentuk Kamus / bentuk ない + ことにする / ことにしている", arti:"Memutuskan untuk... (keputusan dari diri sendiri).", contoh:"まいにちにほんごをべんきょうすることにしました。", pattern:"することにしました"},
+   {title:"~koto wa...ga (ことはが)", rumus:"Kata Kerja (Kamus) + ことは + Kata Kerja (bentuk biasa/lampau) + が", arti:"Memang... sih, tapi...", contoh:"このほんはよんだことはよんだが、わからなかった。", pattern:"よんだことはよんだが"},
+   {title:"~nai koto wa nai (~ないことはない)", rumus:"Kata Kerja bentuk ない + ことはない / こともない", arti:"Bukannya tidak bisa... (bisa saja dilakukan).", contoh:"かんじはかけないことはないが、むずかしいです。", pattern:"かけないことはないが"}
+ ]},
+ {num:33, items:[
+   {title:"~ta tokoro (~たところ)", rumus:"Kata Kerja bentuk た + ところ", arti:"Begitu dicoba melakukan A... ternyata hasilnya tahu situasi B.", contoh:"おみせにきいたところ、もううりきれだった。", pattern:"きいたところ"},
+   {title:"~tokoro datta (~ところだった)", rumus:"Kata Kerja bentuk Kamus / bentuk ない + ところだった", arti:"Hampir saja terjadi... (tetapi untungnya tidak).", contoh:"ちこくするところだった。", pattern:"するところだった"},
+   {title:"~te hajimete (~てはじめて)", rumus:"Kata Kerja bentuk て + はじめて", arti:"Baru setelah terjadi... saya menjadi sadar/tahu.", contoh:"びょうきになってはじめてけんこうのたいせつさがわかった。", pattern:"なってはじめて"},
+   {title:"~uchi ni (~うちに)", rumus:"Kata Kerja bentuk Kamus / ている / ない + うちに / Kata Sifat / Kata Benda + のうちに", arti:"Selagi / Mumpung kondisi belum berubah.", contoh:"あついうちにたべてください。", pattern:"あついうちに"}
+ ]},
+ {num:34, items:[
+   {title:"~wake da (~わけだ)", rumus:"Kalimat Biasa (Kata Sifat な+な) + わけだ", arti:"Pantas saja... / Wajarnya begitu (menarik kesimpulan logis).", contoh:"あついわけだ。エアコンがついていない。", pattern:"あついわけだ"},
+   {title:"~wake dewa nai (~わけではない)", rumus:"Kalimat Biasa (Kata Sifat な+な／である) + わけではない / わけでもない", arti:"Bukan berarti... / Tidak selalu begitu.", contoh:"にほんじんがみんなすしがすきなわけではない。", pattern:"すきなわけではない"},
+   {title:"~wake ga nai (~わけがない)", rumus:"Kalimat Biasa (Kata Sifat な+な / Kata Benda + の) + わけがない / わけはない", arti:"Tidak mungkin... / Mustahil terjadi.", contoh:"かれがそんなことをするわけがない。", pattern:"するわけがない"},
+   {title:"~wake niwa ikanai (~わけにはいかない)", rumus:"Kata Kerja bentuk Kamus / bentuk ない + わけにはいかない", arti:"Tidak boleh / Tidak bisa dilakukan karena alasan moral atau sosial.", contoh:"あしたはしけんがあるから、あそぶわけにはいかない。", pattern:"あそぶわけにはいかない"}
+ ]},
+ {num:35, items:[
+   {title:"kesshite...nai (決して~ない)", rumus:"決して + Kata Kerja bentuk Negatif / Kata Sifat / Kata Benda", arti:"Sama sekali tidak / Jangan pernah sekali-kali.", contoh:"けっしてわすれません。", pattern:"けっしてわすれません"},
+   {title:"mattaku...nai (まったく~ない)", rumus:"まったく + Kata Kerja bentuk Negatif / Kata Sifat", arti:"Benar-benar tidak ada / Sama sekali tidak.", contoh:"おきなわのことはまったくしりません。", pattern:"まったくしりません"},
+   {title:"mettani...nai (めったに~ない)", rumus:"めったに + Kata Kerja bentuk Negatif", arti:"Jarang sekali terjadi / Sangat langka.", contoh:"かれはめったにおこりません。", pattern:"めったにおこりません"},
+   {title:"sukoshi mo...nai (少しも~ない)", rumus:"少しも / ちっとも + Kata Kerja bentuk Negatif / Kata Sifat", arti:"Sedikit pun tidak.", contoh:"すこしもさむくないです。", pattern:"すこしもさむくない"}
+ ]},
+ {num:36, items:[
+   {title:"ato (あと)", rumus:"Kalimat A. あと + Kalimat B / Kata Benda", arti:"Lalu / Satu lagi / Kemudian (menambahkan info baru).", contoh:"カレーをひとつください。あと、おみずもください。", pattern:"あと、おみずもください"},
+   {title:"sore to (それと)", rumus:"Kalimat A. それと + Kalimat B", arti:"Serta / Dan juga / Dan setelah itu.", contoh:"ノートをかいました。それとえんぴつもかいました。", pattern:"それとえんぴつも"},
+   {title:"soretomo (それとも)", rumus:"Kalimat Tanya A? それとも + Kalimat Tanya B?", arti:"Atau... (khusus menghubungkan dua kalimat pilihan tanya).", contoh:"コーヒーにしますか。それともこうちゃにしますか。", pattern:"それともこうちゃにしますか"},
+   {title:"sono ue (その上)", rumus:"Kalimat A. その上 + Kalimat B (setara positif/negatif)", arti:"Lagipula / Selain itu / Ditambah lagi.", contoh:"このみせのりょうりはおいしい。そのうえねだんもやすい。", pattern:"そのうえねだんもやすい"}
+ ]}
+]}
+];
+
+const main = document.getElementById('main');
+const searchInput = document.getElementById('searchInput');
+const resultCount = document.getElementById('resultCount');
+const noResult = document.getElementById('noResult');
+
+function highlight(text, pattern){
+  if(!pattern) return text;
+  return text.split(pattern).join('<b>'+pattern+'</b>');
+}
+
+function render(){
+  main.innerHTML = '';
+  data.forEach(w=>{
+    const weekDiv = document.createElement('div');
+    weekDiv.className = 'week';
+    weekDiv.dataset.week = w.week;
+    weekDiv.innerHTML = `<div class="week-title">MINGGU ${w.week}</div>`;
+
+    w.days.forEach(d=>{
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'day';
+      dayDiv.dataset.search = '';
+      let dayHtml = `<div class="day-title">Hari ke-${String(d.num).padStart(2,'0')}</div>`;
+      let dayTextAll = '';
+
+      d.items.forEach(it=>{
+        const contohHtml = highlight(it.contoh, it.pattern);
+        dayHtml += `
+          <div class="item">
+            <div class="item-title">${it.title}</div>
+            <div class="item-row"><span class="label">Rumus:</span>${it.rumus}</div>
+            <div class="item-row"><span class="label">Arti:</span>${it.arti}</div>
+            <div class="item-row contoh"><span class="label">Contoh:</span>${contohHtml}</div>
+          </div>`;
+        dayTextAll += ' ' + it.title + ' ' + it.rumus + ' ' + it.arti + ' ' + it.contoh;
+      });
+
+      dayDiv.innerHTML = dayHtml;
+      dayDiv.dataset.search = dayTextAll.toLowerCase();
+      weekDiv.appendChild(dayDiv);
+    });
+
+    main.appendChild(weekDiv);
+  });
+}
+
+function filter(){
+  const q = searchInput.value.trim().toLowerCase();
+  let visibleCount = 0;
+  document.querySelectorAll('.week').forEach(weekDiv=>{
+    let weekHasVisible = false;
+    weekDiv.querySelectorAll('.day').forEach(dayDiv=>{
+      const match = !q || dayDiv.dataset.search.includes(q);
+      dayDiv.classList.toggle('hidden', !match);
+      if(match){ weekHasVisible = true; visibleCount++; }
+    });
+    weekDiv.classList.toggle('hidden', !weekHasVisible);
+  });
+  noResult.classList.toggle('hidden', visibleCount > 0);
+  resultCount.textContent = q ? `Ditemukan ${visibleCount} hari yang cocok` : '';
+}
+
+searchInput.addEventListener('input', filter);
+render();
+</script>
+</body>
+</html>
