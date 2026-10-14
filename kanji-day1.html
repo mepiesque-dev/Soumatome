@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flashcard & Soal Isian Kanji</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg1:#fff7d6; --bg2:#d9f1ff; --card:#ffffff; --ink:#26334d; --muted:#6b7a99;
+  --sun:#ffb703; --sun-d:#e09b00; --sky:#38bdf8; --sky-d:#0ea5e9;
+  --ok:#22c55e; --ok-bg:#dcfce7; --bad:#ef4444; --bad-bg:#fee2e2; --line:#e6ecf5;
+  --opt:#f3f8ff; --shadow:0 10px 30px rgba(56,130,200,.18);
+  --front1:#fff3b0; --front2:#ffd166; --back1:#bfe9ff; --back2:#7dd3fc;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg1:#2a2410; --bg2:#10283a; --card:#1b2638; --ink:#f3f6fc; --muted:#a8b6d0;
+    --line:#2d3b55; --opt:#233048; --ok-bg:#14532d; --bad-bg:#5b1d1d; --shadow:0 10px 30px rgba(0,0,0,.4);
+    --front1:#6b5410; --front2:#8a6a0c; --back1:#164e6e; --back2:#0e6b9c;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg1:#2a2410; --bg2:#10283a; --card:#1b2638; --ink:#f3f6fc; --muted:#a8b6d0;
+  --line:#2d3b55; --opt:#233048; --ok-bg:#14532d; --bad-bg:#5b1d1d; --shadow:0 10px 30px rgba(0,0,0,.4);
+  --front1:#6b5410; --front2:#8a6a0c; --back1:#164e6e; --back2:#0e6b9c;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;font-family:'Nunito','Noto Sans JP',system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(160deg,var(--bg1),var(--bg2));background-color:var(--bg2)}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+.sun{position:fixed;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,#ffd84d 0 40%,rgba(255,216,77,0) 70%);pointer-events:none;z-index:0}
+h1{margin:0 0 4px;font-size:26px;font-weight:800;position:relative;z-index:1}
+h1 span{color:var(--sun-d)}
+.sub{color:var(--muted);margin:0 0 16px;position:relative;z-index:1}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;position:relative;z-index:1}
+.tab{border:0;border-radius:14px;padding:12px;font:inherit;font-weight:800;font-size:16px;cursor:pointer;
+  background:var(--card);color:var(--muted);box-shadow:var(--shadow)}
+.tab.on{background:linear-gradient(180deg,var(--sun),var(--sun-d));color:#3b2a00}
+.card{position:relative;z-index:1;background:var(--card);border-radius:24px;box-shadow:var(--shadow);padding:22px}
+.btn{width:100%;border:0;border-radius:16px;padding:13px;font:inherit;font-weight:800;font-size:16px;cursor:pointer;
+  background:linear-gradient(180deg,var(--sun),var(--sun-d));color:#3b2a00;box-shadow:0 4px 0 #b57a00;transition:.1s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #b57a00}
+.btn.sky{background:linear-gradient(180deg,var(--sky),var(--sky-d));color:#fff;box-shadow:0 4px 0 #0a78b3}
+.btn.sky:active{box-shadow:0 1px 0 #0a78b3}
+.btn.ghost{background:var(--opt);color:var(--ink);box-shadow:0 4px 0 var(--line);border:2px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:grid;gap:10px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.hide{display:none!important}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{border:2px solid var(--line);background:var(--opt);border-radius:99px;padding:7px 14px;font:inherit;font-weight:700;
+  color:inherit;cursor:pointer;font-size:14px}
+.chip.sel{border-color:var(--sun);background:rgba(255,183,3,.2)}
+.info{display:flex;justify-content:space-between;color:var(--muted);font-weight:700;font-size:14px;margin-bottom:12px}
+
+/* flashcard */
+.scene{perspective:1200px;margin-bottom:16px}
+.c3d{position:relative;height:300px;transform-style:preserve-3d;transition:transform .5s;cursor:pointer}
+.c3d.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:18px;-webkit-backface-visibility:hidden;backface-visibility:hidden;box-shadow:var(--shadow)}
+.front{background:linear-gradient(145deg,var(--front1),var(--front2))}
+.back{background:linear-gradient(145deg,var(--back1),var(--back2));transform:rotateY(180deg)}
+.big{font-family:'Noto Sans JP',sans-serif;font-size:110px;font-weight:900;line-height:1;margin:0}
+.mid{font-size:34px;font-weight:800;margin:6px 0 0}
+.yomi{font-family:'Noto Sans JP',sans-serif;font-size:20px;font-weight:700;margin:10px 0 0;word-break:break-word}
+.tapnote{position:absolute;bottom:12px;font-size:12px;color:var(--muted);font-weight:700}
+.kanjismall{font-family:'Noto Sans JP',sans-serif;font-size:56px;font-weight:900;line-height:1}
+.tick.on{background:linear-gradient(180deg,var(--ok),#16a34a);color:#fff;box-shadow:0 4px 0 #11803a}
+
+/* isian */
+.bar{height:12px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:18px}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sun),#ff8a00);border-radius:99px;transition:width .3s}
+.tag{display:inline-block;font-size:12px;font-weight:800;background:rgba(56,189,248,.18);color:var(--sky-d);padding:4px 10px;border-radius:99px;margin-bottom:10px}
+.qbig{font-family:'Noto Sans JP','Nunito',sans-serif;font-size:80px;font-weight:900;line-height:1.1;margin:0 0 6px;text-align:center}
+.qmean{font-size:34px;font-weight:800;text-align:center;margin:10px 0}
+.hint{color:var(--muted);margin:0 0 14px;font-size:14px;text-align:center}
+.inp{width:100%;font:inherit;font-family:'Noto Sans JP','Nunito',sans-serif;font-size:22px;text-align:center;padding:14px;border-radius:16px;
+  border:2px solid var(--line);background:var(--opt);color:var(--ink);outline:none}
+.inp:focus{border-color:var(--sky)}
+.inp.ok{border-color:var(--ok);background:var(--ok-bg)} .inp.bad{border-color:var(--bad);background:var(--bad-bg)}
+.fb{margin:14px 0 0;padding:12px 14px;border-radius:14px;font-weight:700;display:none;font-family:'Noto Sans JP','Nunito',sans-serif}
+.fb.show{display:block}.fb.ok{background:var(--ok-bg)}.fb.bad{background:var(--bad-bg)}
+.fb small{display:block;font-weight:400;margin-top:2px}
+.score{font-size:64px;font-weight:900;text-align:center;color:var(--sun-d);margin:6px 0 0;line-height:1}
+.msg{text-align:center;font-size:18px;font-weight:800;margin:8px 0 20px}
+.rev{margin:14px 0 18px;border:2px solid var(--line);border-radius:14px;overflow-x:auto}
+.rev div{padding:10px 14px;border-bottom:1px solid var(--line);font-family:'Noto Sans JP',sans-serif}
+.rev div:last-child{border:0}
+</style>
+</head>
+<body>
+<div class="sun"></div>
+<div class="wrap">
+  <h1>☀️ Kanji <span>Flashcard</span> &amp; Isian</h1>
+  <p class="sub">8 kanji · 駐 無 満 向 関 係 禁 断</p>
+  <div class="tabs">
+    <button class="tab on" id="tabF">🃏 Flashcard</button>
+    <button class="tab" id="tabQ">✍️ Soal Isian</button>
+  </div>
+
+  <!-- FLASHCARD -->
+  <div id="secF">
+    <div class="chips">
+      <button class="chip sel" data-side="kanji">Depan: Kanji</button>
+      <button class="chip" data-side="arti">Depan: Arti</button>
+    </div>
+    <div class="info"><span id="fCount">1/8</span><span id="fKnown">✅ Hafal: 0</span></div>
+    <div class="scene"><div class="c3d" id="c3d">
+      <div class="face front" id="front"></div>
+      <div class="face back" id="back"></div>
+    </div></div>
+    <div class="row">
+      <div class="row2">
+        <button class="btn ghost" id="prev">◀ Sebelumnya</button>
+        <button class="btn sky" id="nextF">Berikutnya ▶</button>
+      </div>
+      <div class="row2">
+        <button class="btn ghost" id="shuf">🔀 Acak</button>
+        <button class="btn ghost tick" id="tick">✅ Hafal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ISIAN -->
+  <div id="secQ" class="hide">
+    <div class="card" id="qStart">
+      <b>Pilih jenis soal:</b>
+      <div class="chips" style="margin-top:10px">
+        <button class="chip sel" data-qm="arti">📖 Arti</button>
+        <button class="chip" data-qm="baca">🔤 Bacaan</button>
+        <button class="chip" data-qm="kanji">🈶 Tulis Kanji</button>
+        <button class="chip" data-qm="campur">🎲 Campuran</button>
+      </div>
+      <p class="hint" style="text-align:left" id="qModeNote">Lihat kanji → ketik artinya dalam bahasa Indonesia.</p>
+      <button class="btn" id="qGo">Mulai Soal Isian!</button>
+    </div>
+
+    <div class="card hide" id="qPlay">
+      <div class="info"><span id="qNo">Soal 1/8</span><span id="qSc">⭐ 0</span></div>
+      <div class="bar"><i id="qPg"></i></div>
+      <span class="tag" id="qTag"></span>
+      <div id="qBody"></div>
+      <p class="hint" id="qHint"></p>
+      <input class="inp" id="qIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ketik jawaban…">
+      <div class="fb" id="qFb"></div>
+      <div class="row2" style="margin-top:14px">
+        <button class="btn ghost" id="qSkip">Lewati / Lihat jawaban</button>
+        <button class="btn" id="qCheck">Cek ✔</button>
+      </div>
+    </div>
+
+    <div class="card hide" id="qEnd">
+      <h2 style="text-align:center;margin:0">🎉 Selesai!</h2>
+      <div class="score" id="eS"></div>
+      <div class="msg" id="eM"></div>
+      <div id="eRevBox"><b>Yang perlu diulang:</b><div class="rev" id="eRev"></div></div>
+      <div class="row">
+        <button class="btn" id="qAgain">Ulangi</button>
+        <button class="btn sky" id="qHome">Ganti jenis soal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const K=[
+ {k:"駐",show:"ちゅう",yomi:["ちゅう"],rom:["chuu","chu"],mean:"berhenti",acc:["berhenti"]},
+ {k:"無",show:"む／ない",yomi:["む","ない"],rom:["mu","nai"],mean:"tidak ada",acc:["tidak ada","tiada","tidak"]},
+ {k:"満",show:"まん",yomi:["まん"],rom:["man"],mean:"penuh",acc:["penuh"]},
+ {k:"向",show:"こう／む（こう）／む（き）／む（かう）",yomi:["こう","むこう","むき","むかう"],rom:["kou","mukou","muki","mukau"],mean:"menghadap",acc:["menghadap"]},
+ {k:"関",show:"かん",yomi:["かん"],rom:["kan"],mean:"hubungan",acc:["hubungan"]},
+ {k:"係",show:"けい／かかり",yomi:["けい","かかり"],rom:["kei","kakari"],mean:"petugas",acc:["petugas"]},
+ {k:"禁",show:"きん",yomi:["きん"],rom:["kin"],mean:"larangan",acc:["larangan"]},
+ {k:"断",show:"だん／こと（わる）",yomi:["だん","ことわる","こと"],rom:["dan","kotowaru","koto"],mean:"menolak",acc:["menolak"]}
+];
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* tabs */
+$('tabF').onclick=()=>{$('tabF').classList.add('on');$('tabQ').classList.remove('on');$('secF').classList.remove('hide');$('secQ').classList.add('hide')};
+$('tabQ').onclick=()=>{$('tabQ').classList.add('on');$('tabF').classList.remove('on');$('secQ').classList.remove('hide');$('secF').classList.add('hide')};
+
+/* ===== FLASHCARD ===== */
+let deck=[...K],fi=0,side='kanji';const known=new Set();
+function renderF(){
+  const d=deck[fi];
+  $('c3d').classList.remove('flip');
+  $('fCount').textContent=`${fi+1}/${deck.length}`;
+  $('fKnown').textContent=`✅ Hafal: ${known.size}`;
+  $('tick').classList.toggle('on',known.has(d.k));
+  $('tick').textContent=known.has(d.k)?'✅ Sudah hafal':'✅ Hafal';
+  $('front').innerHTML=side==='kanji'
+    ?`<p class="big">${d.k}</p><span class="tapnote">ketuk kartu untuk membalik</span>`
+    :`<p class="mid" style="font-size:40px">${esc(d.mean)}</p><span class="tapnote">ketuk kartu untuk membalik</span>`;
+  $('back').innerHTML=`<div class="kanjismall">${d.k}</div><p class="yomi">${esc(d.show)}</p><p class="mid">${esc(d.mean)}</p>`;
+}
+$('c3d').onclick=()=>$('c3d').classList.toggle('flip');
+$('nextF').onclick=()=>{fi=(fi+1)%deck.length;renderF()};
+$('prev').onclick=()=>{fi=(fi-1+deck.length)%deck.length;renderF()};
+$('shuf').onclick=()=>{deck=shuffle(K);fi=0;renderF()};
+$('tick').onclick=()=>{const k=deck[fi].k;known.has(k)?known.delete(k):known.add(k);renderF()};
+document.querySelectorAll('[data-side]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('[data-side]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');side=b.dataset.side;renderF()});
+renderF();
+
+/* ===== ISIAN ===== */
+let qm='arti',qs=[],qi=0,sc=0,wrong=[],checked=false;
+const notes={arti:'Lihat kanji → ketik artinya dalam bahasa Indonesia.',
+  baca:'Lihat kanji → ketik salah satu bacaannya (hiragana, katakana, atau romaji).',
+  kanji:'Lihat arti → ketik kanjinya (pakai keyboard Jepang atau salin dari kartu).',
+  campur:'Ketiga jenis soal diacak.'};
+document.querySelectorAll('[data-qm]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('[data-qm]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');
+  qm=b.dataset.qm;$('qModeNote').textContent=notes[qm]});
+
+const kata2hira=s=>s.replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
+const normT=s=>s.trim().toLowerCase().replace(/\s+/g,' ');
+function judge(q,raw){
+  const d=q.d;
+  if(q.t==='arti') return d.acc.includes(normT(raw));
+  if(q.t==='baca'){
+    const t=normT(raw).replace(/\s/g,'');
+    return d.yomi.includes(kata2hira(t))||d.rom.includes(t);
+  }
+  return raw.trim()===d.k;
+}
+function startQ(){
+  qs=shuffle(K).map(d=>{
+    let t=qm;if(qm==='campur')t=['arti','baca','kanji'][Math.random()*3|0];
+    return {d,t};
+  });
+  qi=0;sc=0;wrong=[];
+  $('qStart').classList.add('hide');$('qEnd').classList.add('hide');$('qPlay').classList.remove('hide');
+  showQ();
+}
+function showQ(){
+  checked=false;const q=qs[qi],d=q.d;
+  $('qNo').textContent=`Soal ${qi+1}/${qs.length}`;$('qSc').textContent=`⭐ ${sc}`;
+  $('qPg').style.width=(qi/qs.length*100)+'%';
+  $('qTag').textContent={arti:'Apa artinya?',baca:'Bagaimana bacanya?',kanji:'Tulis kanjinya'}[q.t];
+  $('qBody').innerHTML=q.t==='kanji'?`<p class="qmean">${esc(d.mean)}</p>`:`<p class="qbig">${d.k}</p>`;
+  $('qHint').textContent=q.t==='baca'?`Ada ${d.yomi.length} bacaan di materi ini — tulis salah satunya.`
+    :q.t==='arti'?'Jawab dalam bahasa Indonesia.':'Ketik 1 huruf kanji.';
+  const inp=$('qIn');inp.value='';inp.className='inp';inp.disabled=false;
+  $('qFb').className='fb';$('qCheck').textContent='Cek ✔';$('qSkip').disabled=false;
+  setTimeout(()=>inp.focus(),50);
+}
+function reveal(ok){
+  const q=qs[qi],d=q.d,fb=$('qFb');
+  $('qIn').disabled=true;$('qSkip').disabled=true;checked=true;
+  fb.className='fb show '+(ok?'ok':'bad');
+  fb.innerHTML=(ok?'✅ Benar!':'❌ Jawaban yang benar:')+'<small></small>';
+  fb.querySelector('small').textContent=`${d.k} — ${d.show} — ${d.mean}`;
+  $('qIn').classList.add(ok?'ok':'bad');
+  if(ok)sc++;else wrong.push(d);
+  $('qSc').textContent=`⭐ ${sc}`;
+  $('qPg').style.width=((qi+1)/qs.length*100)+'%';
+  $('qCheck').textContent=qi===qs.length-1?'Lihat Hasil 🏁':'Lanjut ➜';
+}
+function onCheck(){
+  if(checked){ if(qi<qs.length-1){qi++;showQ()}else endQ(); return }
+  const v=$('qIn').value;if(!v.trim())return;
+  reveal(judge(qs[qi],v));
+}
+$('qCheck').onclick=onCheck;
+$('qSkip').onclick=()=>{if(!checked)reveal(false)};
+$('qIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();onCheck()}});
+function endQ(){
+  $('qPlay').classList.add('hide');$('qEnd').classList.remove('hide');
+  const n=qs.length,p=Math.round(sc/n*100);
+  $('eS').textContent=`${sc}/${n}`;
+  $('eM').textContent=p===100?'Sempurna! 🌟 すごい！':p>=75?'Hebat! 🌞 よくできました':p>=50?'Bagus, ulangi sedikit lagi! 🌤️':'Ayo coba lagi, pasti bisa! 💪 がんばって';
+  const u=[...new Map(wrong.map(w=>[w.k,w])).values()];
+  $('eRevBox').classList.toggle('hide',!u.length);
+  $('eRev').innerHTML='';
+  u.forEach(w=>{const d=document.createElement('div');d.textContent=`${w.k} — ${w.show} — ${w.mean}`;$('eRev').appendChild(d)});
+}
+$('qGo').onclick=startQ;$('qAgain').onclick=startQ;
+$('qHome').onclick=()=>{$('qEnd').classList.add('hide');$('qStart').classList.remove('hide')};
+</script>
+</body>
+</html>
